@@ -29,7 +29,7 @@ class Shop extends CI_Controller {
 		$this->load->view('login');
 	}
 
-	public function add_products()
+	public function products_config()
 	{
 		if($this->session->has_userdata('user'))
 		{
@@ -293,7 +293,7 @@ class Shop extends CI_Controller {
 			else {
 				return $this->output
 				->set_content_type('application/json')
-				->set_status_header(200)
+				->set_status_header(200) 
 				->set_output(json_encode(array(
 						'type' => 'error',
 						'message' => $this->upload->display_errors()
