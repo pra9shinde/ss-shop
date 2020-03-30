@@ -5,7 +5,7 @@
             <div class="card-header card-header-transparent py-20">
                 <h4 class="card-title">Add New Category</h4>
                     <div class="card-body" style="padding:1.5rem 0">
-                        <form class="form form-horizontal" id="add-category-form" action="<?=base_url()?>Shop/add_category">
+                        <form class="form form-horizontal" id="add-category-form" action="<?=base_url()?>Product/add_category">
                             <div class="form-body">
                                 <div class="form-group row">
                                     <label class="col-md-3 label-control" for="eventRegInput1">Category Name*</label>

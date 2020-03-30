@@ -192,6 +192,9 @@ table.dataTable tbody tr.selected, table.dataTable tbody th.selected, table.data
 
 }
 
+table tr:hover td{
+  background: rgba(252, 235, 227, 0.829);
+}
 
 
 /* ------------------ */
@@ -492,4 +495,26 @@ form .form-control {
   border: 2px solid #d1d3d4;
   color: #8b6f82;
   width: 100%;
+}
+
+.bg-gradient-y-pink {
+  background-image: linear-gradient(to right, #cb2d3e 0%, #ef473a 100%);
+  background-repeat: repeat-x;
+}
+
+/* .bg-gradient-y-pink {
+  background-image: linear-gradient(to left, #6f0000 0%, #E29587 100%);
+  background-repeat: repeat-x;
+} */
+
+
+.card-image-position-right-mid {
+  position: absolute;
+  top: auto;
+  right: 0px;
+  width: 150px;
+}
+
+.card-font-style-white {
+  font-size: 30px;
 }

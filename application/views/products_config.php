@@ -1,5 +1,5 @@
  <!-- BEGIN: Content-->
- <div class="app-content content">
+ <div class="app-content content" style="overflow-y:hidden;">
     <div class="content-overlay"></div>
     <div class="content-wrapper">
         <div class="content-header row">

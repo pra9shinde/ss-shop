@@ -62,6 +62,19 @@
 			return ($this->db->affected_rows() > 0) ? true : false;
 		}
 
+		public function get_all_product_data()
+		{
+			$table = 'sss_products as product';
+			$this->db->where('product.is_delete', 0);
+			$this->db->select('product.id, product.name as product_name, product.description,  product.total_quantity, product.rem_quantity, product.price,product.pieces, category.id as category_id, category.name as category_name, category.description as category_description, seller.id as seller_id, seller.shop_name', false);
+			$this->db->from($table);
+			$this->db->join('sss_category as category', 'product.category_id = category.id ','inner');
+			$this->db->join('sss_seller as seller', 'product.seller-id  = seller.id ','inner');
+
+			$query = $this->db->get();
+			return ($query->num_rows() > 0) ? $query->result_array() : false;
+
+		}
 
   }
 

@@ -1,11 +1,11 @@
 
 <div class="row">
-    <div class="col-xl-12 col-12" id="ecommerceChartView">
+    <div class="col-xl-12 col-12" id="ecommerceChartView" style="height: 300px;">
         <div class="card card-shadow">
             <div class="card-header card-header-transparent py-20">
                 <h4 class="card-title">Add New Product</h4>
                     <div class="card-body" style="padding:1.5rem 0">
-                        <form class="form form-horizontal" id="add-product-form" action="<?=base_url()?>Shop/add_product" enctype="multipart/form-data">
+                        <form class="form form-horizontal" id="add-product-form" action="<?=base_url()?>Product/add_product" enctype="multipart/form-data">
                             <div class="form-body">
                                 <div class="row">
                                     <div class="col-md-4 form-group">
@@ -63,43 +63,41 @@
 </div>
 
 <div class="row">
-<div class="col-xl-12 col-lg-12">
-        <div class="card" style="height: 423.117px;overflow-y:scroll;">
-            <div class="card-header">
-                <h4 class="card-title">Existing Categories</h4>
-                <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
-                <div class="heading-elements">
-                    <ul class="list-inline mb-0">
-                        <li><a data-action="reload"><i class="ft-rotate-cw"></i></a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="card-content">
-                <div id="new-orders" class="media-list position-relative ps">
-                    <div class="table-responsive">
-                        <table id="new-orders-table" class="table table-hover table-xl mb-0">
-                            <thead>
-                                <tr>
-                                    <th class="border-top-0">Category</th>
-                                    <th class="border-top-0">Description</th>
-                                </tr>
-                            </thead>
-                            <tbody style="overflow-y: visible;">
-                                <?php
-                                    foreach($categories as $value){
-                                ?>    
-                                    <tr>
-                                        <td class="text-truncate"><?=$value['name']?></td>
-                                        <td class="text-truncate"><?=$value['description']?></td>
-                                    </tr>
-                                <?php
-                                    }
-                                ?>
-                            </tbody>
-                        </table>
+        <div class="col-xl-12 col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Your Products</h4>
                     </div>
-                <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div></div>
+                    <div class="card-content">
+                        <div id="" class="media-list position-relative ps">
+                        <div class="table-responsive">
+                            <table id="tb-products" class="table table-hover table-xl mb-0 dataex-fixh-reorder " style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <!-- <th class="border-top-0">
+                                            <div class="skin skin-flat">
+                                                <fieldset>
+                                                        <input type="checkbox" id="select-all-products">
+                                                </fieldset>
+                                            </div>	
+                                        </th>
+                                        <th class="border-top-0">Action</th> -->
+                                        <th class="border-top-0">Name</th>
+                                        <th class="border-top-0">Category</th>
+                                        <th class="border-top-0">Total Quantity</th>
+                                        <th class="border-top-0">In Stock</th>
+                                        <th class="border-top-0">Price</th>
+                                        <th class="border-top-0">Pieces</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
+

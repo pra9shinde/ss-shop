@@ -26,14 +26,21 @@ class Shop extends CI_Controller {
 
 	public function index()
 	{
-		$this->load->view('login');
+
+		$data['products'] = $this->shop_model->get_all_product_data();
+		
+		$this->load->view('templates/header');
+		$this->load->view('templates/menu');
+		$this->load->view('all_products',$data);
+		$this->load->view('templates/footer');
+
 	}
 
 	public function products_config()
 	{
 		if($this->session->has_userdata('user'))
 		{
-			$data['categories'] = $this->shop_model->get('sss_category');
+			$data['categories'] = $this->My_model->get('sss_category');
 			$this->load->view('templates/header');
 			$this->load->view('templates/menu');
 			$this->load->view('products_config',$data);
@@ -168,154 +175,10 @@ class Shop extends CI_Controller {
 				)));
 	}
 
-	public function add_category()
+	public function seller()
 	{
-		if($this->input->server('REQUEST_METHOD') != 'POST') {
-			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
-					'type' => 'error',
-					'message' => 'Failed - Invalid Request!'
-			)));
-		}
-
-		$this->form_validation->set_rules('category_name', 'Category Name', 'trim|required|xss_clean');
-
-		if( !$this->form_validation->run() ) {
-			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
-					'type' => 'error',
-					'message' => validation_errors()
-			)));
-		}
-
-		$insert_category = $this->shop_model->insert_category($this->input->post());
-		
-		if(!$insert_category) { 
-			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
-					'type' => 'error',
-					'message' => 'Operation failed. please try again later'
-			)));
-		}
-
-		return $this->output
-		->set_content_type('application/json')
-		->set_status_header(200)
-		->set_output(json_encode(array(
-				'type' => 'success',
-				'message' => 'Product Category Added Successfully.'
-		)));
-
+		$this->load->view('login');
 	}
-
-	public function add_product()
-	{
-		if($this->input->server('REQUEST_METHOD') != 'POST') {
-			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
-					'type' => 'error',
-					'message' => 'Failed - Invalid Request!'
-			)));
-		}
-
-		$this->form_validation->set_rules('prod_name', 'Product Name', 'trim|required|xss_clean');
-		$this->form_validation->set_rules('prod_category', 'Product Category', 'trim|required|xss_clean');
-		$this->form_validation->set_rules('prod_pieces', 'Product Category', 'trim|numeric|required|xss_clean');
-		$this->form_validation->set_rules('prod_quantity', 'Product Category', 'trim|numeric|required|xss_clean');
-		$this->form_validation->set_rules('prod_price', 'Product Category', 'trim|numeric|required|xss_clean');
-
-		if( !$this->form_validation->run() ) {
-			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
-					'type' => 'error',
-					'message' => validation_errors()
-			)));
-		}
-		
-
-		//Validate File
-		if (isset($_FILES['prod_image']) && $_FILES['prod_image']['size'] != 0) 
-		{
-			
-			$allowedExts = array("jpeg", "jpg", "png", "JPG", "JPEG", "PNG");
-			$allowedTypes = array(IMAGETYPE_PNG, IMAGETYPE_JPEG, IMAGETYPE_GIF);
-			$extension = pathinfo($_FILES["prod_image"]["name"], PATHINFO_EXTENSION);
-			$detectedType = exif_imagetype($_FILES['prod_image']['tmp_name']);
-			$type = $_FILES['prod_image']['type'];
-			if (!in_array($detectedType, $allowedTypes)) {
-					return $this->output
-					->set_content_type('application/json')
-					->set_status_header(200)
-					->set_output(json_encode(array(
-							'type' => 'error',
-							'message' => 'Only jpg,png files supported'
-					)));
-					
-			}
-			if(filesize($_FILES['prod_image']['tmp_name']) > 1000000) {
-				return $this->output
-				->set_content_type('application/json')
-				->set_status_header(200)
-				->set_output(json_encode(array(
-						'type' => 'error',
-						'message' => 'The Image file size shoud not exceed 20MB!'
-				)));
-			}
-			if(!in_array($extension, $allowedExts)) {
-				return $this->output
-				->set_content_type('application/json')
-				->set_status_header(200)
-				->set_output(json_encode(array(
-						'type' => 'error',
-						'message' => 'Invalid file extension'
-				)));
-			}
-
-			//Upload file
-			$aConfig['upload_path']      = 'uploads/';
-			$aConfig['allowed_types']    = 'jpg|png|jpeg';
-			$aConfig['max_size']     = '1000000';
-			$this->upload->initialize($aConfig);
-			if($this->upload->do_upload('prod_image'))
-			{
-				$ret= $this->upload->data();
-			}
-			else {
-				return $this->output
-				->set_content_type('application/json')
-				->set_status_header(200) 
-				->set_output(json_encode(array(
-						'type' => 'error',
-						'message' => $this->upload->display_errors()
-				)));
-			}
-			$pathToUploadedFile = $ret['full_path'];
-		}
-
-		
-
-
-		return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
-					'type' => 'success',
-					'message' => 'Sucess Done Well Done'
-			)));
-	
-	}
-
-
 
 
 }
