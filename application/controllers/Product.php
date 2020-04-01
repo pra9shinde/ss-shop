@@ -161,7 +161,7 @@ class Product extends CI_Controller {
 		}
 
 		$insert_data = array(
-			'seller-id' => $this->session->has_userdata('user'),
+			'seller_id' => $this->session->has_userdata('user'),
 			'category_id' => $this->input->post('prod_category'),
 			'name' => $this->input->post('prod_name'),
 			'description' => $this->input->post('prod_desc'),

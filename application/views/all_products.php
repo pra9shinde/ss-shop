@@ -62,7 +62,7 @@
                                     </div>
                                     <p class="mt-1">Remaining Stock :
                                     <span class="badge badge badge-danger badge-glow badge-pill"><?=$product['rem_quantity']?></span>
-                                    <span class="float-right" style="color:#a73737;"><a href="#">Add To Cart <i class="la la-cart-plus" ></i></a></span>
+                                    <span class="float-right" style="color:#a73737;"><a onclick="addToCart(<?=$product['id']?>)">Add To Cart <i class="la la-cart-plus" ></i></a></span>
                                     </p>
                                    
                                 </div>
@@ -73,10 +73,62 @@
 
 
                 <?php } ?>
+
+                <?php //print_r($pagination);?>
               </div>
+
+              <div class="pagination-container ">
+                <div class="pagination">
+                  <div class="row">
+                    <nav aria-label="Page navigation">
+                      <ul class="pagination justify-content-center pagination-separate pagination-flat">
+
+                          <li class="page-item">
+                              <a class="page-link"
+                                  <?php if($pagination['has_previous_page']): ?>
+                                    href="<?=base_url()?>Shop?page=<?=$pagination['previous_page']?>"
+                                  <?php else: ?>
+                                    href="#"
+                                  <?php endif; ?>
+                                    aria-label="Previous">
+                                  <span aria-hidden="true">« Prev</span>
+                                  <span class="sr-only">Previous</span>
+                              </a>
+                          </li>
+
+                          <?php if($pagination['has_previous_page']): ?>
+                            <li class="page-item"><a class="page-link" href="<?=base_url()?>Shop?page=<?=$pagination['previous_page']?>"><?=$pagination['previous_page']?></a></li>
+                          <?php endif; ?>
+
+                          <li class="page-item active"><a class="page-link" href="<?=base_url()?>Shop?page=<?=$pagination['current_page']?>"><?=$pagination['current_page']?></a></li>
+
+                          <?php if($pagination['has_next_page']): ?>
+                            <li class="page-item"><a class="page-link" href="<?=base_url()?>Shop?page=<?=$pagination['next_page']?>"><?=$pagination['next_page']?></a></li>
+                          <?php endif; ?>
+
+                            <li class="page-item">
+                                <a class="page-link"
+                                   <?php if($pagination['has_next_page']): ?>
+                                      href="<?=base_url()?>Shop?page=<?=$pagination['next_page']?>"
+                                    <?php else: ?>
+                                      href="#"
+                                    <?php endif; ?>
+                                      aria-label="Next">
+                                    <span aria-hidden="true">Next »</span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </li>
+                          
+                      </ul>
+                    </nav>
+                  </div>
+                </div>
+                
+              </div>
+              
           </section>
           <!-- // Shopping cards section end -->
-
       </div>
   </div>
 </div>
+

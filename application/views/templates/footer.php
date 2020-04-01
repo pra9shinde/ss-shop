@@ -16,11 +16,12 @@
 
 
     <!-- BEGIN: Vendor JS-->
+    <script src="<?=base_url()?>assets/theme/js/vendors/jquery.cookie.js"></script>
     <script src="<?=base_url()?>assets/theme/js/vendors/select2.full.min.js"></script>
+    <script src="<?=base_url()?>assets/theme/js/vendors/jquery.bootstrap-touchspin.js"></script>
     <script src="<?=base_url()?>assets/theme/js/vendors/icheck.min.js"></script>
     <script src="<?=base_url()?>assets/theme/js/vendors/toastr.min.js"></script>
     <script src="<?=base_url()?>assets/theme/js/vendors/tags/form-field.js"></script>
-    
     <!-- BEGIN Vendor JS-->
 
     <!-- BEGIN: Theme JS-->
@@ -32,8 +33,179 @@
     <script src="<?=base_url()?>assets/theme/js/custom-file-input.js"></script>
     <script src="<?=base_url()?>assets/theme/js/checkbox-radio.js"></script>
     <script src="<?=base_url()?>assets/theme/js/datatable/dt-setup.js"></script>
+    <script src="<?=base_url()?>assets/theme/js/ecommerce-cart.js"></script>
     <!-- END: Page JS-->
+    <script>
+      var client_ip;
 
+      $(document).ready(function(){
+        
+        $.getJSON("https://api.ipify.org?format=json",function(data) { 
+            client_ip = data.ip.toString();
+            $('#cart-link').attr('data-ip_address', client_ip); 
+            $('#cart-link').attr('href', '<?=base_url()?>Shop/cart/'+ client_ip); 
+            //Create a cookie
+            if (!!$.cookie('client_ip')) {
+              // have cookie
+              console.log('cookie not present' + $.cookie('client_ip'));
+            } 
+            else {
+              // no cookie
+              $.cookie('client_ip', data.ip, {
+                  expires: 1
+              });
+              console.log('cookie not present');
+            }
+            
+            $.ajax({
+              method:'POST',
+              async:false,
+              url: $('#base_url').val() +'Shop/get_cart/'+ data.ip,
+              data: {},
+              dataType:'JSON',
+              context:this,
+              success:function(data){
+                if(data.status == 'success'){
+                  $('#cart-count').text(data.cart.toString());
+                }
+                else{
+                  alert('Something Went Wrong!');
+                }
+              },
+              error:function(res){
+                console.log(res);
+              },
+              beforeSend:function(){
+              },
+              complete:function(){
+
+              }
+            });
+        }); 
+      });
+
+      function addToCart(id, ip_address = $('#cart-link').data('ip_address')){
+        if(ip_address){
+          $.ajax({
+            method:'POST',
+            async:false,
+            url: $('#base_url').val() +'Shop/add_to_cart/'+ id,
+            data: {'ip_address': ip_address},
+            dataType:'JSON',
+            context:this,
+            success:function(data){
+              if(data.status == 'success'){
+                $('#cart-count').text(data.cart.toString());
+              }
+              else{
+                alert('Something Went Wrong!');
+              }
+            },
+            error:function(res){
+              console.log(res);
+            },
+            beforeSend:function(){
+            },
+            complete:function(){
+
+            }
+          });
+        }
+        else{
+          alert('something went wrong');
+        }  
+      }
+
+      function createCookie()
+      {
+          let cart = [{"ids" : []}];
+          $.cookie('client_ip',  JSON.stringify(cart), {
+              expires: 1
+          });
+      }
+
+       
+
+      function removeFromCart(id, ip_address = $('#cart-link').data('ip_address')){
+        if(ip_address){
+          $.ajax({
+            method:'POST',
+            async:false,
+            url: $('#base_url').val() +'Shop/remove_from_cart/'+ id,
+            data: {'ip_address': ip_address},
+            dataType:'JSON',
+            context:this,
+            success:function(data){
+              if(data.status == 'success'){
+                $('#cart-count').text(data.cart.toString());
+                window.location.reload();
+              }
+              else{
+                alert('Something Went Wrong!');
+              }
+            },
+            error:function(res){
+              console.log(res);
+            },
+            beforeSend:function(){
+            },
+            complete:function(){
+
+            }
+          });
+        }
+        else{
+          alert('something went wrong');
+        } 
+      }
+
+      function quantityUpdate(id,obj, ip_address = $('#cart-link').data('ip_address')){
+        console.log(obj.parentElement.parentElement.nextSibling.innerHTML);
+        // if(ip_address){
+        //   $.ajax({
+        //     method:'POST',
+        //     async:false,
+        //     url: $('#base_url').val() +'Shop/update_cart_quantity/'+ id,
+        //     data: {'ip_address': ip_address, 'new_quantity': obj.value},
+        //     dataType:'JSON',
+        //     context:this,
+        //     success:function(data){
+        //       if(data.status == 'success'){
+        //         alert(data.line_total);
+        //       }
+        //       else{
+        //         alert('Something Went Wrong!');
+        //       }
+        //     },
+        //     error:function(res){
+        //       console.log(res);
+        //     },
+        //     beforeSend:function(){
+        //     },
+        //     complete:function(){
+
+        //     }
+        //   });
+        // }
+        // else{
+        //   alert('something went wrong');
+        // }
+      }
+
+
+
+      Array.prototype.remove = function() {
+          var what, a = arguments, L = a.length, ax;
+          while (L && this.length) {
+              what = a[--L];
+              while ((ax = this.indexOf(what)) !== -1) {
+                  this.splice(ax, 1);
+              }
+          }
+          return this;
+      };
+
+    </script>
 
 </body>
 <!-- END: Body-->

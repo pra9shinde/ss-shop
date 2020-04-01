@@ -62,14 +62,33 @@
 			return ($this->db->affected_rows() > 0) ? true : false;
 		}
 
-		public function get_all_product_data()
+		public function get_cart_items($ip)
+		{
+
+
+			$table = 'sss_cart as cart';
+			$this->db->where('cart.ip_address', $ip);
+			$this->db->select('cart.id as cart_id, cart.ip_address, cart.item_id, cart.item_quantity, cart.delivery_charges, cart.item_price as cart_item_price, product.id, product.seller_id , product.name as product_name, product.description, product.image_url, product.price, product.pieces,category.id as category_id, category.name as category_name, category.description as category_description, seller.shop_name, seller.phone', false);
+			$this->db->from($table);
+			$this->db->join('sss_products as product', 'cart.item_id = product.id ','inner');
+			$this->db->join('sss_category as category', 'cart.item_id = category.id ','left');
+			$this->db->join('sss_seller as seller', 'product.seller_id  = seller.id ','inner');
+			
+			$query = $this->db->get();
+			return ($query->num_rows() > 0) ? $query->result_array() : false;
+		}
+
+		public function get_all_product_data($items,$current_page)
 		{
 			$table = 'sss_products as product';
 			$this->db->where('product.is_delete', 0);
 			$this->db->select('product.id, product.name as product_name, product.description,  product.total_quantity, product.rem_quantity, product.price,product.pieces, category.id as category_id, category.name as category_name, category.description as category_description, seller.id as seller_id, seller.shop_name', false);
 			$this->db->from($table);
 			$this->db->join('sss_category as category', 'product.category_id = category.id ','inner');
-			$this->db->join('sss_seller as seller', 'product.seller-id  = seller.id ','inner');
+			$this->db->join('sss_seller as seller', 'product.seller_id  = seller.id ','inner');
+			 
+			$skip = ($current_page - 1) * $items;
+			$this->db->limit($items,$skip);
 
 			$query = $this->db->get();
 			return ($query->num_rows() > 0) ? $query->result_array() : false;

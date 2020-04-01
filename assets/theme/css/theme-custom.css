@@ -518,3 +518,39 @@ form .form-control {
 .card-font-style-white {
   font-size: 30px;
 }
+
+.pagination-container{
+  margin: 2rem 0;
+  position: relative;
+  height: 50px;
+}
+
+.pagination{
+  margin: auto;  
+  position: absolute;
+  left:0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.nav.nav-tabs li.nav-item .nav-link.active {
+  border-radius: 3px;
+  background-color: #a73737 !important;
+  border: none;
+  color: #fff;
+}
+
+.table thead th {
+  border-top: 0;
+}
+
+.btn-primary {
+  border-color: #a73737 !important;
+  background-color: #a73737 !important;
+  color: #FFFFFF;
+}
+
+html body a:hover {
+  color: #a73737;
+}
