@@ -1,3 +1,4 @@
+
 <!-- BEGIN: Content-->
 <div class="app-content content">
     <div class="content-overlay"></div>
@@ -14,10 +15,10 @@
                         <a class="nav-link active" id="shopping-cart" data-toggle="tab" aria-controls="shop-cart-tab" href="#shop-cart-tab" aria-expanded="true">Shopping Cart</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="checkout" data-toggle="tab" aria-controls="checkout-tab" href="#checkout-tab" aria-expanded="false">Checkout</a>
+                        <a class="nav-link disabled" id="checkout" data-toggle="tab" aria-controls="checkout-tab" href="#checkout-tab" aria-expanded="false">Checkout</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="complete-order" data-toggle="tab" aria-controls="comp-order-tab" href="#comp-order-tab" aria-expanded="false">Complete Order</a>
+                        <a class="nav-link " id="complete-order" data-toggle="tab" aria-controls="comp-order-tab" href="#comp-order-tab" aria-expanded="false">My Orders</a>
                     </li>
                 </ul>
                 <div class="tab-content pt-1">
@@ -108,15 +109,15 @@
                                     </div>
                                     <div class="card-content">
                                         <div class="card-body">
-                                            <div class="price-detail">Price (4 items) <span class="float-right">$2800</span></div>
-                                            <div class="price-detail">Delivery Charges <span class="float-right">$100</span></div>
-                                            <div class="price-detail">TAX / VAT <span class="float-right">$0</span></div>
+                                            <div class="price-detail">Price (<span id="total_items"><?=count($cart_items);?></span> items) <span class="float-right" id="total_amount">₹<?=$cart_total?></span></div>
+                                            <div class="price-detail">Delivery Charges <span class="float-right">₹0</span></div>
+                                            <div class="price-detail">TAX / VAT <span class="float-right">₹0</span></div>
                                             <hr>
-                                            <div class="price-detail">Payable Amount <span class="float-right">$2900</span></div>
-                                            <div class="total-savings">Your Total Savings on this order $550</div>
+                                            <div class="price-detail">Payable Amount <span class="float-right" id="payable_amount">₹<?=$cart_total?></span></div>
+                                            <!-- <div class="total-savings">Your Total Savings on this order $550</div> -->
                                             <div class="text-right">
                                                     <a href="ecommerce-checkout.html" class="btn btn-info mr-2">Continue Shopping</a>
-                                                    <a href="ecommerce-checkout.html" class="btn btn-warning">Place Order</a>
+                                                    <a class="btn btn-secondary" onclick="activeTab('checkout-tab')">Place Order</a>
                                                 </div>
                                         </div>
                                     </div>
@@ -130,224 +131,98 @@
                             <div class="col-md-4 order-md-2 mb-4">
                                 <div class="card">
                                     <div class="card-header mb-3">
-                                        <h4 class="card-title">Your cart (4)</h4>
+                                        <h4 class="card-title">Your cart (<span id="checkout_items"><?=count($cart_items);?></span>)</h4>
                                     </div>
                                     <div class="card-content">
                                         <ul class="list-group mb-3">
-                                            <li class="list-group-item d-flex justify-content-between lh-condensed">
-                                                <div>
-                                                    <h6 class="my-0">Fitbit Alta HR Special Edition x 1</h6>
-                                                    <small class="text-muted">Brief description</small>
-                                                </div>
-                                                <span class="text-muted">$250</span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between lh-condensed">
-                                                <div>
-                                                    <h6 class="my-0">Mackbook pro 19'' x 1</h6>
-                                                    <small class="text-muted">Brief description</small>
-                                                </div>
-                                                <span class="text-muted">$1150</span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between lh-condensed">
-                                                <div>
-                                                    <h6 class="my-0">VR Headset x 2</h6>
-                                                    <small class="text-muted">Brief description</small>
-                                                </div>
-                                                <span class="text-muted">$700</span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between lh-condensed">
-                                                <div>
-                                                    <h6 class="my-0">Smart Watch with LED x 1</h6>
-                                                    <small class="text-muted">Brief description</small>
-                                                </div>
-                                                <span class="text-muted">$700</span>
-                                            </li>
+                                            <div id="checkout-items-list"> 
+                                                
+                                            </div>
+                                           
                                             <li class="list-group-item d-flex justify-content-between">
                                                 <span class="product-name"><strong>Cart Subtotal</strong></span>
-                                                <span class="product-price"><strong>$2800</strong></span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between">
-                                                <div class="text-success">
-                                                    <h6 class="my-0">Promo code</h6>
-                                                    <small>EXAMPLECODE</small>
-                                                </div>
-                                                <span class="text-success">-$200</span>
+                                                <span class="product-price" id="checkout_cart_total"><strong>₹<?=$cart_total?></strong></span>
                                             </li>
                                             <li class="list-group-item d-flex justify-content-between">
                                                 <span class="product-name">Shipping &amp; Handling</span>
-                                                <span class="product-price">$100</span>
+                                                <span class="product-price">₹0</span>
                                             </li>
                                             <li class="list-group-item d-flex justify-content-between">
                                                 <span class="product-name">TAX / VAT</span>
-                                                <span class="product-price">$0</span>
+                                                <span class="product-price">₹0</span>
                                             </li>
                                             <li class="list-group-item d-flex justify-content-between">
                                                 <span class="product-name success">Order Total</span>
-                                                <span class="product-price">$2700</span>
+                                                <span class="product-price" id="checkout_payable_amount">₹<?=$cart_total?></span>
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
-
-                                <form class="card p-2">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Promo code">
-                                        <div class="input-group-append">
-                                            <button type="submit" class="btn btn-secondary">Redeem</button>
-                                        </div>
-                                    </div>
-                                </form>
                             </div>
                             <div class="col-md-8 order-md-1">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h4 class="card-title">Billing address</h4>
+                                        <h4 class="card-title">Billing Details</h4>
                                     </div>
                                     <div class="card-content">
                                         <div class="card-body">
-                                            <form class="needs-validation" novalidate="">
+                                            <div class="mobile-check">
                                                 <div class="row">
-                                                    <div class="col-md-6 mb-3">
-                                                        <label for="firstName">First name</label>
-                                                        <input type="text" class="form-control" id="firstName" placeholder="" value="" required="">
-                                                        <div class="invalid-feedback">
-                                                            Valid first name is required.
+                                                    <form id="form-mobile-no"></form>
+                                                        <div class="col-md-8 mb-3">
+                                                            <input type="text" class="form-control" id="contact" name="contact" placeholder="Mobile Number*" value="" maxlength="10">
                                                         </div>
-                                                    </div>
-                                                    <div class="col-md-6 mb-3">
-                                                        <label for="lastName">Last name</label>
-                                                        <input type="text" class="form-control" id="lastName" placeholder="" value="" required="">
-                                                        <div class="invalid-feedback">
-                                                            Valid last name is required.
+                                                        <div class="col-md-4 mb-3">
+                                                            <a class="btn btn-secondary" id="btn-check-phone">Check Details</a>
                                                         </div>
-                                                    </div>
+                                                    </form>
                                                 </div>
+                                            </div>
+                                            <div class="new-user" style="display:none;">
+                                                <form id="new-user-form" action="<?=base_url()?>Shop/register_buyer">
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="firstName">Your name</label>
+                                                            <input type="text" class="form-control" id="user_name" name="user_name" placeholder="eg: John">
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="lastName">Your Contact</label>
+                                                            <input type="text" class="form-control" id="user_contact" name="user_contact" placeholder="10 Digits Number" value="">
+                                                        </div>
+                                                    </div>
 
-                                                <div class="mb-3">
-                                                    <label for="username">Username</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text">@</span>
-                                                        </div>
-                                                        <input type="text" class="form-control" id="username" placeholder="Username" required="">
-                                                        <div class="invalid-feedback">
-                                                            Your username is required.
+                                                    <div class="mb-3">
+                                                        <label for="email">Email <span class="text-muted">(Optional)</span></label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text">@</span>
+                                                            </div>
+                                                            <input type="text" class="form-control" id="user_email" name="user_email" placeholder="e.g. john@gmail.com">
                                                         </div>
                                                     </div>
-                                                </div>
 
-                                                <div class="mb-3">
-                                                    <label for="email">Email <span class="text-muted">(Optional)</span></label>
-                                                    <input type="email" class="form-control" id="email" placeholder="you@example.com">
-                                                    <div class="invalid-feedback">
-                                                        Please enter a valid email address for shipping updates.
+                                                    <div class="mb-3">
+                                                        <label for="address">Address Line 1*</label>
+                                                        <input type="text" class="form-control" id="user_address_1" name="user_address_1" placeholder="1234 Main St" >
                                                     </div>
-                                                </div>
 
-                                                <div class="mb-3">
-                                                    <label for="address">Address</label>
-                                                    <input type="text" class="form-control" id="address" placeholder="1234 Main St" required="">
-                                                    <div class="invalid-feedback">
-                                                        Please enter your shipping address.
+                                                    <div class="mb-3">
+                                                        <label for="address2">Address Line 2 <span class="text-muted">(Optional)</span></label>
+                                                        <input type="text" class="form-control" id="user_address_2"  name="user_address_2" placeholder="Near Magnum Heights">
                                                     </div>
-                                                </div>
 
-                                                <div class="mb-3">
-                                                    <label for="address2">Address 2 <span class="text-muted">(Optional)</span></label>
-                                                    <input type="text" class="form-control" id="address2" placeholder="Apartment or suite">
-                                                </div>
+                                                    <div class="row">
+                                                        <div class="col-md-4 mb-3">
+                                                            <label for="zip">Pincode*</label>
+                                                            <input type="text" class="form-control" id="user_pincode" name="user_pincode" placeholder="e.g. 421202">
+                                                        </div>
 
-                                                <div class="row">
-                                                    <div class="col-md-5 mb-3">
-                                                        <label for="country">Country</label>
-                                                        <select class="custom-select d-block w-100" id="country" required="">
-                                                            <option value="">Choose...</option>
-                                                            <option>United States</option>
-                                                        </select>
-                                                        <div class="invalid-feedback">
-                                                            Please select a valid country.
-                                                        </div>
                                                     </div>
-                                                    <div class="col-md-4 mb-3">
-                                                        <label for="state">State</label>
-                                                        <select class="custom-select d-block w-100" id="state" required="">
-                                                            <option value="">Choose...</option>
-                                                            <option>California</option>
-                                                        </select>
-                                                        <div class="invalid-feedback">
-                                                            Please provide a valid state.
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3 mb-3">
-                                                        <label for="zip">Zip</label>
-                                                        <input type="text" class="form-control" id="zip" placeholder="" required="">
-                                                        <div class="invalid-feedback">
-                                                            Zip code required.
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <hr class="mb-2">
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" class="custom-control-input" id="same-address" checked>
-                                                    <label class="custom-control-label" for="same-address">Shipping address is the same as my billing address</label>
-                                                </div>
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" class="custom-control-input" id="save-info" checked>
-                                                    <label class="custom-control-label" for="save-info">Save this information for next time</label>
-                                                </div>
-                                                <hr class="mt-2 mb-4">
-
-                                                <h4 class="mb-1">Payment</h4>
-
-                                                <div class="d-block my-2">
-                                                    <div class="custom-control custom-radio">
-                                                        <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked="" required="">
-                                                        <label class="custom-control-label" for="credit">Credit card</label>
-                                                    </div>
-                                                    <div class="custom-control custom-radio">
-                                                        <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required="">
-                                                        <label class="custom-control-label" for="debit">Debit card</label>
-                                                    </div>
-                                                    <div class="custom-control custom-radio">
-                                                        <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required="">
-                                                        <label class="custom-control-label" for="paypal">Paypal</label>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-6 mb-3">
-                                                        <label for="cc-name">Name on card</label>
-                                                        <input type="text" class="form-control" id="cc-name" placeholder="" required="">
-                                                        <small class="text-muted">Full name as displayed on card</small>
-                                                        <div class="invalid-feedback">
-                                                            Name on card is required
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6 mb-3">
-                                                        <label for="cc-number">Credit card number</label>
-                                                        <input type="text" class="form-control" id="cc-number" placeholder="" required="">
-                                                        <div class="invalid-feedback">
-                                                            Credit card number is required
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-3 mb-3">
-                                                        <label for="cc-expiration">Expiration</label>
-                                                        <input type="text" class="form-control" id="cc-expiration" placeholder="" required="">
-                                                        <div class="invalid-feedback">
-                                                            Expiration date required
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3 mb-3">
-                                                        <label for="cc-expiration">CVV</label>
-                                                        <input type="text" class="form-control" id="cc-cvv" placeholder="" required="">
-                                                        <div class="invalid-feedback">
-                                                            Security code required
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <button class="btn btn-info btn-lg" type="submit">Continue to checkout</button>
-                                            </form>
+                                                    <hr class="mb-2">
+                                                    <button class="btn btn-info btn-lg" type="submit">Continue to checkout</button>
+                                                </form>
+                                            </div>
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -571,4 +446,168 @@
 <!-- END: Content-->
 
 
+<script>
+function activeTab(tab){
+    ip_address = $('#cart-link').data('ip_address');
+    $.ajax({
+        method:'POST',
+        async:false,
+        url: $('#base_url').val() +'Shop/cart/'+ip_address +'/checkout_page',
+        data: {},
+        dataType:'JSON',
+        context:this,
+        success:function(data){
+            let cart_total = 0;
+            
+            // console.log(data['cart_items'][0]);
+            //Create li elements and add linetotals then add these data to checkout page
+            let list_html = '';
+            data['cart_items'].forEach(element => {
+                cart_total += Number(element['cart_item_price']);
+
+                list_html +=`<li class="list-group-item d-flex justify-content-between lh-condensed">
+                   <div>
+                        <h6 class="my-0">
+                            <span id="checkout_prod_name">${element['product_name']}
+                            </span> x 
+                            <span id="checkout_quantity">${element['item_quantity']}</span>
+                        </h6>
+                        <small class="text-muted">Pieces per item - <span id="checkout_pieces">${element['pieces']}</span></small> 
+                    </div>
+                    <span class="text-muted" id="checkout_cart_item_price">₹${element['cart_item_price']}</span>
+                </li>
+                `;
+
+            });
+            
+            $('#checkout_cart_total').text('₹'+cart_total);
+            $('#checkout_payable_amount').text('₹'+cart_total);
+            $('#checkout_items').text(data['cart_items'].length);
+            $('#checkout-items-list').append(list_html);
+
+
+            //Show Checkout tab
+            var split = tab.split('-');
+            var tab_name = ".nav-item #" + split[0];
+            $(tab_name).removeClass('disabled');
+            $('.nav-tabs a[href="#' + tab + '"]').tab('show');
+            $(tab_name).addClass('disabled');
+
+
+        },
+        error:function(res){
+            console.log(res);
+        },
+        beforeSend:function(){
+        },
+        complete:function(){
+
+        }
+    });
+};
+
+$('#btn-check-phone').on('click', function(){
+    let mobileNo = $('#contact').val();
+
+    $.ajax({
+        type: "POST",
+        dataType : 'json',
+        url: '<?=base_url()?>Shop/check_mobile_no',
+        data: {'contact' : mobileNo},
+        beforeSend: function() {
+        },
+        success: function(data) {
+            if(data.type === "success") {
+                if(data.status === "true")
+                {
+                    toastr.success("Congratulations, We have your details!",'Mobile Check', { "timeOut": 0 });
+                    //User Already exists
+
+                    //Create Order
+                    createOrder(mobileNo);
+                }
+                else{
+                    //New User
+                    toastr.warning("Unfortunately, We don't have your details, Please Enter your details!",'Mobile Check', { "timeOut": 0 });
+                    $('#user_contact').attr('value',mobileNo);
+
+                    $('.mobile-check').fadeOut(1000);
+                    $('.new-user').fadeIn(1000);
+                }
+            }
+            else {
+                toastr.error(data.message,'Mobile Check', { "timeOut": 0 }); 
+            }
+        },
+        error: function(xhr, status, error) {
+            toastr.error(error,'Mobile Check', { "timeOut": 0 });
+            console.log('An error occurred.' + error);
+        },
+        complete: function() {
+        }
+    });
+});
+
+$("#new-user-form").submit(function(e) {
+    e.preventDefault();
+    $.ajax({
+        type: "POST",
+        dataType : 'json',
+        url: $(this).attr("action"),
+        data: $(this).serialize(),
+        beforeSend: function() {
+        },
+        success: function(data) {
+            if(data.type === "success") {
+                toastr.success(data.message,'New User Creation', { "timeOut": 0 });
+                document.getElementById("new-user-form").reset(); 
+
+                //Create Order
+                createOrder($('#contact').val());
+            } else {
+                toastr.error(data.message,'New User Creation', { "timeOut": 0 });
+                
+            }
+        },
+        error: function(xhr, status, error) {
+            toastr.error(error,'New User Creation', { "timeOut": 0 });
+            console.log('An error occurred.' + error);
+        },
+        complete: function() {
+             
+        }
+    });
+});
+
+function createOrder(mobile_no, ip_address = $('#cart-link').data('ip_address')){
+    if(ip_address){
+        $.ajax({
+            type: "POST",
+            dataType : 'json',
+            url: '<?=base_url()?>Shop/create_new_order',
+            data: {'ip_address' : ip_address, 'phone' : mobile_no},
+            beforeSend: function() {
+            },
+            success: function(data) {
+                if(data.type === "success") {
+                    toastr.success(data.message,'Order Creation', { "timeOut": 0 });
+                    document.getElementById('form-mobile-no').reset();
+                    window.location.reload();
+                } else {
+                    toastr.error(data.message,'Order Creation', { "timeOut": 0 }); 
+                }
+            },
+            error: function(xhr, status, error) {
+                toastr.error(error,'Order Creation', { "timeOut": 0 });
+                console.log('An error occurred.' + error);
+            },
+            complete: function() {
+                
+            }
+        }); 
+    }
+
+}
+
+</script>
 

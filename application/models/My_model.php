@@ -45,6 +45,27 @@
 			 ->count_all_results($table); 
 		}
 
+		public function get_last_id($table,$primary_key)
+		{
+			$this->db->select("*");
+			$this->db->from($table);
+			$this->db->limit(1);
+			$this->db->order_by($primary_key,"DESC");
+			$query = $this->db->get();
+			$result_arr = $query->result_array();
+			$last_id = count($result_arr) > 0 ? $result_arr[0][$primary_key] : 0;
+	
+
+			return $last_id;
+		}
+
+		public function get_column_sum($table,$column,$where = array())
+		{
+			$this->db->where($where);
+			$this->db->select('SUM('.$column.') AS total', FALSE);
+			$query = $this->db->get($table);
+			return $query->result_array();
+		}
 		
   }
 

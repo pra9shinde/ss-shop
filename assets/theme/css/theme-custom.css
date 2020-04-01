@@ -554,3 +554,17 @@ form .form-control {
 html body a:hover {
   color: #a73737;
 }
+
+.btn-info {
+    border-color: #9f3434 !important;
+    background-color: #fff !important;
+    color: #9F3434;
+}
+
+.btn-info:hover {
+
+  border-color: #9f3434 !important;
+  background-color: #9f3434 !important;
+  color: #FFF !important;
+
+}

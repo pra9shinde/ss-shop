@@ -50,9 +50,20 @@ class Shop extends CI_Controller {
 
 	}
 
-	public function cart($ip)
+	public function cart($ip, $from = '')
 	{
+		
 		$data['cart_items'] = $this->shop_model->get_cart_items($ip);
+		
+
+		if($from == 'checkout_page')
+		{
+			echo json_encode(['cart_items' => $data['cart_items']]);
+			return;
+		}
+
+		$cart_total = $this->My_model->get_column_sum('sss_cart','item_price', array('ip_address' => $ip));
+		$data['cart_total'] = $cart_total[0]['total'];
 		
 		$this->load->view('templates/header');
 		$this->load->view('templates/menu');
@@ -121,6 +132,17 @@ class Shop extends CI_Controller {
 		echo json_encode($cart);
 	}
 
+	public function get_cart_total()
+	{
+		$cart_data = $this->My_model->get('sss_cart',array(
+			'ip_address' => strval($this->input->post('ip_address'))
+		));
+		$cart_total = $this->My_model->get_column_sum('sss_cart','item_price', array('ip_address' => $this->input->post('ip_address')));
+
+		$cart = ['cart_total' => strval($cart_total[0]['total']), 'cart_items' => count($cart_data), 'status' => 'success'];
+		echo json_encode($cart);
+	}
+
 	public function products_config()
 	{
 		if($this->session->has_userdata('user'))
@@ -135,6 +157,173 @@ class Shop extends CI_Controller {
 		{
 			$this->load->view('login');
 		}
+	}
+
+	public function check_mobile_no()
+	{
+		if($this->input->server('REQUEST_METHOD') != 'POST') {
+			return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Failed - Invalid Request!'
+			)));
+		}
+
+		$this->form_validation->set_rules('contact', 'Mobile No.', 'trim|numeric|required|min_length[10]|xss_clean');
+		if( !$this->form_validation->run() ) {
+			return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => validation_errors()
+			)));
+		}
+
+		$mobile_no_exists = $this->My_model->get('sss_buyer',array('phone' => intval($this->input->post('contact'))));
+
+		if(count($mobile_no_exists) > 0){
+			return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
+					'type' => 'success',
+					'status' => 'true'
+			)));
+		}
+		else{
+			return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
+					'type' => 'success',
+					'status' => 'false'
+			)));
+		}
+
+
+		return $this->output
+		->set_content_type('application/json')
+		->set_status_header(200)
+		->set_output(json_encode(array(
+				'type' => 'error',
+				'message' => 'Operation failed. please try again later'
+		)));
+
+	}
+
+	public function register_buyer()
+	{
+		if($this->input->server('REQUEST_METHOD') != 'POST') {
+			return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Failed - Invalid Request!'
+			)));
+		}
+
+		$this->form_validation->set_rules('user_name', 'Your Name', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('user_contact', 'Mobile No.', 'trim|required|numeric|min_length[10]|xss_clean');
+		$this->form_validation->set_rules('user_email', 'Email Address', 'trim|valid_email|xss_clean');
+		$this->form_validation->set_rules('user_address_1', 'Address Line 1', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('user_pincode', 'Pincode', 'trim|required|numeric|min_length[6]|xss_clean');
+
+
+
+		if( !$this->form_validation->run() ) {
+			return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => validation_errors()
+			)));
+		}
+
+		$create_buyer = $this->My_model->insert('sss_buyer', array(
+			'name' => $this->input->post('user_name'), 
+			'email' => $this->input->post('user_email'),
+			'phone' => $this->input->post('user_contact'),
+			'address' => $this->input->post('user_address_1') .' '. $this->input->post('user_address_2') ,
+			'pin' => $this->input->post('user_pincode')
+		));
+
+		if(!$create_buyer)
+		{
+			return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Database Operation Failed'
+			)));
+		}
+
+		return $this->output
+		->set_content_type('application/json')
+		->set_status_header(200)
+		->set_output(json_encode(array(
+				'type' => 'success',
+				'message' => 'Buyer registered successfully.'
+		)));
+
+
+	}
+
+	public function create_new_order()
+	{
+		if($this->input->post('ip_address') && $this->input->post('phone'))
+		{
+			//get last id from orders table
+			$last_id = $this->My_model->get_last_id('sss_orders','id');
+			$last_id += 1;
+
+			//get buyer id
+			$buyer_data = $this->My_model->get('sss_buyer', array('phone' => $this->input->post('phone')));
+			$buyer_id = $buyer_data[0]['id'];
+
+			//get cart items
+			$cart_items = $this->shop_model->get_cart_items( $this->input->post('ip_address') );
+
+			//insert into order_items
+			$cart_total = 0;
+			foreach($cart_items as $item)
+			{
+				$order_item_insert = $this->My_model->insert('sss_order_items', array(
+					'order_id' => $last_id,
+					'buyer_id' => $buyer_id,
+					'product_id' => $item['item_id'],
+					'quantity ' => $item['item_quantity'],
+					'order_price' => $item['cart_item_price']
+				));
+
+				$cart_total += doubleval($item['cart_item_price']);
+			}
+
+			//Create Order
+			$order = $this->My_model->insert('sss_orders', array(
+				'buyer_id' => $buyer_id,
+				'total_items' => count($cart_items),
+				'total_price' => $cart_total
+			));
+
+			//Delete items from cart
+			$clear_cart = $this->My_model->delete('sss_cart', array(
+				'ip_address' => $this->input->post('ip_address') 
+			));
+		}
+
+		return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
+					'type' => 'success',
+					'message' => 'Order Successfully Created'
+			)));
 	}
 
 	public function register()

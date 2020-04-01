@@ -139,6 +139,7 @@
               if(data.status == 'success'){
                 $('#cart-count').text(data.cart.toString());
                 window.location.reload();
+                updateCartTotal();
               }
               else{
                 alert('Something Went Wrong!');
@@ -160,39 +161,74 @@
       }
 
       function quantityUpdate(id,obj, ip_address = $('#cart-link').data('ip_address')){
-        console.log(obj.parentElement.parentElement.nextSibling.innerHTML);
-        // if(ip_address){
-        //   $.ajax({
-        //     method:'POST',
-        //     async:false,
-        //     url: $('#base_url').val() +'Shop/update_cart_quantity/'+ id,
-        //     data: {'ip_address': ip_address, 'new_quantity': obj.value},
-        //     dataType:'JSON',
-        //     context:this,
-        //     success:function(data){
-        //       if(data.status == 'success'){
-        //         alert(data.line_total);
-        //       }
-        //       else{
-        //         alert('Something Went Wrong!');
-        //       }
-        //     },
-        //     error:function(res){
-        //       console.log(res);
-        //     },
-        //     beforeSend:function(){
-        //     },
-        //     complete:function(){
+        let line_total = obj.parentElement.parentElement.parentElement.children[3].firstElementChild;
 
-        //     }
-        //   });
-        // }
-        // else{
-        //   alert('something went wrong');
-        // }
+        if(ip_address){
+          $.ajax({
+            method:'POST',
+            async:false,
+            url: $('#base_url').val() +'Shop/update_cart_quantity/'+ id,
+            data: {'ip_address': ip_address, 'new_quantity': obj.value},
+            dataType:'JSON',
+            context:this,
+            success:function(data){
+              if(data.status == 'success'){
+                line_total.innerText = '₹' + data.line_total;
+                updateCartTotal();
+              }
+              else{
+                alert('Something Went Wrong!');
+              }
+            },
+            error:function(res){
+              console.log(res);
+            },
+            beforeSend:function(){
+            },
+            complete:function(){
+
+            }
+          });
+        }
+        else{
+          alert('something went wrong');
+        }
       }
 
+      function updateCartTotal(ip_address = $('#cart-link').data('ip_address')){
+        if(ip_address){
+          $.ajax({
+            method:'POST',
+            async:false,
+            url: $('#base_url').val() +'Shop/get_cart_total',
+            data: {'ip_address': ip_address},
+            dataType:'JSON',
+            context:this,
+            success:function(data){
+              if(data.status == 'success'){
+                // line_total.innerText = '₹' + data.line_total;
+                $('#total_items').text(data.cart_items);
+                $('#total_amount').text('₹' + data.cart_total);
+                $('#payable_amount').text('₹' + data.cart_total);
+              }
+              else{
+                alert('Something Went Wrong!');
+              }
+            },
+            error:function(res){
+              console.log(res);
+            },
+            beforeSend:function(){
+            },
+            complete:function(){
 
+            }
+          });
+        }
+        else{
+          alert('something went wrong');
+        }
+      }
 
       Array.prototype.remove = function() {
           var what, a = arguments, L = a.length, ax;

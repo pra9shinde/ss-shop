@@ -75,7 +75,7 @@
 			$this->db->join('sss_seller as seller', 'product.seller_id  = seller.id ','inner');
 			
 			$query = $this->db->get();
-			return ($query->num_rows() > 0) ? $query->result_array() : false;
+			return ($query->num_rows() > 0) ? $query->result_array() : array();
 		}
 
 		public function get_all_product_data($items,$current_page)
