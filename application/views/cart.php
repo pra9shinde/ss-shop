@@ -188,7 +188,7 @@
                                                         </div>
                                                         <div class="col-md-6 mb-3">
                                                             <label for="lastName">Your Contact</label>
-                                                            <input type="text" class="form-control" id="user_contact" name="user_contact" placeholder="10 Digits Number" value="">
+                                                            <input type="text" class="form-control" id="user_contact" name="user_contact" placeholder="10 Digits Number" value="" maxlength="10">
                                                         </div>
                                                     </div>
 
@@ -215,7 +215,7 @@
                                                     <div class="row">
                                                         <div class="col-md-4 mb-3">
                                                             <label for="zip">Pincode*</label>
-                                                            <input type="text" class="form-control" id="user_pincode" name="user_pincode" placeholder="e.g. 421202">
+                                                            <input type="text" class="form-control" id="user_pincode" name="user_pincode" placeholder="e.g. 421202" maxlength="6">
                                                         </div>
 
                                                     </div>

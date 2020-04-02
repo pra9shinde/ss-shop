@@ -14,9 +14,10 @@
  
  
 	private function _get_datatables_query()
-    {
+    {   
+        
         if($this->session->has_userdata('user')){
-            $this->db->where('product.seller-id ', $this->session->has_userdata('user'));
+            $this->db->where('product.seller_id ', $this->session->userdata('user'));
             $this->db->where('product.is_delete', 0);
         }
         

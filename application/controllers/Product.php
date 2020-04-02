@@ -161,7 +161,7 @@ class Product extends CI_Controller {
 		}
 
 		$insert_data = array(
-			'seller_id' => $this->session->has_userdata('user'),
+			'seller_id' => $this->session->userdata('user'),
 			'category_id' => $this->input->post('prod_category'),
 			'name' => $this->input->post('prod_name'),
 			'description' => $this->input->post('prod_desc'),
@@ -195,10 +195,12 @@ class Product extends CI_Controller {
 
 	public function product_ajax_list()
 	{
-			$user_id = $this->session->has_userdata('user');
+
+
+			$user_id = $this->session->userdata('user');
 			$list = $this->product_dt_model->get_datatables();
 
-			$data = array();
+			$data = array(); 
 			$no = $_POST['start'];
 			foreach ($list as $fetched_data) {
 					$no++;

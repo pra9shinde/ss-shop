@@ -107,7 +107,7 @@ $("document").ready(function() {
         if(data.type === "success") {
           toastr.success(data.message,'Product Addition', { "timeOut": 0 });
           document.getElementById("add-product-form").reset(); 
-          $('#add-product-form')[0].reset();
+					$('#tb-products').DataTable().draw();
           $('.custom-file input').next('.custom-file-label').html('Product Image');
           $( "#prod_category" ).val('').trigger('change');
         } else {

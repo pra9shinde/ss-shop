@@ -439,7 +439,7 @@ form .form-control::placeholder {
   border-top: 3px solid #9f3434;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  color: #555;
+  color: #fff;
 }
 
 
@@ -519,13 +519,11 @@ form .form-control {
   font-size: 30px;
 }
 
-.pagination-container{
-  margin: 2rem 0;
+#outer {
   position: relative;
-  height: 50px;
 }
 
-.pagination{
+#inner {
   margin: auto;  
   position: absolute;
   left:0;

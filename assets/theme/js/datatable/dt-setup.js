@@ -1,14 +1,13 @@
 //$.noConflict();
 $(document).ready(function() {
     //datatables
-    
-  
+   
     //Products
     var soc_floors_dt = $('#tb-products').DataTable({ 
         
         dom: 'Blfrtip',
         buttons: [
-            {
+            { 
                 extend: 'collection',
                 text: 'Export',
                 buttons: [
@@ -23,25 +22,25 @@ $(document).ready(function() {
                 extend: 'colvis',
                 columns: ':not(.noVis)'
             },
-            {
-                text: '<i class="la la-trash"></i>',
-                className: '',
-                action: function ( e, dt, node, config ) {
+            // {
+            //     text: '<i class="la la-trash"></i>',
+            //     className: '',
+            //     action: function ( e, dt, node, config ) {
                     
-                    var selected_checkboxes = $('#tb-products td .skin.skin-flat .icheckbox_flat-red.checked');
+            //         var selected_checkboxes = $('#tb-products td .skin.skin-flat .icheckbox_flat-red.checked');
                     
-                    if(selected_checkboxes.length >= 1){
-                        var array_id = [];
-                        for(var i = 0; i < selected_checkboxes.length; i++){
-                            //get data id for deletion
-                            array_id.push(selected_checkboxes[i].children[0].getAttribute('data-internalid'));
-                        }
-                        //console.log(selected_checkboxes.children(0).data("internalid"));
-                        deleteSocFloor(array_id);
+            //         if(selected_checkboxes.length >= 1){
+            //             var array_id = [];
+            //             for(var i = 0; i < selected_checkboxes.length; i++){
+            //                 //get data id for deletion
+            //                 array_id.push(selected_checkboxes[i].children[0].getAttribute('data-internalid'));
+            //             }
+            //             //console.log(selected_checkboxes.children(0).data("internalid"));
+            //             deleteSocFloor(array_id);
                         
-                    }
-                }
-            }
+            //         }
+            //     }
+            // }
         ],
         fixedHeader: {
             header: true,

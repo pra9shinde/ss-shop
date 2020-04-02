@@ -89,10 +89,10 @@
                 <?php //print_r($pagination);?>
               </div>
 
-              <div class="pagination-container ">
-                <div class="pagination">
-                  <div class="row">
-                    <nav aria-label="Page navigation">
+              <div class="pagination-container" >
+                <div class="pagination-main-page" >
+                  <div class="row" id="outer">
+                    <nav aria-label="Page navigation" id="inner">
                       <ul class="pagination justify-content-center pagination-separate pagination-flat">
 
                           <li class="page-item">

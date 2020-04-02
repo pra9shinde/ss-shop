@@ -33,6 +33,8 @@ class Shop extends CI_Controller {
 		$total_records = $this->My_model->get_total_count('sss_products',array('is_delete' => 0));
 		$data['products'] = $this->shop_model->get_all_product_data($items_per_page,$page);
 
+		
+
 		$data['pagination'] = array(
 			'current_page' => $page,
 			'has_next_page' => $items_per_page * $page < $total_records ? true : false,
@@ -148,8 +150,15 @@ class Shop extends CI_Controller {
 	{
 		if($this->session->has_userdata('user'))
 		{
+			$seller_details = $this->My_model->get('sss_seller', array(
+				'id' => $this->session->userdata('user')
+			)); 
+
+
+			$data['seller_name'] = $seller_details[0]['shop_name'];
 			$data['categories'] = $this->My_model->get('sss_category');
-			$this->load->view('templates/header');
+
+			$this->load->view('templates/header',$data);
 			$this->load->view('templates/menu');
 			$this->load->view('products_config',$data);
 			$this->load->view('templates/footer');
@@ -281,10 +290,11 @@ class Shop extends CI_Controller {
 	{
 		if($this->input->post('ip_address') && $this->input->post('phone'))
 		{
-			
 
 			//get buyer id
 			$buyer_data = $this->My_model->get('sss_buyer', array('phone' => $this->input->post('phone')));
+
+
 			$buyer_id = $buyer_data[0]['id'];
 
 			//create a new order and fetch its id

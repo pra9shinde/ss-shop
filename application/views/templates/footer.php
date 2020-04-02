@@ -96,13 +96,14 @@
             success:function(data){
               if(data.status == 'success'){
                 $('#cart-count').text(data.cart.toString());
+                toastr.success('Product Added to Cart Successfully','Cart Addition', { "timeOut": 0 });
               }
               else{
                 alert('Something Went Wrong!');
               }
             },
             error:function(res){
-              console.log(res);
+              toastr.error('Error','Cart Addition', { "timeOut": 0 }); 
             },
             beforeSend:function(){
             },
@@ -138,6 +139,8 @@
             success:function(data){
               if(data.status == 'success'){
                 $('#cart-count').text(data.cart.toString());
+                toastr.success('Product Removed from Cart Successfully','Cart Deletion', { "timeOut": 0 });
+
                 window.location.reload();
                 updateCartTotal();
               }
