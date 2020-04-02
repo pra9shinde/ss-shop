@@ -64,6 +64,7 @@ class Shop extends CI_Controller {
 
 		$cart_total = $this->My_model->get_column_sum('sss_cart','item_price', array('ip_address' => $ip));
 		$data['cart_total'] = $cart_total[0]['total'];
+
 		
 		$this->load->view('templates/header');
 		$this->load->view('templates/menu');
@@ -159,7 +160,7 @@ class Shop extends CI_Controller {
 		}
 	}
 
-	public function check_mobile_no()
+	public function check_mobile_no($from = '')
 	{
 		if($this->input->server('REQUEST_METHOD') != 'POST') {
 			return $this->output
@@ -171,7 +172,9 @@ class Shop extends CI_Controller {
 			)));
 		}
 
-		$this->form_validation->set_rules('contact', 'Mobile No.', 'trim|numeric|required|min_length[10]|xss_clean');
+		$field_name = $from === 'orders_page' ? 'contact_my_orders' : 'contact';
+
+		$this->form_validation->set_rules($field_name, 'Mobile No.', 'trim|numeric|required|min_length[10]|xss_clean');
 		if( !$this->form_validation->run() ) {
 			return $this->output
 			->set_content_type('application/json')
@@ -182,7 +185,7 @@ class Shop extends CI_Controller {
 			)));
 		}
 
-		$mobile_no_exists = $this->My_model->get('sss_buyer',array('phone' => intval($this->input->post('contact'))));
+		$mobile_no_exists = $this->My_model->get('sss_buyer',array('phone' => intval($this->input->post($field_name))));
 
 		if(count($mobile_no_exists) > 0){
 			return $this->output
@@ -288,7 +291,7 @@ class Shop extends CI_Controller {
 
 			//get cart items
 			$cart_items = $this->shop_model->get_cart_items( $this->input->post('ip_address') );
-
+			
 			//insert into order_items
 			$cart_total = 0;
 			foreach($cart_items as $item)
@@ -302,6 +305,15 @@ class Shop extends CI_Controller {
 				));
 
 				$cart_total += doubleval($item['cart_item_price']);
+
+
+				//Deduct Product Quantity 
+				$rem_qty = $item['rem_quantity'] > 0 ? $item['rem_quantity'] - doubleval($item['item_quantity']) : 0;
+				$update_quantity = $this->My_model->update('sss_products', array(
+					'id' => $item['item_id']
+				), array(
+					'rem_quantity' => $rem_qty
+				));
 			}
 
 			//Create Order
@@ -315,6 +327,8 @@ class Shop extends CI_Controller {
 			$clear_cart = $this->My_model->delete('sss_cart', array(
 				'ip_address' => $this->input->post('ip_address') 
 			));
+
+			
 		}
 
 		return $this->output
@@ -324,6 +338,16 @@ class Shop extends CI_Controller {
 					'type' => 'success',
 					'message' => 'Order Successfully Created'
 			)));
+	}
+
+	public function get_orders_view($mobile_no)
+	{
+		$user_data = $this->My_model->get('sss_buyer', array('phone' => intval($mobile_no)) );
+		$user_id = $user_data[0]['id'];
+
+		$data['user_orders'] = $this->shop_model->get_user_orders($user_id);
+
+		$this->load->view('orders_view',$data);
 	}
 
 	public function register()

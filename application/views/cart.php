@@ -116,8 +116,9 @@
                                             <div class="price-detail">Payable Amount <span class="float-right" id="payable_amount">₹<?=$cart_total?></span></div>
                                             <!-- <div class="total-savings">Your Total Savings on this order $550</div> -->
                                             <div class="text-right">
-                                                    <a href="ecommerce-checkout.html" class="btn btn-info mr-2">Continue Shopping</a>
-                                                    <a class="btn btn-secondary" onclick="activeTab('checkout-tab')">Place Order</a>
+                                                    <a href="<?=base_url()?>" class="btn btn-info mr-2">Continue Shopping</a>
+                                                    <a class="btn btn-secondary <?php if(empty($cart_items)): ?> disabled <?php endif; ?>
+                                                            " onclick="activeTab('checkout-tab')">Place Order</a>
                                                 </div>
                                         </div>
                                     </div>
@@ -233,30 +234,28 @@
                     <div class="tab-pane" id="comp-order-tab" aria-labelledby="complete-order">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title text-center">Thank you. Your order has been processed.</h4>
+                                <h4 class="card-title text-center">Thank you for ordering with us. Pay the seller only when he delivers tour order. Cash and UPI Payments will be accepted by the sellers.</h4>
                             </div>
                         </div>
                         <div class="card">
                             <div class="card-content">
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-around lh-condensed">
-                                        <div class="order-details text-center">
-                                            <div class="order-title">Order Number</div>
-                                            <div class="order-info">#CV45632</div>
-                                        </div>
-                                        <div class="order-details text-center">
-                                            <div class="order-title">Date</div>
-                                            <div class="order-info">10<sup>th</sup> Oct, 2018</div>
-                                        </div>
-                                        <div class="order-details text-center">
-                                            <div class="order-title">Amount Paid</div>
-                                            <div class="order-info">$2550</div>
-                                        </div>
-                                        <div class="order-details text-center">
-                                            <div class="order-title">Payment Method</div>
-                                            <div class="order-info">Credit Card</div>
+                                    <p>No need to signup, Enter your Mobile No. to view your orders</p>
+                                    
+                                    <div class="mobile-check">
+                                        <div class="row">
+                                            <form id="form-mobile-no-orders"></form>
+                                                <div class="col-md-4">
+                                                    <input type="text" class="form-control" id="contact_my_orders" name="contact_my_orders" placeholder="Mobile Number*" value="" maxlength="10">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <a class="btn btn-secondary" id="btn-check-phone-orders">Check Details</a>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
+                                        
+                                    
                                 </div>
                             </div>
                         </div>
@@ -265,177 +264,7 @@
                                 <h4 class="mb-0"><strong>My Orders</strong></h4>
                             </div>
                         </div>
-                        <div class="card pull-up">
-                            <div class="card-header">
-                                <div class="float-left">
-                                    <a href="#" class="btn btn-info">#CV45632</a>
-                                </div>
-                                <div class="float-right">
-                                    <a href="#" class="btn btn-outline-info mr-1"><i class="la la-question"></i> Need Help</a>
-                                    <a href="#" class="btn btn-outline-info"><i class="la la-map-marker"></i> Track</a>
-                                </div>
-                            </div>
-                            <div class="card-content">
-                                <div class="card-body py-0">
-                                    <div class="d-flex justify-content-between lh-condensed">
-                                        <div class="order-details text-center">
-                                            <div class="product-img d-flex align-items-center">
-                                                <img class="img-fluid" src="../../../app-assets/images/elements/fitbit-watch.png" alt="Card image cap">
-                                            </div>
-                                        </div>
-                                        <div class="order-details">
-                                            <h6 class="my-0">Fitbit Alta HR Special Edition x 1</h6>
-                                            <small class="text-muted">Brief description</small>
-                                        </div>
-                                        <div class="order-details">
-                                            <div class="order-info">$250</div>
-                                        </div>
-                                        <div class="order-details">
-                                            <h6 class="my-0">Delivered on Sun, Oct 15th 2018</h6>
-                                            <small class="text-muted">Brief description</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer border-top-blue-grey border-top-lighten-5 text-muted">
-                                <span class="float-left">
-                                    <span class="text-muted">Ordered On</span>
-                                    <strong>Wed, Oct 3rd 2018</strong>
-                                </span>
-                                <span class="float-right">
-                                    <span class="text-muted">Ordered Amount</span>
-                                    <strong>$250</strong>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="card pull-up">
-                            <div class="card-header">
-                                <div class="float-left">
-                                    <a href="#" class="btn btn-info">#CV65472</a>
-                                </div>
-                                <div class="float-right">
-                                    <a href="#" class="btn btn-outline-info mr-1"><i class="la la-question"></i> Need Help</a>
-                                    <a href="#" class="btn btn-outline-info"><i class="la la-map-marker"></i> Track</a>
-                                </div>
-                            </div>
-                            <div class="card-content">
-                                <div class="card-body py-0">
-                                    <div class="d-flex justify-content-between lh-condensed">
-                                        <div class="order-details text-center">
-                                            <div class="product-img d-flex align-items-center">
-                                                <img class="img-fluid" src="../../../app-assets/images/elements/13.png" alt="Card image cap">
-                                            </div>
-                                        </div>
-                                        <div class="order-details">
-                                            <h6 class="my-0">Mackbook pro 19'' x 1</h6>
-                                            <small class="text-muted">Brief description</small>
-                                        </div>
-                                        <div class="order-details">
-                                            <div class="order-info">$1150</div>
-                                        </div>
-                                        <div class="order-details">
-                                            <h6 class="my-0">Delivered on Mon, Oct 16th 2018</h6>
-                                            <small class="text-muted">Brief description</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer border-top-blue-grey border-top-lighten-5 text-muted">
-                                <span class="float-left">
-                                    <span class="text-muted">Ordered On</span>
-                                    <strong>Wed, Oct 3rd 2018</strong>
-                                </span>
-                                <span class="float-right">
-                                    <span class="text-muted">Ordered Amount</span>
-                                    <strong>$1150</strong>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="card pull-up">
-                            <div class="card-header">
-                                <div class="float-left">
-                                    <a href="#" class="btn btn-info">#CV78645</a>
-                                </div>
-                                <div class="float-right">
-                                    <a href="#" class="btn btn-outline-info mr-1"><i class="la la-question"></i> Need Help</a>
-                                    <a href="#" class="btn btn-outline-info"><i class="la la-map-marker"></i> Track</a>
-                                </div>
-                            </div>
-                            <div class="card-content">
-                                <div class="card-body py-0">
-                                    <div class="d-flex justify-content-between lh-condensed">
-                                        <div class="order-details text-center">
-                                            <div class="product-img d-flex align-items-center">
-                                                <img class="img-fluid" src="../../../app-assets/images/elements/vr.png" alt="Card image cap">
-                                            </div>
-                                        </div>
-                                        <div class="order-details">
-                                            <h6 class="my-0">VR Headset x 2</h6>
-                                            <small class="text-muted">Brief description</small>
-                                        </div>
-                                        <div class="order-details">
-                                            <div class="order-info">$700</div>
-                                        </div>
-                                        <div class="order-details">
-                                            <h6 class="my-0">Delivered on Tue, Oct 17th 2018</h6>
-                                            <small class="text-muted">Brief description</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer border-top-blue-grey border-top-lighten-5 text-muted">
-                                <span class="float-left">
-                                    <span class="text-muted">Ordered On</span>
-                                    <strong>Wed, Oct 3rd 2018</strong>
-                                </span>
-                                <span class="float-right">
-                                    <span class="text-muted">Ordered Amount</span>
-                                    <strong>$700</strong>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="card pull-up">
-                            <div class="card-header">
-                                <div class="float-left">
-                                    <a href="#" class="btn btn-info">#CV84123</a>
-                                </div>
-                                <div class="float-right">
-                                    <a href="#" class="btn btn-outline-info mr-1"><i class="la la-question"></i> Need Help</a>
-                                    <a href="#" class="btn btn-outline-info"><i class="la la-map-marker"></i> Track</a>
-                                </div>
-                            </div>
-                            <div class="card-content">
-                                <div class="card-body py-0">
-                                    <div class="d-flex justify-content-between lh-condensed">
-                                        <div class="order-details text-center">
-                                            <div class="product-img d-flex align-items-center">
-                                                <img class="img-fluid" src="../../../app-assets/images/carousel/25.jpg" alt="Card image cap">
-                                            </div>
-                                        </div>
-                                        <div class="order-details">
-                                            <h6 class="my-0">Smart Watch with LED x 1</h6>
-                                            <small class="text-muted">Brief description</small>
-                                        </div>
-                                        <div class="order-details">
-                                            <div class="order-info">$700</div>
-                                        </div>
-                                        <div class="order-details">
-                                            <h6 class="my-0">Delivered on Wed, Oct 18th 2018</h6>
-                                            <small class="text-muted">Brief description</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer border-top-blue-grey border-top-lighten-5 text-muted">
-                                <span class="float-left">
-                                    <span class="text-muted">Ordered On</span>
-                                    <strong>Wed, Oct 3rd 2018</strong>
-                                </span>
-                                <span class="float-right">
-                                    <span class="text-muted">Ordered Amount</span>
-                                    <strong>$700</strong>
-                                </span>
-                            </div>
+                        <div id="all-orders">
                         </div>
                     </div>
                 </div>
@@ -447,6 +276,8 @@
 
 
 <script>
+
+//open checkout tab and populate checkout data
 function activeTab(tab){
     ip_address = $('#cart-link').data('ip_address');
     $.ajax({
@@ -506,6 +337,7 @@ function activeTab(tab){
     });
 };
 
+//check phone no. checkout page
 $('#btn-check-phone').on('click', function(){
     let mobileNo = $('#contact').val();
 
@@ -548,6 +380,7 @@ $('#btn-check-phone').on('click', function(){
     });
 });
 
+//Create new user
 $("#new-user-form").submit(function(e) {
     e.preventDefault();
     $.ajax({
@@ -579,6 +412,7 @@ $("#new-user-form").submit(function(e) {
     });
 });
 
+//create new order
 function createOrder(mobile_no, ip_address = $('#cart-link').data('ip_address')){
     if(ip_address){
         $.ajax({
@@ -607,6 +441,67 @@ function createOrder(mobile_no, ip_address = $('#cart-link').data('ip_address'))
         }); 
     }
 
+}
+
+//check phone no. my orders page
+$('#btn-check-phone-orders').on('click', function(){
+    let mobileNo = $('#contact_my_orders').val();
+
+    //check user exists
+    $.ajax({
+        type: "POST",
+        dataType: 'JSON',
+        url: '<?=base_url()?>Shop/check_mobile_no/orders_page',
+        data: {'contact_my_orders' : mobileNo},
+        beforeSend: function() {
+        },
+        success: function(data) {
+            if(data.status === 'true'){
+                toastr.success('You are a registered user, following are your orders','Get Orders', { "timeOut": 0 });
+
+               getUserOrders(mobileNo);
+                
+            }
+            else{
+                toastr.warning('You are not a registered user, Please explore our shop','Get Orders', { "timeOut": 0 });
+
+                setTimeout(function(){ 
+                    window.location = "<?=base_url()?>";
+                }, 3000);
+
+                
+            }
+        },
+        error: function(xhr, status, error) {
+            toastr.error(error,'Loading Orders', { "timeOut": 0 });
+            console.log('An error occurred.' + error);
+        },
+        complete: function() {
+        }
+    });
+
+});
+
+//get user orders
+function getUserOrders(mobileNo){
+    $.ajax({
+        type: "POST",
+        dataType: 'html',
+        url: '<?=base_url()?>Shop/get_orders_view/' + mobileNo,
+        data: {},
+        beforeSend: function() {
+        },
+        success: function(data) {
+            console.log(data);
+            $('#all-orders').append(data);
+        },
+        error: function(xhr, status, error) {
+            toastr.error(error,'Loading Orders', { "timeOut": 0 });
+            console.log('An error occurred.' + error);
+        },
+        complete: function() {
+        }
+    });
 }
 
 </script>

@@ -64,11 +64,9 @@
 
 		public function get_cart_items($ip)
 		{
-
-
 			$table = 'sss_cart as cart';
 			$this->db->where('cart.ip_address', $ip);
-			$this->db->select('cart.id as cart_id, cart.ip_address, cart.item_id, cart.item_quantity, cart.delivery_charges, cart.item_price as cart_item_price, product.id, product.seller_id , product.name as product_name, product.description, product.image_url, product.price, product.pieces,category.id as category_id, category.name as category_name, category.description as category_description, seller.shop_name, seller.phone', false);
+			$this->db->select('cart.id as cart_id, cart.ip_address, cart.item_id, cart.item_quantity, cart.delivery_charges, cart.item_price as cart_item_price, product.id, product.seller_id , product.name as product_name, product.description, product.image_url, product.price, product.pieces, product.rem_quantity,category.id as category_id, category.name as category_name, category.description as category_description, seller.shop_name, seller.phone', false);
 			$this->db->from($table);
 			$this->db->join('sss_products as product', 'cart.item_id = product.id ','inner');
 			$this->db->join('sss_category as category', 'cart.item_id = category.id ','left');
@@ -77,6 +75,44 @@
 			$query = $this->db->get();
 			return ($query->num_rows() > 0) ? $query->result_array() : array();
 		}
+
+		public function get_user_orders($user_id)
+		{
+			$data_array = array();
+			$orders = $this->My_model->get('sss_orders', array('buyer_id' => $user_id));
+
+
+			if(count($orders) > 0){
+				$data_array['orders'] = $orders;
+				// print_r($data_array['orders']);exit;
+
+				for($i = 0; $i < count($data_array['orders']); $i++)
+				{
+					// $current_order = $data_array['orders'][$i];
+
+					$order_items = $this->get_order_items($data_array['orders'][$i]['id']);//order items
+					$data_array['orders'][$i]['order_items'] = $order_items;//push order items in current order array index
+				}
+
+			}
+			
+			return $data_array;
+		}
+
+		public function get_order_items($order_id)
+		{
+
+			$table = 'sss_order_items as order';
+			$this->db->where('order.order_id', $order_id);
+			$this->db->select('order.id as order_items_id, order.product_id, order.quantity, order.order_price as line_item_price, product.seller_id, product.name, product.price, product.pieces, product.seller_id, product.name, product.price, product.pieces', false);
+			$this->db->from($table);
+			$this->db->join('sss_products as product', 'order.product_id = product.id ','inner');
+
+			$query = $this->db->get();
+			return ($query->num_rows() > 0) ? $query->result_array() : array();
+		}
+
+
 
 		public function get_all_product_data($items,$current_page)
 		{
