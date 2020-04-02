@@ -237,11 +237,10 @@
                                 <h4 class="card-title text-center">Thank you for ordering with us. Pay the seller only when he delivers tour order. Cash and UPI Payments will be accepted by the sellers.</h4>
                             </div>
                         </div>
-                        <div class="card">
+                        <div class="card" id="my_orders_mobile_check">
                             <div class="card-content">
                                 <div class="card-body">
                                     <p>No need to signup, Enter your Mobile No. to view your orders</p>
-                                    
                                     <div class="mobile-check">
                                         <div class="row">
                                             <form id="form-mobile-no-orders"></form>
@@ -254,8 +253,6 @@
                                             </form>
                                         </div>
                                     </div>
-                                        
-                                    
                                 </div>
                             </div>
                         </div>
@@ -276,6 +273,15 @@
 
 
 <script>
+
+$(document).ready(function(){
+    // if(window.location.hash === "#MyOrder"){
+    //     history.replaceState(null, null, ' ');//Remove the added has from the url
+    //     //Change the tab to My Orders and Load My Order Page data
+    //     $('.nav-tabs a[href="#comp-order-tab"]').tab('show');
+    //     $('#my_orders_mobile_check').css('display', 'none');
+    // }
+});
 
 //open checkout tab and populate checkout data
 function activeTab(tab){
@@ -412,37 +418,6 @@ $("#new-user-form").submit(function(e) {
     });
 });
 
-//create new order
-function createOrder(mobile_no, ip_address = $('#cart-link').data('ip_address')){
-    if(ip_address){
-        $.ajax({
-            type: "POST",
-            dataType : 'json',
-            url: '<?=base_url()?>Shop/create_new_order',
-            data: {'ip_address' : ip_address, 'phone' : mobile_no},
-            beforeSend: function() {
-            },
-            success: function(data) {
-                if(data.type === "success") {
-                    toastr.success(data.message,'Order Creation', { "timeOut": 0 });
-                    document.getElementById('form-mobile-no').reset();
-                    window.location.reload();
-                } else {
-                    toastr.error(data.message,'Order Creation', { "timeOut": 0 }); 
-                }
-            },
-            error: function(xhr, status, error) {
-                toastr.error(error,'Order Creation', { "timeOut": 0 });
-                console.log('An error occurred.' + error);
-            },
-            complete: function() {
-                
-            }
-        }); 
-    }
-
-}
-
 //check phone no. my orders page
 $('#btn-check-phone-orders').on('click', function(){
     let mobileNo = $('#contact_my_orders').val();
@@ -460,6 +435,7 @@ $('#btn-check-phone-orders').on('click', function(){
                 toastr.success('You are a registered user, following are your orders','Get Orders', { "timeOut": 0 });
 
                getUserOrders(mobileNo);
+               $('#btn-check-phone-orders').addClass('disabled');
                 
             }
             else{
@@ -481,6 +457,55 @@ $('#btn-check-phone-orders').on('click', function(){
     });
 
 });
+
+//Remove diabled class of get orders button - My orders page
+$('#contact_my_orders').on('change', function(){
+    if($('#btn-check-phone-orders').hasClass('disabled')){
+        $('#btn-check-phone-orders').removeClass('disabled');
+    }
+});
+
+//create new order
+function createOrder(mobile_no, ip_address = $('#cart-link').data('ip_address')){
+    if(ip_address){
+        $.ajax({
+            type: "POST",
+            dataType : 'json',
+            url: '<?=base_url()?>Shop/create_new_order',
+            data: {'ip_address' : ip_address, 'phone' : mobile_no},
+            beforeSend: function() {
+            },
+            success: function(data) {
+                if(data.type === "success") {
+                    toastr.success(data.message,'Order Creation', { "timeOut": 0 });
+                    document.getElementById('form-mobile-no').reset();
+
+                    $('#cart-count').text('0');
+                   
+                    my_orders_success(mobile_no);//load my orders without entering mobile no
+                } else {
+                    toastr.error(data.message,'Order Creation', { "timeOut": 0 }); 
+                }
+            },
+            error: function(xhr, status, error) {
+                toastr.error(error,'Order Creation', { "timeOut": 0 });
+                console.log('An error occurred.' + error);
+            },
+            complete: function() {
+                
+            }
+        }); 
+    }
+
+}
+
+//function order success redirection
+function my_orders_success(mobileNo){
+    $('.nav-tabs a[href="#comp-order-tab"]').tab('show');
+    $('#my_orders_mobile_check').css('display', 'none');
+    getUserOrders(mobileNo);
+}
+
 
 //get user orders
 function getUserOrders(mobileNo){

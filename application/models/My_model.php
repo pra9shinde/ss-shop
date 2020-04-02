@@ -7,10 +7,14 @@
 			$this->load->database();
 		}
 		
-		public function get($table,$conditions = array())
+		public function get($table,$conditions = array(), $order_by = array())
 		{
 			if(!empty($conditions)){
 				$this->db->where($conditions);
+			}
+			if(!empty($order_by))
+			{
+				$this->db->order_by($order_by[0], $order_by[1]);
 			}
 			$result = $this->db->get($table);
       return $result->result_array();
@@ -19,7 +23,7 @@
 		public function insert($table,$values)
 		{
 			$this->db->insert($table, $values);
-			return ($this->db->affected_rows() > 0) ? true : false;
+			return ($this->db->affected_rows() > 0) ? $this->db->insert_id() : false;
 		}
 
 		public function update($table,$where_array,$update_array)

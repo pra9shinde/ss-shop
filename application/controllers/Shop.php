@@ -281,13 +281,18 @@ class Shop extends CI_Controller {
 	{
 		if($this->input->post('ip_address') && $this->input->post('phone'))
 		{
-			//get last id from orders table
-			$last_id = $this->My_model->get_last_id('sss_orders','id');
-			$last_id += 1;
+			
 
 			//get buyer id
 			$buyer_data = $this->My_model->get('sss_buyer', array('phone' => $this->input->post('phone')));
 			$buyer_id = $buyer_data[0]['id'];
+
+			//create a new order and fetch its id
+			$last_id = $this->My_model->insert('sss_orders', array(
+				'buyer_id' => $buyer_id,
+				'total_items' => 0,
+				'total_price' => 0
+			));
 
 			//get cart items
 			$cart_items = $this->shop_model->get_cart_items( $this->input->post('ip_address') );
@@ -316,13 +321,14 @@ class Shop extends CI_Controller {
 				));
 			}
 
-			//Create Order
-			$order = $this->My_model->insert('sss_orders', array(
-				'buyer_id' => $buyer_id,
+			//Update Order totals
+			$order = $this->My_model->update('sss_orders', array(
+				'id' => $last_id
+			), array(
 				'total_items' => count($cart_items),
 				'total_price' => $cart_total
 			));
-
+		
 			//Delete items from cart
 			$clear_cart = $this->My_model->delete('sss_cart', array(
 				'ip_address' => $this->input->post('ip_address') 

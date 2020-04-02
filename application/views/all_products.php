@@ -61,8 +61,20 @@
                                         <p style="font-size:2rem;">₹ <?=$product['price']?></p>
                                     </div>
                                     <p class="mt-1">Remaining Stock :
-                                    <span class="badge badge badge-danger badge-glow badge-pill"><?=$product['rem_quantity']?></span>
-                                    <span class="float-right" style="color:#a73737;"><a onclick="addToCart(<?=$product['id']?>)">Add To Cart <i class="la la-cart-plus" ></i></a></span>
+                                      <?php if($product['rem_quantity'] <= 10 ): ?>
+                                        <span class="badge badge badge-danger badge-glow badge-pill"><?=$product['rem_quantity']?></span>
+                                        <span class="float-right" style="color:#a73737;">
+                                      <?php else: ?>
+                                        <span class="badge badge badge-success badge-glow badge-pill"><?=$product['rem_quantity']?></span>
+                                        <span class="float-right" style="color:#a73737;">
+                                      <?php endif;?>
+
+                                    <?php if(!$product['rem_quantity'] == 0): ?>
+                                      <a onclick="addToCart(<?=$product['id']?>)">Add To Cart <i class="la la-cart-plus" ></i>
+                                    <?php else: ?>
+                                      <a class="disabled">Add To Cart <i class="la la-cart-plus" ></i>
+                                    <?php endif;?>
+                                    </a></span>
                                     </p>
                                    
                                 </div>

@@ -79,7 +79,10 @@
 		public function get_user_orders($user_id)
 		{
 			$data_array = array();
-			$orders = $this->My_model->get('sss_orders', array('buyer_id' => $user_id));
+			$orders = $this->My_model->get('sss_orders', 
+				array('buyer_id' => $user_id),
+				array('id','desc')
+			);
 
 
 			if(count($orders) > 0){
