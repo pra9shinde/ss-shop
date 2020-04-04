@@ -28,6 +28,8 @@
     <link rel="stylesheet" type="text/css" href="<?=base_url()?>assets/theme/css/bootstrap-extended.css">
     <link rel="stylesheet" type="text/css" href="<?=base_url()?>assets/theme/css/colors.css">
     <link rel="stylesheet" type="text/css" href="<?=base_url()?>assets/theme/css/components.css">
+    <link rel="stylesheet" type="text/css" href="<?= base_url();?>assets/theme/css/loaders/loaders.min.css">
+    <link rel="stylesheet" type="text/css" href="<?= base_url();?>assets/theme/css/palette-loader.css">
     <!-- END: Theme CSS-->
 
     <!-- BEGIN: Page CSS-->
@@ -39,6 +41,8 @@
     <link rel="stylesheet" type="text/css" href="<?=base_url()?>assets/theme/css/toastr.css">
     <link rel="stylesheet" type="text/css" href="<?=base_url()?>assets/theme/css/ecommerce-cart.css">
     <link rel="stylesheet" type="text/css" href="<?=base_url()?>assets/theme/css/checkboxes-radios.css">
+    <link rel="stylesheet" type="text/css" href="<?=base_url()?>assets/theme/css/invoice.css">
+
 
 
     <!-- END: Page CSS-->
@@ -49,6 +53,57 @@
 
 
     <script src="<?=base_url()?>assets/theme/js/vendors/vendors.min.js"></script>
+    <script src="<?=base_url()?>assets/theme/js/vendors/jquery.cookie.js"></script>
+    <script>
+        //get client ip address and his cart
+        var client_ip;
+        $.getJSON("https://api.ipify.org?format=json",function(data) { 
+            client_ip = data.ip.toString();
+            $('#cart-link').attr('data-ip_address', client_ip); 
+            $('#cart-link').attr('href', '<?=base_url()?>Shop/cart/'+ client_ip); 
+            //Create a cookie
+            if (!!$.cookie('client_ip')) {
+                // have cookie
+                console.log('cookie not present' + $.cookie('client_ip'));
+            } 
+            else {
+                // no cookie
+                $.cookie('client_ip', data.ip, {
+                    expires: 1
+                });
+                console.log('cookie not present');
+            }
+            
+            $.ajax({
+            method:'POST',
+            async:false,
+            url: $('#base_url').val() +'Shop/get_cart/'+ data.ip,
+            data: {},
+            dataType:'JSON',
+            context:this,
+            success:function(data){
+                if(data.status == 'success'){
+                    $('#cart-count').text(data.cart.toString());
+                
+                }
+                else{
+                    alert('Something Went Wrong!');
+                }
+            },
+            error:function(res){
+                console.log(res);
+            },
+            beforeSend:function(){
+                $("#ajax-loader").fadeIn(500);
+            },
+            complete:function(){
+                setTimeout(function(){
+                $("#ajax-loader").fadeOut(500);
+                }, 2000);
+            }
+            });
+        });
+    </script>
 
 </head>
 <!-- END: Head-->
@@ -129,3 +184,15 @@
       </div>
   </nav>
   <!-- END: Header-->
+
+
+<div class="loader-wrapper" id="ajax-loader">
+    <div class="loader-container">
+        <div class="folding-cube loader-blue-grey">
+            <div class="cube1 cube"></div>
+            <div class="cube2 cube"></div>
+            <div class="cube4 cube"></div>
+            <div class="cube3 cube"></div>
+        </div>
+    </div>
+</div>

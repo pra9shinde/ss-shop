@@ -8,7 +8,7 @@
               <a href="#" class="btn btn-info">#ORD<?=$order['id']?></a>
           </div>
           <div class="float-right">
-              <a href="<?=$order['id']?>" class="btn btn-outline-info mr-1"><i class="la la-print"></i> Print Invoice </a>
+              <a href='<?=base_url()?>Shop/load_invoice/<?=$order['id']?>' class="btn btn-outline-info mr-1"><i class="la la-print"></i> Print Invoice </a>
               <a href="#" class="btn btn-outline-info"><i class="la la-question"></i>Need Help</a>
           </div>
       </div>
@@ -17,7 +17,7 @@
               <div class="d-flex justify-content-between lh-condensed">
                   <div class="order-details text-center">
                       <div class="product-img d-flex align-items-center">
-                          <img class="img-fluid" src="<?=base_url()?>assets/theme/images/market.svg" alt="Card image cap">
+                          <img class="img-fluid" src="<?=base_url()?>assets/theme/images/market.svg" alt="Product Image">
                       </div>
                   </div>
                   <?php foreach($order['order_items'] as $order_item) {?>

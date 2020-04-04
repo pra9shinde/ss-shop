@@ -16,7 +16,7 @@
 
 
     <!-- BEGIN: Vendor JS-->
-    <script src="<?=base_url()?>assets/theme/js/vendors/jquery.cookie.js"></script>
+    <!-- <script src="<?=base_url()?>assets/theme/js/vendors/jquery.cookie.js"></script> -->
     <script src="<?=base_url()?>assets/theme/js/vendors/select2.full.min.js"></script>
     <script src="<?=base_url()?>assets/theme/js/vendors/jquery.bootstrap-touchspin.js"></script>
     <script src="<?=base_url()?>assets/theme/js/vendors/icheck.min.js"></script>
@@ -36,10 +36,9 @@
     <script src="<?=base_url()?>assets/theme/js/ecommerce-cart.js"></script>
     <!-- END: Page JS-->
     <script>
+      /*
       var client_ip;
-
-      $(document).ready(function(){
-        
+      $(document).ready(function(){   
         $.getJSON("https://api.ipify.org?format=json",function(data) { 
             client_ip = data.ip.toString();
             $('#cart-link').attr('data-ip_address', client_ip); 
@@ -76,14 +75,17 @@
                 console.log(res);
               },
               beforeSend:function(){
+                $("#ajax-loader").fadeIn(500);
               },
               complete:function(){
-
+                setTimeout(function(){
+                  $("#ajax-loader").fadeOut(500);
+                }, 2000);
               }
             });
         }); 
       });
-
+      */
       function addToCart(id, ip_address = $('#cart-link').data('ip_address')){
         if(ip_address){
           $.ajax({
@@ -106,9 +108,12 @@
               toastr.error('Error','Cart Addition', { "timeOut": 0 }); 
             },
             beforeSend:function(){
+              $("#ajax-loader").fadeIn(500);
             },
             complete:function(){
-
+              setTimeout(function(){
+                $("#ajax-loader").fadeOut(500);
+              }, 2000);
             }
           });
         }
@@ -152,9 +157,12 @@
               console.log(res);
             },
             beforeSend:function(){
+              $("#ajax-loader").fadeIn(500);
             },
             complete:function(){
-
+              setTimeout(function(){
+                $("#ajax-loader").fadeOut(500);
+              }, 2000);
             }
           });
         }
@@ -187,9 +195,12 @@
               console.log(res);
             },
             beforeSend:function(){
+              $("#ajax-loader").fadeIn(500);
             },
             complete:function(){
-
+              setTimeout(function(){
+                $("#ajax-loader").fadeOut(500);
+              }, 2000);
             }
           });
         }
@@ -222,9 +233,12 @@
               console.log(res);
             },
             beforeSend:function(){
+              $("#ajax-loader").fadeIn(500);
             },
             complete:function(){
-
+              setTimeout(function(){
+                $("#ajax-loader").fadeOut(500);
+              }, 2000);
             }
           });
         }
@@ -246,6 +260,15 @@
 
     </script>
 
+
+      <script>
+
+      $(window).on('load', function () {
+        setTimeout(function(){
+          $("#ajax-loader").fadeOut(500);
+        }, 2000);
+      });
+      </script>
 </body>
 <!-- END: Body-->
 

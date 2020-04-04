@@ -20,6 +20,9 @@ footer {
   visibility: hidden;
 }
 
+.app-content.content {
+  overflow-y: hidden;
+}
 
 
 

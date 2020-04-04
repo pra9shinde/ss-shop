@@ -494,5 +494,35 @@ class Shop extends CI_Controller {
 		$this->load->view('login');
 	}
 
+	public function load_invoice($order_id)
+	{
+		$arr = array();
+		$order = $this->shop_model->get_order_items($order_id);
+		$buyer_details = $this->My_model->get('sss_buyer',array(
+			'id' => $order[0]['buyer_id']
+		));
+		$order_totals = $this->My_model->get('sss_orders', array('id' => $order_id));
+
+		foreach($order as $item)
+		{
+			if(!key_exists($item['seller_id'], $arr)){
+				//No key
+				$arr[$item['seller_id']] = array();//Create New Key
+			}
+			array_push($arr[$item['seller_id']], $item);//Push item in key
+
+		}
+		
+		$data['order'] = $arr;
+		$data['order_id'] = $order_id;
+		$data['buyer_details'] = $buyer_details[0];
+		$data['order_totals'] = $order_totals[0];
+
+		$this->load->view('templates/header');
+		$this->load->view('templates/menu');
+		$this->load->view('invoice',$data);
+		$this->load->view('templates/footer');
+	}
+
 
 }

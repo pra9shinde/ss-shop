@@ -65,9 +65,6 @@ $("document").ready(function() {
       dataType : 'json',
       url: $('#add-category-form').attr("action"),
       data: $('#add-category-form').serialize(),
-      beforeSend: function() {
-        $($(this).find("input[type='submit']")).attr("disabled", "disabled");
-      },
       success: function(data) {
         if(data.type === "success") {
           toastr.success(data.message,'Product Category Addition', { "timeOut": 0 });
@@ -80,8 +77,14 @@ $("document").ready(function() {
       error: function(xhr, status, error) {
 				toastr.error(error,'Product Category Addition', { "timeOut": 0 });
         console.log('An error occurred.' + error);
+      }, 
+      beforeSend:function(){
+          $("#ajax-loader").fadeIn(500);
       },
-      complete: function() {
+      complete:function(){
+          setTimeout(function(){
+              $("#ajax-loader").fadeOut(500);
+          }, 2000);
       }
     });
   });
@@ -100,9 +103,6 @@ $("document").ready(function() {
       contentType: false,
       url: $('#add-product-form').attr("action"),
       data: formData,
-      beforeSend: function() {
-        $($(this).find("input[type='submit']")).attr("disabled", "disabled");
-      },
       success: function(data) {
         if(data.type === "success") {
           toastr.success(data.message,'Product Addition', { "timeOut": 0 });
@@ -118,7 +118,13 @@ $("document").ready(function() {
 				toastr.error(error,'Product Addition', { "timeOut": 0 });
         console.log('An error occurred.' + error);
       },
-      complete: function() {
+      beforeSend:function(){
+          $("#ajax-loader").fadeIn(500);
+      },
+      complete:function(){
+          setTimeout(function(){
+              $("#ajax-loader").fadeOut(500);
+          }, 2000);
       }
     });
   });

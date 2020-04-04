@@ -89,7 +89,7 @@
                 <?php //print_r($pagination);?>
               </div>
 
-              <div class="pagination-container" >
+              <div class="pagination-container" style="height:100%;">
                 <div class="pagination-main-page" >
                   <div class="row" id="outer">
                     <nav aria-label="Page navigation" id="inner">
