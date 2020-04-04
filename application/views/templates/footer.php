@@ -80,7 +80,7 @@
               complete:function(){
                 setTimeout(function(){
                   $("#ajax-loader").fadeOut(500);
-                }, 2000);
+                }, 500);
               }
             });
         }); 
@@ -98,14 +98,14 @@
             success:function(data){
               if(data.status == 'success'){
                 $('#cart-count').text(data.cart.toString());
-                toastr.success('Product Added to Cart Successfully','Cart Addition', { "timeOut": 0 });
+                toastr.success('Product Added to Cart Successfully','Cart Addition', { "timeOut": 1000 });
               }
               else{
                 alert('Something Went Wrong!');
               }
             },
             error:function(res){
-              toastr.error('Error','Cart Addition', { "timeOut": 0 }); 
+              toastr.error('Error','Cart Addition', { "timeOut": 1000 }); 
             },
             beforeSend:function(){
               $("#ajax-loader").fadeIn(500);
@@ -113,7 +113,7 @@
             complete:function(){
               setTimeout(function(){
                 $("#ajax-loader").fadeOut(500);
-              }, 2000);
+              }, 500);
             }
           });
         }
@@ -144,7 +144,7 @@
             success:function(data){
               if(data.status == 'success'){
                 $('#cart-count').text(data.cart.toString());
-                toastr.success('Product Removed from Cart Successfully','Cart Deletion', { "timeOut": 0 });
+                toastr.success('Product Removed from Cart Successfully','Cart Deletion', { "timeOut": 1000 });
 
                 window.location.reload();
                 updateCartTotal();
@@ -162,7 +162,7 @@
             complete:function(){
               setTimeout(function(){
                 $("#ajax-loader").fadeOut(500);
-              }, 2000);
+              }, 500);
             }
           });
         }
@@ -200,7 +200,7 @@
             complete:function(){
               setTimeout(function(){
                 $("#ajax-loader").fadeOut(500);
-              }, 2000);
+              }, 500);
             }
           });
         }
@@ -238,7 +238,7 @@
             complete:function(){
               setTimeout(function(){
                 $("#ajax-loader").fadeOut(500);
-              }, 2000);
+              }, 500);
             }
           });
         }
@@ -266,7 +266,7 @@
       $(window).on('load', function () {
         setTimeout(function(){
           $("#ajax-loader").fadeOut(500);
-        }, 2000);
+        }, 500);
       });
       </script>
 </body>

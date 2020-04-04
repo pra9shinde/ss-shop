@@ -332,7 +332,7 @@ function activeTab(tab){
         complete:function(){
             setTimeout(function(){
                 $("#ajax-loader").fadeOut(500);
-            }, 2000);
+            }, 500);
         }
     });
 };
@@ -350,7 +350,7 @@ $('#btn-check-phone').on('click', function(){
             if(data.type === "success") {
                 if(data.status === "true")
                 {
-                    toastr.success("Congratulations, We have your details!",'Mobile Check', { "timeOut": 0 });
+                    toastr.success("Congratulations, We have your details!",'Mobile Check', { "timeOut": 1000 });
                     //User Already exists
 
                     //Create Order
@@ -358,7 +358,7 @@ $('#btn-check-phone').on('click', function(){
                 }
                 else{
                     //New User
-                    toastr.warning("Unfortunately, We don't have your details, Please Enter your details!",'Mobile Check', { "timeOut": 0 });
+                    toastr.warning("Unfortunately, We don't have your details, Please Enter your details!",'Mobile Check', { "timeOut": 1000 });
                     $('#user_contact').attr('value',mobileNo);
 
                     $('.mobile-check').fadeOut(1000);
@@ -366,11 +366,11 @@ $('#btn-check-phone').on('click', function(){
                 }
             }
             else {
-                toastr.error(data.message,'Mobile Check', { "timeOut": 0 }); 
+                toastr.error(data.message,'Mobile Check', { "timeOut": 1000 }); 
             }
         },
         error: function(xhr, status, error) {
-            toastr.error(error,'Mobile Check', { "timeOut": 0 });
+            toastr.error(error,'Mobile Check', { "timeOut": 1000 });
             console.log('An error occurred.' + error);
         },
         beforeSend:function(){
@@ -379,7 +379,7 @@ $('#btn-check-phone').on('click', function(){
         complete:function(){
             setTimeout(function(){
                 $("#ajax-loader").fadeOut(500);
-            }, 2000);
+            }, 500);
         }
     });
 });
@@ -394,18 +394,18 @@ $("#new-user-form").submit(function(e) {
         data: $(this).serialize(),
         success: function(data) {
             if(data.type === "success") {
-                toastr.success(data.message,'New User Creation', { "timeOut": 0 });
+                toastr.success(data.message,'New User Creation', { "timeOut": 1000 });
                 document.getElementById("new-user-form").reset(); 
 
                 //Create Order
                 createOrder($('#contact').val());
             } else {
-                toastr.error(data.message,'New User Creation', { "timeOut": 0 });
+                toastr.error(data.message,'New User Creation', { "timeOut": 1000 });
                 
             }
         },
         error: function(xhr, status, error) {
-            toastr.error(error,'New User Creation', { "timeOut": 0 });
+            toastr.error(error,'New User Creation', { "timeOut": 1000 });
             console.log('An error occurred.' + error);
         },
         beforeSend:function(){
@@ -414,7 +414,7 @@ $("#new-user-form").submit(function(e) {
         complete:function(){
             setTimeout(function(){
                 $("#ajax-loader").fadeOut(500);
-            }, 2000);
+            }, 500);
         }
     });
 });
@@ -431,14 +431,14 @@ $('#btn-check-phone-orders').on('click', function(){
         data: {'contact_my_orders' : mobileNo},
         success: function(data) {
             if(data.status === 'true'){
-                toastr.success('You are a registered user, following are your orders','Get Orders', { "timeOut": 0 });
+                toastr.success('You are a registered user, following are your orders','Get Orders', { "timeOut": 1000 });
 
                getUserOrders(mobileNo);
                $('#btn-check-phone-orders').addClass('disabled');
                 
             }
             else{
-                toastr.warning('You are not a registered user, Please explore our shop','Get Orders', { "timeOut": 0 });
+                toastr.warning('You are not a registered user, Please explore our shop','Get Orders', { "timeOut": 1000 });
 
                 setTimeout(function(){ 
                     window.location = "<?=base_url()?>";
@@ -448,7 +448,7 @@ $('#btn-check-phone-orders').on('click', function(){
             }
         },
         error: function(xhr, status, error) {
-            toastr.error(error,'Loading Orders', { "timeOut": 0 });
+            toastr.error(error,'Loading Orders', { "timeOut": 1000 });
             console.log('An error occurred.' + error);
         },
         beforeSend:function(){
@@ -457,7 +457,7 @@ $('#btn-check-phone-orders').on('click', function(){
         complete:function(){
             setTimeout(function(){
                 $("#ajax-loader").fadeOut(500);
-            }, 2000);
+            }, 500);
         }
     });
 
@@ -480,18 +480,18 @@ function createOrder(mobile_no, ip_address = $('#cart-link').data('ip_address'))
             data: {'ip_address' : ip_address, 'phone' : mobile_no},
             success: function(data) {
                 if(data.type === "success") {
-                    toastr.success(data.message,'Order Creation', { "timeOut": 0 });
+                    toastr.success(data.message,'Order Creation', { "timeOut": 1000 });
                     document.getElementById('form-mobile-no').reset();
 
                     $('#cart-count').text('0');
                    
                     my_orders_success(mobile_no);//load my orders without entering mobile no
                 } else {
-                    toastr.error(data.message,'Order Creation', { "timeOut": 0 }); 
+                    toastr.error(data.message,'Order Creation', { "timeOut": 1000 }); 
                 }
             },
             error: function(xhr, status, error) {
-                toastr.error(error,'Order Creation', { "timeOut": 0 });
+                toastr.error(error,'Order Creation', { "timeOut": 1000 });
                 console.log('An error occurred.' + error);
             },
             beforeSend:function(){
@@ -500,7 +500,7 @@ function createOrder(mobile_no, ip_address = $('#cart-link').data('ip_address'))
             complete:function(){
                 setTimeout(function(){
                     $("#ajax-loader").fadeOut(500);
-                }, 2000);
+                }, 500);
             }
         }); 
     }
@@ -527,7 +527,7 @@ function getUserOrders(mobileNo){
             $('#all-orders').append(data);
         },
         error: function(xhr, status, error) {
-            toastr.error(error,'Loading Orders', { "timeOut": 0 });
+            toastr.error(error,'Loading Orders', { "timeOut": 1000 });
             console.log('An error occurred.' + error);
         },
         beforeSend:function(){
@@ -536,7 +536,7 @@ function getUserOrders(mobileNo){
         complete:function(){
             setTimeout(function(){
                 $("#ajax-loader").fadeOut(500);
-            }, 2000);
+            }, 500);
         }
     });
 }

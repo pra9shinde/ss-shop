@@ -2,8 +2,8 @@
 $(document).ready(function() {
     //datatables
    
-    //Products
-    var soc_floors_dt = $('#tb-products').DataTable({ 
+    //Seller Products
+    var seller_products = $('#tb-products').DataTable({ 
         
         dom: 'Blfrtip',
         buttons: [
@@ -82,20 +82,87 @@ $(document).ready(function() {
         }
     });
 
+  
+    //Products
+    var all_products = $('#tb-all-products').DataTable({ 
+        dom: 'Bl<"#category_filter">frtip',
+        buttons: [
+            {//Column Visibiity
+                extend: 'colvis',
+                columns: ':not(.noVis)'
+            },
+
+        ],
+        fixedHeader: {
+            header: true,
+            headerOffset: $('.header-navbar').outerHeight()
+        },
+        colReorder: true,
+        
+        "processing": true, //Feature control the processing indicator.
+        "serverSide": true, //Feature control DataTables' server-side processing mode.
+        "order": [], //Initial no order.
+ 
+        // Load data for the table's content from an Ajax source
+        "ajax": {
+            "cache": false,
+            "url": $('#base_url').val() + 'Shop/ajax_list',
+            "type": "POST",
+            "data": function(d){
+                d.category =  $('#current_category').attr("value");
+            }
+        },
+        
+        //Set column definition initialisation properties.
+        "columnDefs": [
+            { 
+                "targets": [ 0,1 ], //first column / numbering column
+                "orderable": false, //set not orderable
+            },
+            {
+                //exclude col visibilty columns
+                "targets": [0,1],
+                "className": 'noVis'
+            }
+        ],
+        "initComplete": function( settings, json ) {
+            
+            addFilters();//Add Filer Button to Datatable
+            
+        },
+        "drawCallback": function( settings ) {
+            
+            //Checkbox initialization and Select all, pass select all checkbox id
+            select2Init('#select-all-products-main');
+            // Default Spin
+            $(".touchspin").TouchSpin({
+                buttondown_class: "btn btn-primary",
+                buttonup_class: "btn btn-primary",
+                buttondown_txt: '<i class="ft-minus"></i>',
+                buttonup_txt: '<i class="ft-plus"></i>'
+            });
+        }
+    });
+
+
+  
+    $(document.body).on("change","#select_category_dw",function(){
+        //alert(this.value);
+        //alert($('#select_category_dw').select2().val());
+        $('#current_category').attr("value",this.value);
+        $('#current_category').attr("data-test",this.value);
+        $('#tb-all-products').DataTable().ajax.reload()
+    });
+
 
 
     $(".menu-toggle").on('click', resize);
     // Resize function
     function resize() {
         setTimeout(function() {
-
             // ReDraw DataTable
-            charges_list_dt.draw();
-            flat_type_dt.draw();
-            flat_area_dt.draw();
-            flat_status_dt.draw();
-            soc_blocks_dt.draw();
-            soc_floors_dt.draw();
+            seller_products.draw();
+            all_products.draw();
         }, 400);
     }
 
@@ -136,7 +203,6 @@ $(document).ready(function() {
         })(window, document, jQuery);
     }
 });
-
 
 
 

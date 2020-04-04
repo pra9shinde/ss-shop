@@ -569,3 +569,26 @@ html body a:hover {
   color: #FFF !important;
 
 }
+
+
+
+#category_filter {
+  display: inline-block;
+  padding-right: 10px;
+  float: left;
+  margin-top: 10px;
+}
+
+
+.dropdown .dropdown-menu {
+  box-shadow: none;
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+  color: #fff !important;
+}
+
+
+.input-group-prepend .btn, .input-group-append .btn {
+  z-index: 0;
+}

@@ -22,6 +22,7 @@ class Shop extends CI_Controller {
 	public function __construct() {
 		parent::__construct();
 		$this->load->model('Shop_model','shop_model');
+		$this->load->model('Datatables/All_products_DT','all_products_model');
 	}
 
 	public function index()
@@ -45,11 +46,51 @@ class Shop extends CI_Controller {
 		);
 		
 
+		//Category 
+		$data['categories'] = $this->My_model->get('sss_category');
+		
+
 		$this->load->view('templates/header');
 		$this->load->view('templates/menu');
 		$this->load->view('all_products',$data);
 		$this->load->view('templates/footer');
 
+	}
+
+
+	public function ajax_list()
+	{
+			$soc_id = $this->input->post('soc_id');
+			$list = $this->all_products_model->get_datatables();
+
+			$data = array();
+			$no = $_POST['start'];
+			foreach ($list as $fetched_data) {
+					$no++;
+					$row = array();
+					// $row[] = $fetched_data->id;
+					// $row[] = $this->all_products_model->load_checkbox_btns($fetched_data->id);
+					$row[] = $this->all_products_model->load_addcart_btns($fetched_data->id);
+					$image_url = array();
+					$image_url['image_path'] = $fetched_data->image_url;
+					$row[] = $this->all_products_model->load_product_image($image_url);
+					$row[] = $fetched_data->product_name;
+					$row[] = $fetched_data->description;
+					$row[] = $this->all_products_model->load_category($fetched_data->category_name);
+					$row[] = '₹ '. $fetched_data->price;
+					$row[] = $this->all_products_model->load_pieces($fetched_data->pieces);
+					$row[] = $this->all_products_model->load_remaining_stock($fetched_data->rem_quantity);
+					$data[] = $row;
+			}
+
+			$output = array(
+											"draw" => $_POST['draw'],
+											"recordsTotal" => $this->all_products_model->count_all(),
+											"recordsFiltered" => $this->all_products_model->count_filtered(),
+											"data" => $data,
+							);
+			//output to json format
+			echo json_encode($output);
 	}
 
 	public function cart($ip, $from = '')

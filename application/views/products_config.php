@@ -67,15 +67,15 @@ $("document").ready(function() {
       data: $('#add-category-form').serialize(),
       success: function(data) {
         if(data.type === "success") {
-          toastr.success(data.message,'Product Category Addition', { "timeOut": 0 });
+          toastr.success(data.message,'Product Category Addition', { "timeOut": 1000 });
           document.getElementById("add-category-form").reset(); 
           $('#add-category-form')[0].reset();
         } else {
-					toastr.error(data.message,'Product Category Addition', { "timeOut": 0 });
+					toastr.error(data.message,'Product Category Addition', { "timeOut": 1000 });
         }
       },
       error: function(xhr, status, error) {
-				toastr.error(error,'Product Category Addition', { "timeOut": 0 });
+				toastr.error(error,'Product Category Addition', { "timeOut": 1000 });
         console.log('An error occurred.' + error);
       }, 
       beforeSend:function(){
@@ -84,7 +84,7 @@ $("document").ready(function() {
       complete:function(){
           setTimeout(function(){
               $("#ajax-loader").fadeOut(500);
-          }, 2000);
+          }, 500);
       }
     });
   });
@@ -105,17 +105,17 @@ $("document").ready(function() {
       data: formData,
       success: function(data) {
         if(data.type === "success") {
-          toastr.success(data.message,'Product Addition', { "timeOut": 0 });
+          toastr.success(data.message,'Product Addition', { "timeOut": 1000 });
           document.getElementById("add-product-form").reset(); 
 					$('#tb-products').DataTable().draw();
           $('.custom-file input').next('.custom-file-label').html('Product Image');
           $( "#prod_category" ).val('').trigger('change');
         } else {
-					toastr.error(data.message,'Product Addition', { "timeOut": 0 });
+					toastr.error(data.message,'Product Addition', { "timeOut": 1000 });
         }
       },
       error: function(xhr, status, error) {
-				toastr.error(error,'Product Addition', { "timeOut": 0 });
+				toastr.error(error,'Product Addition', { "timeOut": 1000 });
         console.log('An error occurred.' + error);
       },
       beforeSend:function(){
@@ -124,7 +124,7 @@ $("document").ready(function() {
       complete:function(){
           setTimeout(function(){
               $("#ajax-loader").fadeOut(500);
-          }, 2000);
+          }, 500);
       }
     });
   });
