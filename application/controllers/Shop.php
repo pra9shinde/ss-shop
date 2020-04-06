@@ -70,7 +70,6 @@ class Shop extends CI_Controller {
 					$row = array();
 					// $row[] = $fetched_data->id;
 					// $row[] = $this->all_products_model->load_checkbox_btns($fetched_data->id);
-					$row[] = $this->all_products_model->load_addcart_btns($fetched_data->id);
 					$image_url = array();
 					$image_url['image_path'] = $fetched_data->image_url;
 					$row[] = $this->all_products_model->load_product_image($image_url);
@@ -80,6 +79,7 @@ class Shop extends CI_Controller {
 					$row[] = '₹ '. $fetched_data->price;
 					$row[] = $this->all_products_model->load_pieces($fetched_data->pieces);
 					$row[] = $this->all_products_model->load_remaining_stock($fetched_data->rem_quantity);
+					$row[] = $this->all_products_model->load_addcart_btns($fetched_data->id);
 					$data[] = $row;
 			}
 

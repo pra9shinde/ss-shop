@@ -19,10 +19,10 @@
 
   <body data-baseurl="<?= base_url(); ?>">
 
-		<div class="comp-logo clearfix">
-			<img src="<?=base_url()?>assets/login/Smart Society.png" alt="" srcset="">
+		<div class="comp-logo clearfix" style="margin-top:20px;">
+			<img src="<?=base_url()?>assets/login/LogoBig.png" alt="" srcset="">
 		</div>
-		<div class="container" id="container">
+		<div class="container" id="container" style="margin-top:10px;">
 			<div class="form-container sign-up-container">
 				<form id="formRegister" action="<?=base_url()?>Shop/register">
 					<h1>Create Account</h1>

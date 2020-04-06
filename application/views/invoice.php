@@ -2,7 +2,19 @@
  <!-- BEGIN: Content-->
  <div class="app-content content">
   <div class="content-overlay"></div>
-  <div class="content-wrapper">
+  <div class="content-wrapper" id="invoice-template">
+        <div id="invoice-footer">
+            <div class="row">
+                <div class="col-sm-7 col-12 text-center text-sm-left">
+                    
+                </div>
+                <div class="col-sm-5 col-12 text-center">
+                    <button type="button" class="btn btn-info btn-print btn-lg my-1" onclick="printDiv()"><i class="la la-paper-plane-o mr-50" ></i>
+                        Print
+                        Invoice</button>
+                </div>
+            </div>
+        </div>
     <?php $invoice_count = 1;?>
     <?php foreach($order as $item):?>
       <div class="content-body" id="invoice-template-<?=$invoice_count?>">
@@ -124,18 +136,7 @@
                   </div>
 
                   <!-- Invoice Footer -->
-                  <div id="invoice-footer-<?=$invoice_count?>">
-                      <div class="row">
-                          <div class="col-sm-7 col-12 text-center text-sm-left">
-                              
-                          </div>
-                          <div class="col-sm-5 col-12 text-center">
-                              <button type="button" class="btn btn-info btn-print btn-lg my-1" onclick="printDiv('<?=$invoice_count?>')"><i class="la la-paper-plane-o mr-50" ></i>
-                                  Print
-                                  Invoice</button>
-                          </div>
-                      </div>
-                  </div>
+                  
                   <!-- Invoice Footer -->
 
               </div>
@@ -150,9 +151,9 @@
 
 <script>
 
-function printDiv(id) {
-  var divName = 'invoice-template-' + id;
-  $('#invoice-footer-'+id).css('display','none');
+function printDiv() {
+  var divName = 'invoice-template';
+  $('#invoice-footer').css('display','none');
 
   var printContents = document.getElementById(divName).innerHTML;
   var originalContents = document.body.innerHTML;

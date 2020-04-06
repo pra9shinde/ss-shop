@@ -20,6 +20,14 @@
       return $result->result_array();
 		}
 
+		public function get_multiple($table,$column_where_in,$where_in_arr, $extra_where = array())
+		{
+			$this->db->where($extra_where);
+			$this->db->where_in($column_where_in, $where_in_arr);
+			$result = $this->db->get($table);
+      return $result->result_array();
+		}
+
 		public function insert($table,$values)
 		{
 			$this->db->insert($table, $values);
@@ -37,6 +45,15 @@
 		public function delete($table,$where)
 		{
 			$this->db->where($where);
+			$this->db->delete($table);
+			
+			return ($this->db->affected_rows() > 0) ? true : false;
+		}
+
+		public function delete_multiple($table,$column_where,$arr, $extra_where = array())
+		{
+			$this->db->where($extra_where);
+			$this->db->where_in($column_where, $arr);
 			$this->db->delete($table);
 			
 			return ($this->db->affected_rows() > 0) ? true : false;

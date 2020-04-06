@@ -1,6 +1,6 @@
 
 <div class="row match-height">
-    <div class="col-xl-8 col-12" id="ecommerceChartView">
+    <div class="col-xl-6 col-12" id="ecommerceChartView">
         <div class="card card-shadow" style="height: 423.117px;">
             <div class="card-header card-header-transparent py-20">
                 <h4 class="card-title">Add New Category</h4>
@@ -36,8 +36,8 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-4 col-lg-12">
-        <div class="card" style="height: 423.117px;overflow-y:scroll;">
+    <div class="col-xl-6 col-lg-12">
+        <div class="card">
             <div class="card-header">
                 <h4 class="card-title">Existing Categories</h4>
                 <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
@@ -50,28 +50,65 @@
             <div class="card-content">
                 <div id="new-orders" class="media-list position-relative ps">
                     <div class="table-responsive">
-                        <table id="new-orders-table" class="table table-hover table-xl mb-0">
+                        <table id="tb-category" class="table table-hover table-xl mb-0 dataex-fixh-reorder " style="width:100%;">
                             <thead>
                                 <tr>
-                                    <th class="border-top-0">Category</th>
+                                    <th class="border-top-0">
+                                        <div class="skin skin-flat">
+                                            <fieldset>
+                                                    <input type="checkbox" id="select-all-category">
+                                            </fieldset>
+                                        </div>	
+                                    </th>
+                                    <th class="border-top-0">Action</th>
+                                    <th class="border-top-0">Name</th>
                                     <th class="border-top-0">Description</th>
                                 </tr>
                             </thead>
-                            <tbody style="overflow-y: visible;">
-                                <?php
-                                    foreach($categories as $value){
-                                ?>    
-                                    <tr>
-                                        <td class="text-truncate"><?=$value['name']?></td>
-                                        <td class="text-truncate"><?=$value['description']?></td>
-                                    </tr>
-                                <?php
-                                    }
-                                ?>
+                            <tbody>
                             </tbody>
                         </table>
                     </div>
                 <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ <!-- Modal -->
+ <div class="modal fade text-left" id="edit-category-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel10" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger white">
+                <h4 class="modal-title white" id="myModalLabel10">Edit Product</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="form form-horizontal" id="update-category-form">
+                
+                <div class="form-body">
+                    <div class="form-group row">
+                        <label class="col-md-3 label-control" for="flat-area-name">Category Name</label>
+                        <div class="col-md-9 mx-auto">
+                            <input type="hidden" class="form-control" name="category_id" id="category_id">
+                            <input type="text" class="form-control" name="category_name_edit" id="category_name_edit">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 label-control" for="flat-area-name">Category Description</label>
+                        <div class="col-md-9 mx-auto">
+                            <textarea rows="6" class="form-control " name="category_desc_edit" id="category_desc_edit"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-btns">
+                    <button type="button" class="btn btn-outline-danger" onclick="updateCategory()">Save changes</button>
+                    <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
+                </div>
+                </form>
             </div>
         </div>
     </div>

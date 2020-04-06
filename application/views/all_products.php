@@ -29,19 +29,14 @@
   }
 </style>
 
+<input type="hidden" name="current_category" id="current_category" value="all">
+
 <div class="app-content content">
   <div class="content-overlay"></div>
   <div class="content-wrapper">
       <div class="content-body">
           <!-- Shopping cards section start -->
-          <section id="shopping-cards">
-              <div class="row">
-                  <div class="col-12 mt-3 mb-1">
-                      <h4 class="text-uppercase">Shopping Products</h4>
-                      <input type="hidden" name="current_category" id="current_category" value="all">
-
-                  </div>
-              </div>
+          <section id="shopping-cards" style="margin-top: 50px;">
               <div class="row">
                 <div class="col-xl-12 col-lg-12">
                   <style>
@@ -71,6 +66,31 @@
                   </div>
               </div>
 
+              <div class="col-md-12 col-sm-12" style="padding:0;">
+                  <div class="card text-center bg-white" style="height: 100%;">
+                      <div class="card-content">
+                          <div class="card-body pt-3">
+                            <div class="row">
+                              <div class="col-md-3 col-sm-12">
+                                <div class="intro-images">
+                                  <img src="<?=base_url()?>assets/login/LogoBig.png" alt="Smart Society Services Logo" class="">
+                                </div>
+                              </div>
+                              <div class="col-md-6 col-sm-12">
+                                <h4 class="card-title mt-3" style="font-size:3rem;">We care for you</h4>
+                                  <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita modi, esse maxime tempore optio reiciendis, magni earum, provident fugit cumque eos molestiae possimus odio officia? Exercitationem reiciendis assumenda non nisi?</p>
+                                  <button class="btn btn-danger">Know More!</button>
+                              </div>
+                              <div class="col-md-3 col-sm-12">
+                                <div class="intro-images">
+                                    <img src="<?=base_url()?>assets/login/GORWA-Logo.png" alt="Goregaon Welfare Association Logo" class="" width="">
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
 
 
               <!-- DOM - jQuery events table -->
@@ -104,7 +124,6 @@
                                                       </fieldset>
                                                     </div>	
                                                   </th> -->
-                                                  <th class="border-top-0">Add to Cart</th>
                                                   <th class="border-top-0">Image</th>
                                                   <th class="border-top-0">Name</th>
                                                   <th class="border-top-0">Description</th>
@@ -112,6 +131,7 @@
                                                   <th class="border-top-0">Price(₹)</th>
                                                   <th class="border-top-0">Pieces</th>
                                                   <th class="border-top-0">Remaining Stock</th>
+                                                  <th class="border-top-0">Add to Cart</th>
                                                   </tr>
                                               </thead>
                                               <tbody>

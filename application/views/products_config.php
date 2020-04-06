@@ -70,6 +70,7 @@ $("document").ready(function() {
           toastr.success(data.message,'Product Category Addition', { "timeOut": 1000 });
           document.getElementById("add-category-form").reset(); 
           $('#add-category-form')[0].reset();
+          $('#tb-category').DataTable().draw();
         } else {
 					toastr.error(data.message,'Product Category Addition', { "timeOut": 1000 });
         }
@@ -128,6 +129,170 @@ $("document").ready(function() {
       }
     });
   });
+
 });
+
+function deleteProduct(id){
+  $.ajax({
+      type: "POST",
+      dataType : 'json',
+      url: '<?=base_url()?>Product/delete_product',
+      data: {'id' : id},
+      success: function(data) {
+        if(data.type === "success") {
+          toastr.success(data.message,'Product Deletion', { "timeOut": 1000 });
+					$('#tb-products').DataTable().draw();
+        } else {
+					toastr.error(data.message,'Product Deletion', { "timeOut": 1000 });
+        }
+      },
+      error: function(xhr, status, error) {
+				toastr.error(error,'Product Deletion', { "timeOut": 1000 });
+        console.log('An error occurred.' + error);
+      },
+      beforeSend:function(){
+          $("#ajax-loader").fadeIn(500);
+      },
+      complete:function(){
+          setTimeout(function(){
+              $("#ajax-loader").fadeOut(500);
+          }, 500);
+      }
+    });
+}
+
+
+function editProduct(obj){
+  $('#edit-product-modal').modal('show'); 
+    $('#product_id').attr("value",obj.id);
+
+    $('#prod_name_edit').attr("value",obj.product_name);
+
+    $('#prod_category_edit').val(obj.category_id);
+    $('#prod_category_edit').trigger('change');
+
+    $('#existing_image').attr("src", obj.image_url);
+    $('#old_img_path').attr("value", obj.image_url);
+
+    $('#prod_pieces_edit').attr("value",obj.pieces);
+    $('#prod_quantity_edit').attr("value",obj.rem_quantity);
+    $('#prod_price_edit').attr("value",obj.price);
+    $('#prod_desc_edit').val(obj.description);
+
+}
+
+function updateProduct()
+{
+  var form = $('#update-product-form')[0]; // You need to use standard javascript object here
+  var formData = new FormData(form);  
+  var base_url = '<?=base_url()?>';
+  
+  $.ajax({
+    type: "POST",
+    dataType : 'json',
+    processData: false,
+    contentType: false,
+    url: base_url + 'Product/update_product',
+    data: formData,
+    success: function(data) {
+      if(data.type === "success") {
+        toastr.success(data.message,'Product Updation', { "timeOut": 1000 });
+        document.getElementById("update-product-form").reset(); 
+        $('#tb-products').DataTable().draw();
+        $('#edit-product-modal').modal('hide'); 
+
+        $('.custom-file input').next('.custom-file-label').html('Product Image');
+        $( "#prod_category_edit" ).val('').trigger('change');
+      } else {
+        toastr.error(data.message,'Product Updation', { "timeOut": 1000 });
+      }
+    },
+    error: function(xhr, status, error) {
+      toastr.error(error,'Product Updation', { "timeOut": 1000 });
+      console.log('An error occurred.' + error);
+    },
+    beforeSend:function(){
+        $("#ajax-loader").fadeIn(500);
+    },
+    complete:function(){
+        setTimeout(function(){
+            $("#ajax-loader").fadeOut(500);
+        }, 500);
+    }
+  });
+}
+
+function deleteCategory(id){
+  $.ajax({
+    type: "POST",
+    dataType : 'json',
+    url: '<?=base_url()?>Product/delete_category',
+    data: {'id' : id},
+    success: function(data) {
+      if(data.type === "success") {
+        toastr.success(data.message,'Product Deletion', { "timeOut": 1000 });
+        $('#tb-category').DataTable().draw();
+      } else {
+        toastr.error(data.message,'Product Deletion', { "timeOut": 1000 });
+      }
+    },
+    error: function(xhr, status, error) {
+      toastr.error(error,'Product Deletion', { "timeOut": 1000 });
+      console.log('An error occurred.' + error);
+    },
+    beforeSend:function(){
+        $("#ajax-loader").fadeIn(500);
+    },
+    complete:function(){
+        setTimeout(function(){
+            $("#ajax-loader").fadeOut(500);
+        }, 500);
+    }
+  });
+}
+
+function editCategory(obj){
+  $('#edit-category-modal').modal('show'); 
+  $('#category_id').attr("value",obj.id);
+  $('#category_name_edit').attr("value",obj.name);
+  $('#category_desc_edit').val(obj.description);
+}
+
+function updateCategory()
+{
+   
+  var base_url = '<?=base_url()?>';
+  
+  $.ajax({
+    type: "POST",
+    dataType : 'json',
+    url: base_url + 'Product/update_category',
+    data: $('#update-category-form').serialize(),
+    success: function(data) {
+      if(data.type === "success") {
+        toastr.success(data.message,'Category Updation', { "timeOut": 1000 });
+        document.getElementById("update-category-form").reset(); 
+        $('#tb-category').DataTable().draw();
+        $('#edit-category-modal').modal('hide'); 
+      } else {
+        toastr.error(data.message,'Category Updation', { "timeOut": 1000 });
+      }
+    },
+    error: function(xhr, status, error) {
+      toastr.error(error,'Category Updation', { "timeOut": 1000 });
+      console.log('An error occurred.' + error);
+    },
+    beforeSend:function(){
+        $("#ajax-loader").fadeIn(500);
+    },
+    complete:function(){
+        setTimeout(function(){
+            $("#ajax-loader").fadeOut(500);
+        }, 500);
+    }
+  });
+}
+
+
 </script>
   

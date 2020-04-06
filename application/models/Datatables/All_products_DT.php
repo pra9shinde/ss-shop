@@ -149,7 +149,7 @@
     {
        $img = '<img src="';
        $img .= $image['image_path'];
-       $img .='" alt="Product Image" style="width: 100px;height: auto;">';
+       $img .='" alt="Product Image" style="width: 60px;height: auto;">';
 
        return $img;
     }

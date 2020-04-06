@@ -63,41 +63,133 @@
 </div>
 
 <div class="row">
-        <div class="col-xl-12 col-lg-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title">Your Products</h4>
+    <div class="col-xl-12 col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Your Products</h4>
+                </div>
+                <div class="card-content">
+                    <div id="" class="media-list position-relative ps">
+                    <div class="table-responsive">
+                        <table id="tb-products" class="table table-hover table-xl mb-0 dataex-fixh-reorder " style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th class="border-top-0">
+                                        <div class="skin skin-flat">
+                                            <fieldset>
+                                                    <input type="checkbox" id="select-all-products">
+                                            </fieldset>
+                                        </div>	
+                                    </th>
+                                    <th class="border-top-0">Action</th>
+                                    <th class="border-top-0">Image</th>
+                                    <th class="border-top-0">Name</th>
+                                    <th class="border-top-0">Description</th>
+                                    <th class="border-top-0">Category</th>
+                                    <th class="border-top-0">Total Quantity</th>
+                                    <th class="border-top-0">In Stock</th>
+                                    <th class="border-top-0">Price</th>
+                                    <th class="border-top-0">Pieces</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="card-content">
-                        <div id="" class="media-list position-relative ps">
-                        <div class="table-responsive">
-                            <table id="tb-products" class="table table-hover table-xl mb-0 dataex-fixh-reorder " style="width:100%;">
-                                <thead>
-                                    <tr>
-                                        <!-- <th class="border-top-0">
-                                            <div class="skin skin-flat">
-                                                <fieldset>
-                                                        <input type="checkbox" id="select-all-products">
-                                                </fieldset>
-                                            </div>	
-                                        </th>
-                                        <th class="border-top-0">Action</th> -->
-                                        <th class="border-top-0">Name</th>
-                                        <th class="border-top-0">Category</th>
-                                        <th class="border-top-0">Total Quantity</th>
-                                        <th class="border-top-0">In Stock</th>
-                                        <th class="border-top-0">Price</th>
-                                        <th class="border-top-0">Pieces</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div></div>
-                    </div>
+                    <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div></div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
+
+ <!-- Modal -->
+ <div class="modal fade text-left" id="edit-product-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel10" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger white">
+                <h4 class="modal-title white" id="myModalLabel10">Edit Product</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="form form-horizontal" id="update-product-form" enctype="multipart/form-data">
+                
+                <div class="form-body">
+                    <div class="form-group row">
+                        <label class="col-md-3 label-control" for="flat-area-name">Product Name</label>
+                        <div class="col-md-9 mx-auto">
+                            <input type="hidden" class="form-control" name="product_id" id="product_id">
+                            <input type="text" class="form-control" name="prod_name_edit" id="prod_name_edit">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 label-control" for="flat-area-name">Product Category</label>
+                        <div class="col-md-9 mx-auto">
+                            <select class="select2 form-control" id="prod_category_edit" name="prod_category_edit">
+                                <?php if(isset($categories)): ?>
+                                <?php    foreach ($categories as $category) { ?>       
+                                            <option value="<?=$category['id']?>"><?=$category['name']?></option>
+                                <?php    } ?>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 label-control" for="flat-area-name">Product Image</label>
+                        <div class="col-md-2">
+                            <img id="existing_image" src="" alt="Product Image" style="height:50px;margin-left: 20px;">
+                        </div>
+                        <div class="col-md-7 mx-auto">
+                            <fieldset class="form-group">
+                                <div class="custom-file">
+                                    <input type="hidden" class="form-control" name="old_img_path" id="old_img_path">   
+                                    <input type="file" class="custom-file-input" id="prod_image_edit" name="prod_image_edit">
+                                    <label class="custom-file-label" for="prod_image_edit" aria-describedby="prod_image_edit">Change Image</label>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 label-control" for="flat-area-name">Product Pieces</label>
+                        <div class="col-md-9 mx-auto">
+                            <input type="text" class="form-control" name="prod_pieces_edit" id="prod_pieces_edit">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 label-control" for="flat-area-name">Product Quantity</label>
+                        <div class="col-md-9 mx-auto">
+                            <input type="text" class="form-control" placeholder="Product Quantity*" name="prod_quantity_edit" id="prod_quantity_edit">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 label-control" for="flat-area-name">Product price</label>
+                        <div class="col-md-9 mx-auto">
+                            <input type="text" class="form-control" placeholder="Product Price*" name="prod_price_edit" id="prod_price_edit">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 label-control" for="flat-area-name">Product Description</label>
+                        <div class="col-md-9 mx-auto">
+                            <textarea rows="2" class="form-control " name="prod_desc_edit" id="prod_desc_edit" placeholder="Product Description"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="footer-btns">
+                    <button type="button" class="btn btn-outline-danger" onclick="updateProduct()">Save changes</button>
+                    <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

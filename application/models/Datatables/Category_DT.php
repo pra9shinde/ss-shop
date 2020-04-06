@@ -1,29 +1,24 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-	class Product_DT extends CI_Model {
+	class Category_DT extends CI_Model {
 
 		public function __construct() {
 			parent::__construct();
 			$this->load->database();
 		}
 
-	var $table = 'sss_products as product';
-    var $column_order = array('product.id', 'product.name', 'category.name', 'product.quantity', 'product.rem_quantity', 'product.price','product.pieces'); //set column field database for datatable orderable
-    var $column_search = array('product.name', 'category.name', 'product.quantity', 'product.rem_quantity', 'product.price','product.pieces'); //set column field database for datatable searchable 
-    var $order = array('product.id' => 'asc'); // default order 
+	var $table = 'sss_category';
+    var $column_order = array('id', 'name', 'description'); //set column field database for datatable orderable
+    var $column_search = array('name', 'description'); //set column field database for datatable searchable 
+    var $order = array('id' => 'asc'); // default order 
  
  
 	private function _get_datatables_query()
     {   
         
-        if($this->session->has_userdata('user')){
-            $this->db->where('product.seller_id ', $this->session->userdata('user'));
-            $this->db->where('product.is_delete', 0);
-        }
-        
-        $this->db->select('product.id, product.name as product_name, category.name as category_name, product.category_id, product.description, product.image_url, product.total_quantity, product.rem_quantity, product.price,product.pieces', false);
+        $this->db->where('is_delete', 0);
+        $this->db->select('id, name, description', false);
         $this->db->from($this->table);
-        $this->db->join('sss_category as category', 'product.category_id = category.id ','inner');
         
         	
 		$i = 0;
@@ -96,31 +91,15 @@
 
     public function load_multi_btns($obj){
         $btns = '<div class="btn-group mx-2" role="group" aria-label="Second Group">';
-        $btns .= '<button type="button" data-toggle="modal" class="btn btn-icon btn-warning" onclick=\'editProduct(';
+        $btns .= '<button type="button" data-toggle="modal" class="btn btn-icon btn-warning" onclick=\'editCategory(';
         $btns .= json_encode($obj);
         $btns .= ')\'><i class="la la-edit"></i></button>';
-        $btns .= '<button type="button" class="btn btn-icon btn-danger" onclick="deleteProduct(';
+        $btns .= '<button type="button" class="btn btn-icon btn-danger" onclick="deleteCategory(';
         $btns .= $obj->id;
         $btns .= ')"><i class="la la-trash"></i></button></div>';
         
         return $btns;
     }
-
-
-    public function load_image($img)
-    {
-        $image = '<img src="';
-        $image .= $img['image_url'];
-        $image .= '" alt="Product Image" style="height:50px;">';
-
-        return $image;
-    }
-
-
-
-
-
-
 
 
 }
