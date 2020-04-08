@@ -165,7 +165,7 @@
                                             </div>
                                         </a>
                                     </li>
-                                    <li class="dropdown-menu-footer"><a class="dropdown-item text-muted text-center" href="javascript:void(0)">View all Orders</a></li>
+                                    <li class="dropdown-menu-footer"><a class="dropdown-item text-muted text-center" href="<?=base_url()?>Shop/my_orders">View all Orders</a></li>
                                 </ul>
                             </li>
                             

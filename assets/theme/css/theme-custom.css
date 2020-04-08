@@ -610,3 +610,13 @@ html body a:hover {
     margin-top: 20px;
   }
 }
+
+.table-plus-icon{
+  color: #9f3434;
+  font-size: 25px !important;
+  margin-right: 10px;
+}
+
+.dropdown-item{
+  color: #9f3434 !important;
+}

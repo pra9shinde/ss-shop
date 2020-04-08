@@ -107,10 +107,6 @@ $(document).ready(function() {
                 }
             }
         ],
-        fixedHeader: {
-            header: true,
-            headerOffset: $('.header-navbar').outerHeight()
-        },
         colReorder: true,
         
         "processing": true, //Feature control the processing indicator.
@@ -203,6 +199,97 @@ $(document).ready(function() {
             });
         }
     });
+
+    //Seller Orders
+    var seller_orders = $('#tb-seller-orders').DataTable({ 
+        dom: 'Blfrtip',
+        buttons: [
+            { 
+                extend: 'collection',
+                text: 'Export',
+                buttons: [
+                    'copy',
+                    'excel',
+                    'csv',
+                    'pdf',
+                    'print'
+                ]
+            },
+            {//Column Visibiity
+                extend: 'colvis',
+                columns: ':not(.noVis)'
+            }
+        ],
+        fixedHeader: {
+            header: true,
+            headerOffset: $('.header-navbar').outerHeight()
+        },
+        colReorder: true,
+        select : true,
+       
+        "processing": true, //Feature control the processing indicator.
+        "serverSide": true, //Feature control DataTables' server-side processing mode.
+        "order": [], //Initial no order.
+ 
+        // Load data for the table's content from an Ajax source
+        "ajax": {
+            "cache": false,
+            "url": $('#base_url').val() + 'Product/seller_orders_ajax_list',
+            "type": "POST",
+            "data": function(d){
+                // d.category =  $('#current_category').attr("value");
+            }
+        },
+      
+        //Set column definition initialisation properties.
+        "columnDefs": [
+            { 
+                "targets": [ 0,1 ], //first column / numbering column
+                "orderable": false, //set not orderable
+            },
+            {
+                //exclude col visibilty columns
+                "targets": [0],
+                "className": 'details-control'
+            },
+            
+        ],
+        "initComplete": function( settings, json ) {
+            
+            
+        },
+        "drawCallback": function( settings ) {
+            
+            //Checkbox initialization and Select all, pass select all checkbox id
+            select2Init('#select-all-products-main');
+        }
+    });
+    seller_orders.column(1).visible(false);//Order items data hidden in array
+
+    // Add event listener for opening and closing details - show order items
+    $('#tb-seller-orders tbody').on('click', 'td.details-control', function () {
+        var tr = $(this).closest('tr');
+        var tdi = tr.find("i.la-plus-circle");
+
+        var row = seller_orders.row(tr);
+
+        if (row.child.isShown()) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+            var icon = tr.first().children().first().children().first();
+            icon.removeClass('la-minus-circle');
+            icon.addClass('la-plus-circle');
+        }
+        else {
+            // Open this row
+            row.child(format(row.data())).show();//Function present in my_orders_seller view
+            tr.addClass('shown');
+            tdi.first().removeClass('la-plus-circle');
+            tdi.first().addClass('la-minus-circle');
+        }
+    });
+
 
 
     //Filter by Category - All products (Reload Datatable)

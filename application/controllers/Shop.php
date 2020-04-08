@@ -187,28 +187,7 @@ class Shop extends CI_Controller {
 		echo json_encode($cart);
 	}
 
-	public function products_config()
-	{
-		if($this->session->has_userdata('user'))
-		{
-			$seller_details = $this->My_model->get('sss_seller', array(
-				'id' => $this->session->userdata('user')
-			)); 
-
-
-			$data['seller_name'] = $seller_details[0]['shop_name'];
-			$data['categories'] = $this->My_model->get('sss_category');
-
-			$this->load->view('templates/header',$data);
-			$this->load->view('templates/menu');
-			$this->load->view('products_config',$data);
-			$this->load->view('templates/footer');
-		}
-		else
-		{
-			$this->load->view('login');
-		}
-	}
+	
 
 	public function check_mobile_no($from = '')
 	{
@@ -407,6 +386,29 @@ class Shop extends CI_Controller {
 		$this->load->view('orders_view',$data);
 	}
 
+	public function products_config()
+	{
+		if($this->session->has_userdata('user'))
+		{
+			$seller_details = $this->My_model->get('sss_seller', array(
+				'id' => $this->session->userdata('user')
+			)); 
+
+
+			$data['seller_name'] = $seller_details[0]['shop_name'];
+			$data['categories'] = $this->My_model->get('sss_category');
+
+			$this->load->view('templates/header',$data);
+			$this->load->view('templates/menu');
+			$this->load->view('products_config',$data);
+			$this->load->view('templates/footer');
+		}
+		else
+		{
+			$this->load->view('login');
+		}
+	}
+
 	public function register()
 	{
 		if($this->input->server('REQUEST_METHOD') != 'POST') {
@@ -533,6 +535,30 @@ class Shop extends CI_Controller {
 	public function seller()
 	{
 		$this->load->view('login');
+	}
+
+	public function my_orders()
+	{
+		if($this->session->has_userdata('user'))
+		{
+			$seller_details = $this->My_model->get('sss_seller', array(
+				'id' => $this->session->userdata('user')
+			)); 
+
+			$data['seller_name'] = $seller_details[0]['shop_name'];
+
+			// $data['order_details'] = $this->shop_model->get_seller_orders($this->session->userdata('user'));
+			
+
+			$this->load->view('templates/header',$data);
+			$this->load->view('templates/menu');
+			$this->load->view('my_orders_seller',$data);
+			$this->load->view('templates/footer');
+		}
+		else
+		{
+			$this->load->view('login');
+		}
 	}
 
 	public function load_invoice($order_id)

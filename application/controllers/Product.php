@@ -71,6 +71,10 @@ class Product extends CI_Controller {
 
 	}
 
+	public function my_orders()
+	{
+
+	}
 
 	public function add_product()
 	{
@@ -480,6 +484,53 @@ class Product extends CI_Controller {
 
 	}
 
+	public function change_order_status()
+	{
+		
+		$update = $this->My_model->update('sss_order_items', array(
+				'order_id' => $this->input->post('order_id')
+			),
+			array(
+				'status' => $this->input->post('status_id'),
+				'update_date' => date ("Y-m-d H:i:s", time())
+			)
+		);
+		
+		if(!$update)
+		{
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+						'type' => 'error',
+						'message' => 'Database - Operation Failed!'
+			)));
+		}
+
+		//Update the main order table status - If all sellers confirmed set it to complete else partial
+		$main_order_update = $this->shop_model->update_main_order_status($this->input->post('order_id'));
+
+		if(!$main_order_update)
+		{
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+						'type' => 'error',
+						'message' => 'Database - Operation Failed!'
+			)));
+		}
+
+	
+		return $this->output
+		->set_content_type('application/json')
+		->set_status_header(200)
+		->set_output(json_encode(array(
+				'type' => 'success',
+				'message' => 'Product Updated Successfully'
+		)));
+
+	}
 
 	public function product_ajax_list()
 	{
@@ -543,6 +594,87 @@ class Product extends CI_Controller {
 		//output to json format
 		echo json_encode($output);
 
+	}
+
+	public function seller_orders_ajax_list()
+	{
+		$this->load->model('Datatables/Seller_Orders_DT','seller_orders_model');
+
+		$list = $this->seller_orders_model->get_datatables();
+		
+		
+
+		$data_array = array();
+
+		if(count($list) > 0)
+		{
+			foreach($list as $item)
+			{
+				
+				if(!key_exists($item['main_order_id'], $data_array)){
+					//No key
+					$data_array[$item['main_order_id']]['items'] = array();//Create New Key
+				}	
+				
+				$data_array[$item['main_order_id']]['order_id'] = $item['main_order_id'];//order id
+				$data_array[$item['main_order_id']]['buyer_name'] = $item['buyer_name'];//buyer name
+				$data_array[$item['main_order_id']]['create_date'] = $item['create_date']; //order date
+				$data_array[$item['main_order_id']]['status'] = $item['status'];// order status
+				$data_array[$item['main_order_id']]['status_name'] = $item['status_name'];// order status name
+				$data_array[$item['main_order_id']]['status_change_count'] = $item['status_change_count'];// order status change count
+
+				
+
+				//Delete above added keys from the result array
+				$main_order_id = $item['main_order_id'];
+				unset($item['main_order_id']);
+				unset($item['buyer_name']);
+				unset($item['create_date']);
+				unset($item['status']);
+				unset($item['status_name']);
+				unset($item['status_change_count']);
+
+				array_push($data_array[$main_order_id]['items'], $item);//Push all items in key
+				$order_items_count = count($data_array[$main_order_id]['items']);
+				$order_total = 0;
+
+				foreach($data_array[$main_order_id]['items'] as $order_item)
+				{
+					$order_total += doubleval($order_item['line_total']);
+				}
+
+				$data_array[$main_order_id]['seller_items_count'] = $order_items_count;// order item count
+				$data_array[$main_order_id]['seller_order_total'] = $order_total;// order item count
+
+			}
+		}
+
+		$list = $data_array;
+
+		$data = array(); 
+		$no = $_POST['start'];
+		foreach ($list as $fetched_data) {
+				$no++;
+				$row = array();
+				$row[] = $this->seller_orders_model->get_order_id($fetched_data['order_id']);
+				$row[] = $fetched_data['items'];//hidden column which stores items array
+				$row[] = $this->seller_orders_model->get_confirm_order($fetched_data['order_id'], $fetched_data['items'][0]['item_status'], $fetched_data['status_change_count']);
+				$row[] = $this->seller_orders_model->get_status($fetched_data['status'], $fetched_data['status_name']);
+				$row[] = $fetched_data['buyer_name'];
+				$row[] = $fetched_data['seller_items_count'];
+				$row[] = $fetched_data['seller_order_total'];
+				$row[] = $fetched_data['create_date'];
+				$data[] = $row;
+		}
+
+		$output = array(
+										"draw" => $_POST['draw'],
+										"recordsTotal" => $this->seller_orders_model->count_all(),
+										"recordsFiltered" => $this->seller_orders_model->count_filtered(),
+										"data" => $data,
+						);
+		//output to json format
+		echo json_encode($output);
 	}
 
 }

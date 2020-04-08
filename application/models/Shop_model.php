@@ -116,6 +116,95 @@
 			return ($query->num_rows() > 0) ? $query->result_array() : array();
 		}
 
+		public function get_seller_orders($seller_id)
+		{
+			$table = 'sss_products as product';
+			$this->db->where('product.seller_id', $seller_id);
+			$this->db->select('product.id as product_id, product.category_id, product.name, product.description, product.image_url, product.rem_quantity, product.price, product.pieces, category.name as category_name, order_items.order_id as main_order_id, order_items.buyer_id, order_items.quantity, order_items.order_price as line_total, buyer.name as buyer_name, buyer.phone', false);
+			$this->db->from($table);
+			$this->db->join('sss_order_items as order_items', 'order_items.product_id = product.id ','inner');
+			$this->db->join('sss_buyer as buyer', 'buyer.id = order_items.buyer_id ','inner');
+			$this->db->join('sss_category as category', 'category.id = product.category_id ','inner');
+
+			$query = $this->db->get();
+			$result = $query->result_array();
+
+			$data_array = array();
+
+			if(count($result) > 0)
+			{
+				foreach($result as $item)
+				{
+					if(!key_exists($item['main_order_id'], $data_array)){
+						//No key
+						$data_array[$item['main_order_id']]['items'] = array();//Create New Key
+					}	
+					array_push($data_array[$item['main_order_id']]['items'], $item);//Push item in key
+				}
+			}
+			// print_r($data_array);exit;
+
+			return $data_array;
+		}
+
+		public function update_main_order_status($order_id)
+		{
+			$order_items = $this->My_model->get('sss_order_items', array(
+				'order_id' => $order_id
+			));
+
+			$confirmed = array();
+			$cancelled = array();
+			
+			foreach($order_items as $item)
+			{
+				if($item['status'] == 2)
+				{
+					array_push($confirmed, $item['id']);
+				}
+				elseif($item['status'] == 3)
+				{
+					array_push($cancelled, $item['id']);
+				}
+			}
+	
+			if(count($cancelled) <= 0)
+			{
+				//all sellers confirmed order
+				$status = 2;
+			}
+			elseif(count($cancelled) > 0 && count($confirmed) < 1)
+			{
+				//Both sellers cancelled the order
+				$status = 3;
+			}
+			elseif(count($cancelled) > 0 && count($confirmed) > 0)
+			{
+				//Some Seller cancelled order
+				$status = 4;
+			}
+			else
+			{
+				$status = 1;
+			}
+
+			$update_order = $this->My_model->update('sss_orders', array(
+				'id' => $order_id
+			), array(
+				'status' => $status,
+				'update_date' => date ("Y-m-d H:i:s", time())
+			));
+
+
+			if($update_order)
+			{
+				return true;
+			}
+			else{
+				return false;
+			}
+
+		}
 
 
 		public function get_all_product_data($items,$current_page)
