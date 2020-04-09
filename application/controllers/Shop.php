@@ -343,12 +343,15 @@ class Shop extends CI_Controller {
 
 
 				//Deduct Product Quantity 
-				$rem_qty = $item['rem_quantity'] > 0 ? $item['rem_quantity'] - doubleval($item['item_quantity']) : 0;
-				$update_quantity = $this->My_model->update('sss_products', array(
-					'id' => $item['item_id']
-				), array(
-					'rem_quantity' => $rem_qty
-				));
+				/*
+					$rem_qty = $item['rem_quantity'] > 0 ? $item['rem_quantity'] - doubleval($item['item_quantity']) : 0;
+					$update_quantity = $this->My_model->update('sss_products', array(
+						'id' => $item['item_id']
+					), array(
+						'rem_quantity' => $rem_qty
+					));
+				*/
+
 			}
 
 			//Update Order totals
@@ -382,6 +385,8 @@ class Shop extends CI_Controller {
 		$user_id = $user_data[0]['id'];
 
 		$data['user_orders'] = $this->shop_model->get_user_orders($user_id);
+
+		print_r($data['user_orders']);exit;
 
 		$this->load->view('orders_view',$data);
 	}
@@ -546,10 +551,7 @@ class Shop extends CI_Controller {
 			)); 
 
 			$data['seller_name'] = $seller_details[0]['shop_name'];
-
-			// $data['order_details'] = $this->shop_model->get_seller_orders($this->session->userdata('user'));
 			
-
 			$this->load->view('templates/header',$data);
 			$this->load->view('templates/menu');
 			$this->load->view('my_orders_seller',$data);

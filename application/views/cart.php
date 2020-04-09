@@ -523,7 +523,7 @@ function getUserOrders(mobileNo){
         url: '<?=base_url()?>Shop/get_orders_view/' + mobileNo,
         data: {},
         success: function(data) {
-            console.log(data);
+            // console.log(data);
             $('#all-orders').append(data);
         },
         error: function(xhr, status, error) {

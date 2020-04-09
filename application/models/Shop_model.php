@@ -116,36 +116,23 @@
 			return ($query->num_rows() > 0) ? $query->result_array() : array();
 		}
 
-		public function get_seller_orders($seller_id)
+		//Seller Order products data
+		public function seller_order_products($seller_id, $order_id)
 		{
 			$table = 'sss_products as product';
 			$this->db->where('product.seller_id', $seller_id);
-			$this->db->select('product.id as product_id, product.category_id, product.name, product.description, product.image_url, product.rem_quantity, product.price, product.pieces, category.name as category_name, order_items.order_id as main_order_id, order_items.buyer_id, order_items.quantity, order_items.order_price as line_total, buyer.name as buyer_name, buyer.phone', false);
+			$this->db->where('order_items.order_id', $order_id);
+			$this->db->select('product.id as product_id, order_items.quantity as order_quantity, product.rem_quantity, order_items.status', false);
 			$this->db->from($table);
 			$this->db->join('sss_order_items as order_items', 'order_items.product_id = product.id ','inner');
-			$this->db->join('sss_buyer as buyer', 'buyer.id = order_items.buyer_id ','inner');
-			$this->db->join('sss_category as category', 'category.id = product.category_id ','inner');
 
 			$query = $this->db->get();
 			$result = $query->result_array();
 
-			$data_array = array();
-
-			if(count($result) > 0)
-			{
-				foreach($result as $item)
-				{
-					if(!key_exists($item['main_order_id'], $data_array)){
-						//No key
-						$data_array[$item['main_order_id']]['items'] = array();//Create New Key
-					}	
-					array_push($data_array[$item['main_order_id']]['items'], $item);//Push item in key
-				}
-			}
-			// print_r($data_array);exit;
-
-			return $data_array;
+			return count($result) > 0 ? $result :  array();
 		}
+
+		
 
 		public function update_main_order_status($order_id)
 		{

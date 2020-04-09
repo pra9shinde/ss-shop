@@ -119,7 +119,7 @@
           <div class="navbar-header">
               <ul class="nav navbar-nav flex-row">
                   <li class="nav-item mobile-menu d-md-none mr-auto"><a class="nav-link nav-menu-main menu-toggle hidden-xs" href="#"><i class="ft-menu font-large-1"></i></a></li>
-                  <li class="nav-item"><a class="navbar-brand" href="index.html"><img class="brand-logo" alt="modern admin logo" src="<?=base_url()?>assets/login/Logo.png">
+                  <li class="nav-item"><a class="navbar-brand" href="http://smartsocietyservices.in"><img class="brand-logo" alt="modern admin logo" src="<?=base_url()?>assets/login/Logo.png">
                           <h3 class="brand-text"><b>SMART SOCIETY</b> SERVICES</h3>
                       </a></li>
                   <li class="nav-item d-md-none"><a class="nav-link open-navbar-container" data-toggle="collapse" data-target="#navbar-mobile"><i class="la la-ellipsis-v"></i></a></li>
@@ -147,7 +147,7 @@
                           <div class="dropdown-menu" aria-labelledby="dropdown-flag"><a class="dropdown-item" href="#" data-language="en"><i class="flag-icon flag-icon-us"></i> English</a><a class="dropdown-item" href="#" data-language="fr"><i class="flag-icon flag-icon-fr"></i> French</a><a class="dropdown-item" href="#" data-language="pt"><i class="flag-icon flag-icon-pt"></i> Portuguese</a><a class="dropdown-item" href="#" data-language="de"><i class="flag-icon flag-icon-de"></i> German</a></div>
                       </li>
                       
-                      <?php if($this->uri->segment(2) === 'products_config'):?>
+                      <?php if($this->uri->segment(2) === 'products_config' ||         $this->uri->segment(2) === 'my_orders' ):?>
                             <li class="dropdown dropdown-notification nav-item"><a class="nav-link nav-link-label" href="#" data-toggle="dropdown"><i class="ficon ft-bell"></i><span class="badge badge-pill badge-danger badge-up badge-glow">0</span></a>
                                 <ul class="dropdown-menu dropdown-menu-media dropdown-menu-right">
                                     <li class="dropdown-menu-header">

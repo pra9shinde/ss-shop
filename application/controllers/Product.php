@@ -71,10 +71,6 @@ class Product extends CI_Controller {
 
 	}
 
-	public function my_orders()
-	{
-
-	}
 
 	public function add_product()
 	{
@@ -486,15 +482,38 @@ class Product extends CI_Controller {
 
 	public function change_order_status()
 	{
-		
-		$update = $this->My_model->update('sss_order_items', array(
+		$cancel_reason = $this->input->post('reason');//order cancel reason
+
+		$seller_order_details = $this->shop_model->seller_order_products($this->session->userdata('user'), $this->input->post('order_id'));
+
+
+		//Push all order product id's into an array
+		$seller_order_products = array();
+		if(count($seller_order_details) > 0)
+		{
+			foreach($seller_order_details as $prod)
+			{
+				array_push($seller_order_products, $prod['product_id']);
+			}
+		}
+
+		$update_array = array(
+			'status' => $this->input->post('status_id'),
+			'cancel_reason' => $cancel_reason,
+			'update_date' => date ("Y-m-d H:i:s", time())
+		);
+
+		if($this->input->post('status_id') == 3)
+		{
+			$update_array['status_change_count'] = 1;
+		}
+
+		//update order status of this order for only  this seller products
+		$update = $this->My_model->update_multiple('sss_order_items', 'product_id', 				  	$seller_order_products, $update_array, array(
 				'order_id' => $this->input->post('order_id')
-			),
-			array(
-				'status' => $this->input->post('status_id'),
-				'update_date' => date ("Y-m-d H:i:s", time())
 			)
 		);
+
 		
 		if(!$update)
 		{
@@ -506,6 +525,9 @@ class Product extends CI_Controller {
 						'message' => 'Database - Operation Failed!'
 			)));
 		}
+
+		//Update Stock
+		$this->update_stock($this->input->post('status_id'), $seller_order_details);
 
 		//Update the main order table status - If all sellers confirmed set it to complete else partial
 		$main_order_update = $this->shop_model->update_main_order_status($this->input->post('order_id'));
@@ -531,6 +553,40 @@ class Product extends CI_Controller {
 		)));
 
 	}
+
+	public function update_stock($status_id, $prod_arr = array())
+	{
+		if($status_id == 2)
+		{
+			//Reduce stock - Order COnfirmed
+			foreach($prod_arr as $prod)
+			{
+				$update_quantity = $this->My_model->update('sss_products', array(
+					'id' => $prod['product_id']
+				), array(
+					'rem_quantity' => doubleval($prod['rem_quantity']) - doubleval($prod['order_quantity'])
+				));
+			}
+		}
+		else
+		{
+			//Reduce Stock - Order Cancelled
+			foreach($prod_arr as $prod)
+			{
+				//Reduce Stock Only if the Order is Cancelled after Confirming. Cancelling Order will not modify the stock
+				if($prod['status'] == 2)
+				{
+					$update_quantity = $this->My_model->update('sss_products', array(
+						'id' => $prod['product_id']
+					), array(
+						'rem_quantity' => doubleval($prod['rem_quantity']) + doubleval($prod['order_quantity'])
+					));
+				}
+			}
+
+		}
+	}
+
 
 	public function product_ajax_list()
 	{

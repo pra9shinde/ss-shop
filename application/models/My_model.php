@@ -42,6 +42,14 @@
 			return ($this->db->affected_rows() > 0) ? true : false;
 		}
 
+		public function update_multiple($table, $column_where, $where_in_arr, $update_array,  $extra_where = array())
+		{
+			$this->db->where($extra_where);
+			$this->db->where_in($column_where, $where_in_arr);
+			$this->db->update($table, $update_array);
+			return ($this->db->affected_rows() > 0) ? true : false;
+		}
+
 		public function delete($table,$where)
 		{
 			$this->db->where($where);
