@@ -386,9 +386,49 @@ class Shop extends CI_Controller {
 
 		$data['user_orders'] = $this->shop_model->get_user_orders($user_id);
 
-		print_r($data['user_orders']);exit;
-
 		$this->load->view('orders_view',$data);
+	}
+
+	public function cancel_order_buyer($order_id)
+	{
+		$del_order_items = $this->My_model->delete('sss_order_items', array(
+			'order_id' => $order_id
+		));
+
+		if(!$del_order_items)
+		{
+			return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Failed - Database Operation Failed!'
+			)));
+		}
+
+		$del_order = $this->My_model->delete('sss_orders', array(
+			'id' => $order_id
+		));
+
+		if(!$del_order)
+		{
+			return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Failed - Database Operation Failed!'
+			)));
+		}
+
+		return $this->output
+		->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
+					'type' => 'success',
+					'message' => 'Order Successfully Created'
+			)));
+
 	}
 
 	public function products_config()

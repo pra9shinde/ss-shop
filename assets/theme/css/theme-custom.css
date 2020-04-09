@@ -609,6 +609,13 @@ html body a:hover {
     width: 35%;
     margin-top: 20px;
   }
+
+
+  .item-details{
+    border-right: 0;
+    border-bottom: 1px solid #b3b8bb;
+    margin: 10px 0;
+  }
 }
 
 .table-plus-icon{
@@ -619,4 +626,49 @@ html body a:hover {
 
 .dropdown-item{
   color: #9f3434 !important;
+}
+
+
+.shopping-cart .product-img {
+  width: 100px;
+}
+
+.order-details {
+  
+}
+
+
+
+.item-details{
+  border-right: 1px solid #b3b8bb;
+  margin: 10px 0;
+}
+
+
+.shopping-cart .product-img {
+
+  width: 100%;
+
+}
+
+.confirmed-container{
+  width: 100%;
+  padding: 5px;
+  /* border: 1px solid #28d094; */
+}
+
+.cancelled-container{
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ff4961;
+}
+
+
+
+@media screen and (max-width: 767px) {
+  .item-details{
+    border-right: 0;
+    border-bottom: 1px solid #b3b8bb;
+    margin: 10px 0;
+  }
 }

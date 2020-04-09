@@ -262,12 +262,15 @@
 
 
       <script>
-
       $(window).on('load', function () {
         setTimeout(function(){
           $("#ajax-loader").fadeOut(500);
         }, 500);
       });
+
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      });//Bootstrap tooltip ini
       </script>
 </body>
 <!-- END: Body-->

@@ -566,10 +566,13 @@ class Product extends CI_Controller {
 				), array(
 					'rem_quantity' => doubleval($prod['rem_quantity']) - doubleval($prod['order_quantity'])
 				));
+
+
 			}
 		}
 		else
 		{
+
 			//Reduce Stock - Order Cancelled
 			foreach($prod_arr as $prod)
 			{

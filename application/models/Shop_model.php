@@ -92,11 +92,22 @@
 				for($i = 0; $i < count($data_array['orders']); $i++)
 				{
 					// $current_order = $data_array['orders'][$i];
-
 					$order_items = $this->get_order_items($data_array['orders'][$i]['id']);//order items
-					$data_array['orders'][$i]['order_items'] = $order_items;//push order items in current order array index
-				}
+					$data_array['orders'][$i]['order_items']['confirmed'] = $order_items;//push order items in current order array index
 
+					$data_array['orders'][$i]['order_items']['cancelled'] = array();//blank array for cancelled orders if any
+
+					//seperate cancelled orders if any
+					foreach($data_array['orders'][$i]['order_items']['confirmed'] as $key => $value)
+					{
+						if($value['status'] == 3)
+						{
+							array_push($data_array['orders'][$i]['order_items']['cancelled'], $value);
+							unset($data_array['orders'][$i]['order_items']['confirmed'][$key]);//Delete from confirmed
+						}
+					}
+
+				}
 			}
 			
 			return $data_array;
@@ -107,7 +118,7 @@
 
 			$table = 'sss_order_items as order';
 			$this->db->where('order.order_id', $order_id);
-			$this->db->select('order.id as order_items_id, order.product_id, order.quantity, order.order_price as line_item_price, order.buyer_id, product.seller_id, product.name, product.price, product.description, product.pieces, product.seller_id, product.name, product.price, product.pieces, seller.name as seller_name, seller.shop_name, seller.phone, seller.pin', false);
+			$this->db->select('order.id as order_items_id, order.product_id, order.quantity, order.order_price as line_item_price, order.buyer_id, order.status, order.status_change_count, order.cancel_reason, product.seller_id, product.name, product.price, product.description, product.pieces, product.seller_id, product.name, product.price, product.pieces, seller.name as seller_name, seller.shop_name, seller.phone, seller.pin', false);
 			$this->db->from($table);
 			$this->db->join('sss_products as product', 'order.product_id = product.id ','inner');
 			$this->db->join('sss_seller as seller', 'seller.id = product.seller_id ','inner');
@@ -122,7 +133,7 @@
 			$table = 'sss_products as product';
 			$this->db->where('product.seller_id', $seller_id);
 			$this->db->where('order_items.order_id', $order_id);
-			$this->db->select('product.id as product_id, order_items.quantity as order_quantity, product.rem_quantity, order_items.status', false);
+			$this->db->select('product.id as product_id, order_items.quantity as order_quantity, product.rem_quantity, order_items.status,order_items.order_id as main_order_id, order_items.order_price as line_total', false);
 			$this->db->from($table);
 			$this->db->join('sss_order_items as order_items', 'order_items.product_id = product.id ','inner');
 

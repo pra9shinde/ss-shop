@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 08, 2020 at 07:12 AM
+-- Generation Time: Apr 09, 2020 at 02:42 PM
 -- Server version: 10.4.10-MariaDB
 -- PHP Version: 7.3.12
 
@@ -115,12 +115,11 @@ CREATE TABLE `sss_orders` (
 --
 
 INSERT INTO `sss_orders` (`id`, `buyer_id`, `total_items`, `total_price`, `create_date`, `update_date`, `status`) VALUES
-(1, 1, 3, 230, '2020-04-02 10:22:57', NULL, 1),
 (2, 5, 2, 30, '2020-04-02 11:58:56', NULL, 1),
 (3, 6, 2, 220, '2020-04-02 16:13:52', NULL, 1),
 (4, 1, 3, 220, '2020-04-03 03:11:47', NULL, 1),
 (5, 1, 3, 210, '2020-04-03 07:46:33', NULL, 1),
-(6, 1, 3, 584, '2020-04-06 07:53:39', '2020-04-07 16:01:52', 2);
+(6, 1, 3, 584, '2020-04-06 07:53:39', NULL, 4);
 
 -- --------------------------------------------------------
 
@@ -137,30 +136,28 @@ CREATE TABLE `sss_order_items` (
   `order_price` double NOT NULL,
   `update_date` timestamp NULL DEFAULT NULL,
   `status` int(4) NOT NULL DEFAULT 1,
-  `status_change_count` int(4) NOT NULL DEFAULT 0
+  `status_change_count` int(4) NOT NULL DEFAULT 0,
+  `cancel_reason` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `sss_order_items`
 --
 
-INSERT INTO `sss_order_items` (`id`, `order_id`, `buyer_id`, `product_id`, `quantity`, `order_price`, `update_date`, `status`, `status_change_count`) VALUES
-(1, 1, 1, 1, 2, 200, NULL, 1, 0),
-(2, 1, 1, 2, 1, 10, NULL, 1, 0),
-(3, 1, 1, 3, 1, 20, NULL, 1, 0),
-(4, 2, 5, 2, 1, 10, NULL, 1, 0),
-(5, 2, 5, 3, 1, 20, NULL, 1, 0),
-(6, 3, 6, 1, 2, 200, NULL, 1, 0),
-(7, 3, 6, 2, 2, 20, NULL, 1, 0),
-(8, 4, 1, 4, 1, 100, NULL, 1, 0),
-(9, 4, 1, 3, 1, 20, NULL, 1, 0),
-(10, 4, 1, 5, 1, 100, NULL, 1, 0),
-(11, 5, 1, 1, 1, 100, NULL, 1, 0),
-(12, 5, 1, 2, 1, 10, NULL, 1, 0),
-(13, 5, 1, 5, 1, 100, NULL, 1, 0),
-(14, 6, 1, 3, 2, 40, '2020-04-07 16:01:52', 2, 0),
-(15, 6, 1, 9, 2, 244, '2020-04-07 16:01:52', 2, 0),
-(16, 6, 1, 10, 3, 300, '2020-04-07 16:01:52', 2, 0);
+INSERT INTO `sss_order_items` (`id`, `order_id`, `buyer_id`, `product_id`, `quantity`, `order_price`, `update_date`, `status`, `status_change_count`, `cancel_reason`) VALUES
+(4, 2, 5, 2, 1, 10, NULL, 1, 0, NULL),
+(5, 2, 5, 3, 1, 20, NULL, 1, 0, NULL),
+(6, 3, 6, 1, 2, 200, NULL, 1, 0, NULL),
+(7, 3, 6, 2, 2, 20, NULL, 1, 0, NULL),
+(8, 4, 1, 4, 1, 100, NULL, 1, 0, NULL),
+(9, 4, 1, 3, 1, 20, NULL, 1, 0, NULL),
+(10, 4, 1, 5, 1, 100, NULL, 1, 0, NULL),
+(11, 5, 1, 1, 1, 100, NULL, 1, 0, NULL),
+(12, 5, 1, 2, 1, 10, NULL, 1, 0, NULL),
+(13, 5, 1, 5, 1, 100, NULL, 1, 0, NULL),
+(14, 6, 1, 3, 2, 40, NULL, 3, 0, NULL),
+(15, 6, 1, 9, 2, 244, NULL, 1, 0, NULL),
+(16, 6, 1, 10, 3, 300, NULL, 1, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -210,10 +207,10 @@ CREATE TABLE `sss_products` (
 --
 
 INSERT INTO `sss_products` (`id`, `seller_id`, `category_id`, `name`, `description`, `image_url`, `total_quantity`, `rem_quantity`, `price`, `pieces`, `create_date`, `update_date`, `is_delete`) VALUES
-(3, 1, 2, 'Parle G Biscuits', 'Parle G Biscuits Big packet', 'http://localhost:8080/ss-shop/uploads/dairy8.svg', 97, 95, 20, 1, '2020-04-02 09:49:30', '0000-00-00 00:00:00', 0),
+(3, 1, 2, 'Parle G Biscuits', 'Parle G Biscuits Big packet', 'http://localhost:8080/ss-shop/uploads/dairy8.svg', 97, 91, 20, 1, '2020-04-02 09:49:30', '0000-00-00 00:00:00', 0),
 (5, 2, 2, 'Test', 'asdasd', 'http://localhost:8080/ss-shop/assets/theme/images/buy.svg', 100, 98, 100, 100, '2020-04-02 11:33:23', '0000-00-00 00:00:00', 0),
-(9, 1, 1, 'Test', 'kjnasdkjnsdjknfjnsd', 'http://localhost:8080/ss-shop/uploads/market.svg', 120, 118, 122, 50, '2020-04-05 09:39:00', '0000-00-00 00:00:00', 0),
-(10, 1, 1, 'Test2', 'smd fsmdn fsdf', 'http://localhost:8080/ss-shop/uploads/supermarket.svg', 100, 97, 100, 100, '2020-04-05 09:40:31', '0000-00-00 00:00:00', 0);
+(9, 1, 1, 'Test', 'kjnasdkjnsdjknfjnsd', 'http://localhost:8080/ss-shop/uploads/market.svg', 120, 114, 122, 50, '2020-04-05 09:39:00', '0000-00-00 00:00:00', 0),
+(10, 1, 1, 'Test2', 'smd fsmdn fsdf', 'http://localhost:8080/ss-shop/uploads/supermarket.svg', 100, 91, 100, 100, '2020-04-05 09:40:31', '0000-00-00 00:00:00', 0);
 
 -- --------------------------------------------------------
 
