@@ -84,6 +84,7 @@
 				array('id','desc')
 			);
 
+		
 
 			if(count($orders) > 0){
 				$data_array['orders'] = $orders;
@@ -93,6 +94,9 @@
 				{
 					// $current_order = $data_array['orders'][$i];
 					$order_items = $this->get_order_items($data_array['orders'][$i]['id']);//order items
+				
+					
+					
 					$data_array['orders'][$i]['order_items']['confirmed'] = $order_items;//push order items in current order array index
 
 					$data_array['orders'][$i]['order_items']['cancelled'] = array();//blank array for cancelled orders if any

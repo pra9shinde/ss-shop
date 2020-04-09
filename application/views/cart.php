@@ -12,7 +12,7 @@
             <div class="shopping-cart">
                 <ul class="nav nav-tabs nav-justified">
                     <li class="nav-item">
-                        <a class="nav-link active" id="shopping-cart" data-toggle="tab" aria-controls="shop-cart-tab" href="#shop-cart-tab" aria-expanded="true">Shopping Cart</a>
+                        <a class="nav-link active" id="shopping-cart" data-toggle="tab" aria-controls="shop-cart-tab" href="#shop-cart-tab" aria-expanded="true">My Cart</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link disabled" id="checkout" data-toggle="tab" aria-controls="checkout-tab" href="#checkout-tab" aria-expanded="false">Checkout</a>
@@ -245,7 +245,7 @@
                                         <div class="row">
                                             <form id="form-mobile-no-orders"></form>
                                                 <div class="col-md-4">
-                                                    <input type="text" class="form-control" id="contact_my_orders" name="contact_my_orders" placeholder="Mobile Number*" value="" maxlength="10">
+                                                    <input type="text" class="form-control" id="contact_my_orders" name="contact_my_orders" placeholder="Mobile Number*" value="" maxlength="10" style="margin-bottom:10px">
                                                 </div>
                                                 <div class="col-md-4">
                                                     <a class="btn btn-secondary" id="btn-check-phone-orders">Check Details</a>

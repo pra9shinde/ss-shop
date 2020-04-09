@@ -385,7 +385,6 @@ class Shop extends CI_Controller {
 		$user_id = $user_data[0]['id'];
 
 		$data['user_orders'] = $this->shop_model->get_user_orders($user_id);
-
 		$this->load->view('orders_view',$data);
 	}
 

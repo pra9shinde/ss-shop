@@ -1,3 +1,4 @@
+
 <?php if(count($user_orders) > 0): ?>
   <?php foreach($user_orders['orders'] as $order){ ?>
 
@@ -56,6 +57,7 @@
                             </div>
                         <?php } ?>
 
+                        <?php $cancelled_total = 0 ?>
                         <?php if(count($order['order_items']['cancelled']) > 0) :?>
                             <div class="col-md-2">                        
                                 <p class="badge badge-danger" style="" data-toggle="tooltip" data-original-title="Hover Triggered">Seller Cancelled:</p>
@@ -69,6 +71,7 @@
                                         <div class="order-info">₹<?=$order_item['line_item_price']?></div>
                                     </div>
                                 </div>
+                            
                             <?php } ?>
                         <?php endif;?>
                     </div>
