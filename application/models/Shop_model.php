@@ -66,10 +66,11 @@
 		{
 			$table = 'sss_cart as cart';
 			$this->db->where('cart.ip_address', $ip);
-			$this->db->select('cart.id as cart_id, cart.ip_address, cart.item_id, cart.item_quantity, cart.delivery_charges, cart.item_price as cart_item_price, product.id, product.seller_id , product.name as product_name, product.description, product.image_url, product.price, product.pieces, product.rem_quantity,category.id as category_id, category.name as category_name, category.description as category_description, seller.shop_name, seller.phone', false);
+			$this->db->select('cart.id as cart_id, cart.ip_address, cart.item_id, cart.item_quantity, cart.delivery_charges, cart.item_price as cart_item_price, cart.line_tax, cart.total as car_line_total, product.id, product.seller_id , product.name as product_name, product.description, product.image_url, product.price, product.pieces, product.mrp, product.tax as tax_id, product.rem_quantity,category.id as category_id, category.name as category_name, category.description as category_description, taxes.percentage, seller.shop_name, seller.phone', false);
 			$this->db->from($table);
 			$this->db->join('sss_products as product', 'cart.item_id = product.id ','inner');
 			$this->db->join('sss_category as category', 'cart.item_id = category.id ','left');
+			$this->db->join('sss_tax as taxes', 'taxes.id = product.tax ','left');
 			$this->db->join('sss_seller as seller', 'product.seller_id  = seller.id ','inner');
 			
 			$query = $this->db->get();
@@ -83,8 +84,6 @@
 				array('buyer_id' => $user_id),
 				array('id','desc')
 			);
-
-		
 
 			if(count($orders) > 0){
 				$data_array['orders'] = $orders;

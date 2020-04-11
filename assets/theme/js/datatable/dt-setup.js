@@ -82,7 +82,7 @@ $(document).ready(function() {
         }
     });
 
-    //Seller Products
+    //Seller Category
     var category_dt = $('#tb-category').DataTable({ 
         
         dom: 'Blfrtip',

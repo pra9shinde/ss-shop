@@ -33,6 +33,9 @@
                                                     <th>Product</th>
                                                     <th>Details</th>
                                                     <th>No. Of Products</th>
+                                                    <th>Price(Excl. Tax)</th>
+                                                    <th>Tax(%)</th>
+                                                    <th>Total Tax(₹)</th>
                                                     <th>Total</th>
                                                     <th>Action</th>
                                                 </tr>
@@ -41,30 +44,49 @@
                                               <?php if(!empty($cart_items)):?>
                                                   <?php foreach($cart_items as $cart_item) { ?>
                                                     <tr>
-                                                      <td>
-                                                          <div class="product-img d-flex align-items-center">
-                                                              <img class="img-fluid" src="<?=$cart_item['image_url']?>" alt="No Image">
-                                                          </div>
-                                                      </td>
-                                                      <td>
-                                                          <div class="product-title"><?=$cart_item['product_name']?></div>
-                                                          <div class="product-size"><strong>Category : </strong> <?=$cart_item['category_name']?></div>
-                                                          <div class="product-color"><strong>Pieces per order : </strong> <?=$cart_item['pieces']?></div>
-                                                        
-                                                      </td>
-                                                      <td>
-                                                          <div class="input-group">
-                                                              <input type="text" class="text-center count touchspin" value="<?=$cart_item['item_quantity']?>" onchange="quantityUpdate(<?=$cart_item['item_id']?>, this)" />
-                                                          </div>
-                                                      </td>
-                                                      <td>
-                                                          <div class="total-price">₹<?=$cart_item['cart_item_price']?></div>
-                                                      </td>
-                                                      <td>
-                                                          <div class="product-action">
-                                                              <a onclick="removeFromCart(<?=$cart_item['item_id']?>)"><i class="ft-trash-2"></i></a>
-                                                          </div>
-                                                      </td>
+                                                        <td>
+                                                            <div class="product-img d-flex align-items-center">
+                                                                <img class="img-fluid" src="<?=$cart_item['image_url']?>" alt="No Image">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="product-title"><?=$cart_item['product_name']?></div>
+                                                            <div class="product-size"><strong>Category : </strong> <?=$cart_item['category_name']?></div>
+                                                            <div class="product-color"><strong>Pieces per order : </strong> <?=$cart_item['pieces']?></div>
+                                                            
+                                                        </td>
+                                                        <td>
+                                                            <div class="input-group">
+                                                                <input type="text" class="text-center count touchspin" value="<?=$cart_item['item_quantity']?>" onchange="quantityUpdate(<?=$cart_item['item_id']?>, this)" />
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="total-price">₹<?=$cart_item['price']?>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="total-price"><?=$cart_item['percentage']?>%</div>
+                                                        </td>  
+                                                        <td>
+                                                            <div class="total-price">₹
+                                                                
+                                                                <?php
+                                                                $qty_price = doubleval($cart_item['price']) * doubleval($cart_item['item_quantity']);
+                                                    
+                                                                $line_tax = ($qty_price * doubleval($cart_item['percentage'])) / 100;
+                                                                echo $line_tax;
+                                                                ?>
+                                                                
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="total-price">₹<?=$qty_price + $line_tax?></div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="product-action">
+                                                                <a onclick="removeFromCart(<?=$cart_item['item_id']?>)"><i class="ft-trash-2"></i></a>
+                                                            </div>
+                                                        </td>
                                                     </tr>
                                                   <?php } ?>  
                                               <?php else:?>
@@ -111,9 +133,9 @@
                                         <div class="card-body">
                                             <div class="price-detail">Price (<span id="total_items"><?=count($cart_items);?></span> items) <span class="float-right" id="total_amount">₹<?=$cart_total?></span></div>
                                             <div class="price-detail">Delivery Charges <span class="float-right">₹0</span></div>
-                                            <div class="price-detail">TAX / VAT <span class="float-right">₹0</span></div>
+                                            <div class="price-detail">TAX / VAT <span class="float-right" id="tax_total">₹<?=$tax_total?></span></div>
                                             <hr>
-                                            <div class="price-detail">Payable Amount <span class="float-right" id="payable_amount">₹<?=$cart_total?></span></div>
+                                            <div class="price-detail">Payable Amount <span class="float-right" id="payable_amount">₹<?=$cart_total + $tax_total?></span></div>
                                             <!-- <div class="total-savings">Your Total Savings on this order $550</div> -->
                                             <div class="text-right">
                                                     <a href="<?=base_url()?>" class="btn btn-info mr-2">Continue Shopping</a>
@@ -150,7 +172,7 @@
                                             </li>
                                             <li class="list-group-item d-flex justify-content-between">
                                                 <span class="product-name">TAX / VAT</span>
-                                                <span class="product-price">₹0</span>
+                                                <span class="product-price" id="checkout_tax_total"></span>
                                             </li>
                                             <li class="list-group-item d-flex justify-content-between">
                                                 <span class="product-name success">Order Total</span>
@@ -286,12 +308,13 @@ function activeTab(tab){
         context:this,
         success:function(data){
             let cart_total = 0;
-            
+            let tax_total = 0
             // console.log(data['cart_items'][0]);
             //Create li elements and add linetotals then add these data to checkout page
             let list_html = '';
             data['cart_items'].forEach(element => {
-                cart_total += Number(element['cart_item_price']);
+                cart_total += Number(element['car_line_total']);
+                tax_total += Number(element['line_tax']);
 
                 list_html +=`<li class="list-group-item d-flex justify-content-between lh-condensed">
                    <div>
@@ -302,14 +325,16 @@ function activeTab(tab){
                         </h6>
                         <small class="text-muted">Pieces per item - <span id="checkout_pieces">${element['pieces']}</span></small> 
                     </div>
-                    <span class="text-muted" id="checkout_cart_item_price">₹${element['cart_item_price']}</span>
+                    <span class="text-muted" id="checkout_cart_item_price">₹${element['car_line_total']}</span>
                 </li>
                 `;
 
             });
             
             $('#checkout_cart_total').text('₹'+cart_total);
-            $('#checkout_payable_amount').text('₹'+cart_total);
+            let pay_amt = Number(tax_total) + Number(cart_total);
+            $('#checkout_payable_amount').text('₹'+ pay_amt);
+            $('#checkout_tax_total').text('₹'+ tax_total);
             $('#checkout_items').text(data['cart_items'].length);
             $('#checkout-items-list').append(list_html);
 

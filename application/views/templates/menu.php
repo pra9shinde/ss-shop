@@ -3,8 +3,10 @@
   <div class="main-menu-content">
       <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
           <?php if($this->uri->segment(2) === 'products_config' || $this->uri->segment(2) === 'my_orders' ):?>
-            <li class="nav-item active"><a href="<?=base_url()?>Shop/products_config"><i class="mbri-desktop"></i><span class="menu-title" data-i18n="Dashboard">App</span></a>
+            <li class="nav-item active"><a href="#"><i class="mbri-desktop"></i><span class="menu-title" data-i18n="Dashboard">App</span></a>
               <ul class="menu-content">
+                <li class=""><a class="menu-item" href="<?=base_url()?>Shop/products_config"><i class="la la-cart-plus"></i><span>Products Config</span></a>
+
                 <li class=""><a class="menu-item" href="<?=base_url()?>Shop/my_orders"><i class="la la-cart-plus"></i><span>My Orders</span></a>
                 </li>
               </ul>

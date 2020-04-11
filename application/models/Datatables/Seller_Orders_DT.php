@@ -111,26 +111,31 @@
     }
 
 
-    public function get_status($status, $status_name)
+    public function get_status($status)
     {
         if($status == 1){
             $data = '<span class="badge badge-info badge-sm">';
-            $data .= $status_name;
+            $data .= 'Placed';
             $data .= '</span>';
         }
         elseif($status == 2){
             $data = '<span class="badge badge-success badge-sm">';
-            $data .= $status_name;
+            $data .= 'Confirmed';
             $data .= '</span>';
         }
         elseif($status == 3){
             $data = '<span class="badge badge-danger badge-sm">';
-            $data .= $status_name;
+            $data .= 'Cancelled';
+            $data .= '</span>';
+        }
+        elseif($status == 5){
+            $data = '<span class="badge badge-warning badge-sm">';
+            $data .= 'On Hold';
             $data .= '</span>';
         }
         else{
-            $data = '<span class="badge badge-warning badge-sm">';
-            $data .= $status_name;
+            $data = '<span class="badge badge-primary badge-sm">';
+            $data .= 'Partial';
             $data .= '</span>';
         }
 
@@ -159,6 +164,12 @@
             $btn .= ',';
             $btn .= 2;
             $btn .= ')">Confirm</a>';
+
+            $btn .='<a class="dropdown-item" href="#" onclick="ChangeOrderStatus(';
+            $btn .= $order_id;
+            $btn .= ',';
+            $btn .= 5;
+            $btn .= ')">On Hold</a>';
         }
         if($status_change_count == 0)
         {

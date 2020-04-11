@@ -172,7 +172,9 @@
       }
 
       function quantityUpdate(id,obj, ip_address = $('#cart-link').data('ip_address')){
-        let line_total = obj.parentElement.parentElement.parentElement.children[3].firstElementChild;
+        let line_total = obj.parentElement.parentElement.parentElement.children[6].firstElementChild;
+
+        let line_tax = obj.parentElement.parentElement.parentElement.children[5].firstElementChild;
 
         if(ip_address){
           $.ajax({
@@ -185,6 +187,7 @@
             success:function(data){
               if(data.status == 'success'){
                 line_total.innerText = '₹' + data.line_total;
+                line_tax.innerText = '₹' + data.line_tax;
                 updateCartTotal();
               }
               else{
@@ -221,9 +224,11 @@
             success:function(data){
               if(data.status == 'success'){
                 // line_total.innerText = '₹' + data.line_total;
+                $('#tax_total').text(data.tax_total);
                 $('#total_items').text(data.cart_items);
                 $('#total_amount').text('₹' + data.cart_total);
-                $('#payable_amount').text('₹' + data.cart_total);
+                let pay_amt = Number(data.tax_total) + Number(data.cart_total);
+                $('#payable_amount').text('₹' + pay_amt);
               }
               else{
                 alert('Something Went Wrong!');

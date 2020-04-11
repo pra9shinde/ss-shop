@@ -98,6 +98,7 @@ class Shop extends CI_Controller {
 		
 		$data['cart_items'] = $this->shop_model->get_cart_items($ip);
 		
+		
 
 		if($from == 'checkout_page')
 		{
@@ -105,9 +106,11 @@ class Shop extends CI_Controller {
 			return;
 		}
 
-		$cart_total = $this->My_model->get_column_sum('sss_cart','item_price', array('ip_address' => $ip));
-		$data['cart_total'] = $cart_total[0]['total'];
+		$cart_total = $this->My_model->get_column_sum('sss_cart','total', array('ip_address' => $ip));
+		$tax_total = $this->My_model->get_column_sum('sss_cart','line_tax', array('ip_address' => $ip));
 
+		$data['cart_total'] = $cart_total[0]['total'];
+		$data['tax_total'] = $tax_total[0]['total'];
 		
 		$this->load->view('templates/header');
 		$this->load->view('templates/menu');
@@ -127,6 +130,12 @@ class Shop extends CI_Controller {
 	{
 		$item_exists = $this->My_model->get('sss_cart',array('ip_address' => strval($this->input->post('ip_address')), 'item_id' => strval($id)));
 		$item_details = $this->My_model->get('sss_products', array('id' => $id, 'is_delete' => 0));
+		$tax_percent =  $this->My_model->get('sss_tax',array('id' => $item_details[0]['tax']));
+		$tax_percent = $tax_percent[0]['percentage'];
+
+		$item_qty_price = doubleval($item_details[0]['price']);
+		$line_tax = ($item_qty_price * doubleval($tax_percent) ) / 100;
+		$cart_line_total = $item_qty_price + $line_tax;
 
 		if(count($item_exists) < 1)
 		{
@@ -136,7 +145,9 @@ class Shop extends CI_Controller {
 				'item_id' => strval($id),
 				'item_quantity' => strval(1),
 				'delivery_charges' => strval(0),
-				'item_price' => $item_details[0]['price']
+				'item_price' => $item_details[0]['price'],
+				'line_tax' => $line_tax,
+				'total' => $cart_line_total
 			));
 		}
 
@@ -163,16 +174,22 @@ class Shop extends CI_Controller {
 	{
 		$item_details = $this->My_model->get('sss_products',array('id' => $id));
 		$item_price = $item_details[0]['price'];
-		$cart_line_total = floatval($item_price) * intval($this->input->post('new_quantity'));
-
+		$tax_percent =  $this->My_model->get('sss_tax',array('id' => $item_details[0]['tax']));
+		$tax_percent = $tax_percent[0]['percentage'];
+	
+		$item_qty_price = doubleval($this->input->post('new_quantity')) * doubleval($item_price);
+		$line_tax = (doubleval($item_qty_price) * doubleval($tax_percent) ) / 100;
+		$cart_line_total = $item_qty_price + $line_tax;
+		
 		$update_quantity = $this->My_model->update('sss_cart', 
 			array('item_id' => strval($id), 'ip_address' => strval($this->input->post('ip_address'))),
-			array('item_quantity' => strval($this->input->post('new_quantity')), 
-						'item_price' => strval($cart_line_total)
+			array('item_quantity' => strval($this->input->post('new_quantity')),
+						'line_tax' => $line_tax,
+						'total' => $cart_line_total 
 				 		)
 		);
 
-		$cart = ['line_total' => strval($cart_line_total),'status' => 'success'];
+		$cart = ['line_total' => strval($cart_line_total), 'line_tax' => strval($line_tax),'status' => 'success'];
 		echo json_encode($cart);
 	}
 
@@ -181,9 +198,10 @@ class Shop extends CI_Controller {
 		$cart_data = $this->My_model->get('sss_cart',array(
 			'ip_address' => strval($this->input->post('ip_address'))
 		));
-		$cart_total = $this->My_model->get_column_sum('sss_cart','item_price', array('ip_address' => $this->input->post('ip_address')));
+		$tax_total = $this->My_model->get_column_sum('sss_cart','line_tax', array('ip_address' => $this->input->post('ip_address')));
+		$cart_total = $this->My_model->get_column_sum('sss_cart','total', array('ip_address' => $this->input->post('ip_address')));
 
-		$cart = ['cart_total' => strval($cart_total[0]['total']), 'cart_items' => count($cart_data), 'status' => 'success'];
+		$cart = ['cart_total' => strval($cart_total[0]['total']), 'tax_total' => strval($tax_total[0]['total']), 'cart_items' => count($cart_data), 'status' => 'success'];
 		echo json_encode($cart);
 	}
 
@@ -327,6 +345,9 @@ class Shop extends CI_Controller {
 			//get cart items
 			$cart_items = $this->shop_model->get_cart_items( $this->input->post('ip_address') );
 			
+
+
+
 			//insert into order_items
 			$cart_total = 0;
 			foreach($cart_items as $item)
@@ -336,10 +357,11 @@ class Shop extends CI_Controller {
 					'buyer_id' => $buyer_id,
 					'product_id' => $item['item_id'],
 					'quantity ' => $item['item_quantity'],
-					'order_price' => $item['cart_item_price']
+					'order_price' => $item['car_line_total'],
+					'line_tax' => $item['line_tax']
 				));
 
-				$cart_total += doubleval($item['cart_item_price']);
+				$cart_total += doubleval($item['car_line_total']);
 
 
 				//Deduct Product Quantity 
@@ -438,7 +460,7 @@ class Shop extends CI_Controller {
 				'id' => $this->session->userdata('user')
 			)); 
 
-
+			$data['taxes'] = $this->My_model->get('sss_tax');
 			$data['seller_name'] = $seller_details[0]['shop_name'];
 			$data['categories'] = $this->My_model->get('sss_category');
 

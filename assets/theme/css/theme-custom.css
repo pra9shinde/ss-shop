@@ -672,3 +672,11 @@ html body a:hover {
     margin: 10px 0;
   }
 }
+
+.shopping-cart .product-img img {
+  height: 70px;
+}
+
+.total-price{
+  text-align: center;
+}

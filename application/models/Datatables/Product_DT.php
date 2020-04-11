@@ -8,8 +8,8 @@
 		}
 
 	var $table = 'sss_products as product';
-    var $column_order = array('product.id', 'product.name', 'category.name', 'product.quantity', 'product.rem_quantity', 'product.price','product.pieces'); //set column field database for datatable orderable
-    var $column_search = array('product.name', 'category.name', 'product.quantity', 'product.rem_quantity', 'product.price','product.pieces'); //set column field database for datatable searchable 
+    var $column_order = array('product.id', 'product.name', 'category.name', 'product.quantity', 'product.rem_quantity', 'product.price','product.pieces', 'product.mrp', 'taxes.percentage'); //set column field database for datatable orderable
+    var $column_search = array('product.name', 'category.name', 'product.quantity', 'product.rem_quantity', 'product.price','product.pieces', 'product.mrp', 'taxes.percentage'); //set column field database for datatable searchable 
     var $order = array('product.id' => 'asc'); // default order 
  
  
@@ -21,9 +21,10 @@
             $this->db->where('product.is_delete', 0);
         }
         
-        $this->db->select('product.id, product.name as product_name, category.name as category_name, product.category_id, product.description, product.image_url, product.total_quantity, product.rem_quantity, product.price,product.pieces', false);
+        $this->db->select('product.id, product.name as product_name, category.name as category_name, product.category_id, product.description, product.image_url, product.total_quantity, product.rem_quantity, product.price,product.pieces, product.mrp, product.tax as tax_id, taxes.percentage as tax', false);
         $this->db->from($this->table);
         $this->db->join('sss_category as category', 'product.category_id = category.id ','inner');
+        $this->db->join('sss_tax as taxes', 'product.tax = taxes.id ','left');
         
         	
 		$i = 0;

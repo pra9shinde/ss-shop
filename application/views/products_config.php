@@ -96,7 +96,7 @@ $("document").ready(function() {
     // formData.append('prod_image', $('input[type=file]')[0].files[0]);
     var form = $('#add-product-form')[0]; // You need to use standard javascript object here
     var formData = new FormData(form);  
-
+    
     $.ajax({
       type: "POST",
       dataType : 'json',
@@ -111,6 +111,7 @@ $("document").ready(function() {
 					$('#tb-products').DataTable().draw();
           $('.custom-file input').next('.custom-file-label').html('Product Image');
           $( "#prod_category" ).val('').trigger('change');
+          $( "#tax" ).val('').trigger('change');
         } else {
 					toastr.error(data.message,'Product Addition', { "timeOut": 1000 });
         }
@@ -163,6 +164,7 @@ function deleteProduct(id){
 
 
 function editProduct(obj){
+
   $('#edit-product-modal').modal('show'); 
     $('#product_id').attr("value",obj.id);
 
@@ -178,6 +180,12 @@ function editProduct(obj){
     $('#prod_quantity_edit').attr("value",obj.rem_quantity);
     $('#prod_price_edit').attr("value",obj.price);
     $('#prod_desc_edit').val(obj.description);
+
+    $('#tax_edit').val(obj.tax_id);
+    $('#tax_edit').trigger('change');
+    
+    $('#mrp_edit').attr("value",obj.mrp);
+
 
 }
 

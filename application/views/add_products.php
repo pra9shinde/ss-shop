@@ -1,6 +1,6 @@
 
 <div class="row">
-    <div class="col-xl-12 col-12" id="ecommerceChartView" style="height: 300px;">
+    <div class="col-xl-12 col-12" id="ecommerceChartView" style="height: 400px;">
         <div class="card card-shadow">
             <div class="card-header card-header-transparent py-20">
                 <h4 class="card-title">Add New Product</h4>
@@ -41,7 +41,7 @@
                                         <input type="text" class="form-control" placeholder="Product Quantity*" name="prod_quantity" id="prod_quantity">
                                     </div>
                                     <div class="col-md-4 form-group">
-                                        <input type="text" class="form-control" placeholder="Product Price*" name="prod_price" id="prod_price">
+                                        <input type="text" class="form-control" placeholder="Product Price(Excl. TAX)*" name="prod_price" id="prod_price">
                                     </div>
                                 </div>
 
@@ -49,6 +49,23 @@
                                     <div class="col-md-4 form-group">
                                         <textarea rows="2" class="form-control " name="prod_desc" id="prod_desc" placeholder="Product Description"></textarea>
                                     </div>
+                                    <div class="col-md-4 form-group">
+                                        <select class="select2 form-control" data-placeholder="Tax Percentage(%)*" id="tax" name="tax">
+                                            <option></option>
+                                            <?php if(isset($taxes)): ?>
+                                            <?php    foreach ($taxes as $tax) { ?>       
+                                                        <option value="<?=$tax['id']?>"><?=$tax['percentage']?></option>
+                                            <?php    } ?>
+                                            <?php endif; ?>
+                                         </select>
+                                    </div>
+                                    <div class="col-md-4 form-group">
+                                        <input type="text" class="form-control" placeholder="MRP*" name="mrp" id="mrp">
+                                    </div>
+                                    
+                                </div>
+
+                                <div class="form-group row">
                                     <div class="col-md-4 form-group">
                                         <button type="button" class="btn btn-secondary btn-min-width box-shadow-3 mr-1 mb-1" style="width:100%;margin-top:1%;" id="btn-add-product">Add</button>
                                     </div>
@@ -86,9 +103,10 @@
                                     <th class="border-top-0">Name</th>
                                     <th class="border-top-0">Description</th>
                                     <th class="border-top-0">Category</th>
-                                    <th class="border-top-0">Total Quantity</th>
                                     <th class="border-top-0">In Stock</th>
-                                    <th class="border-top-0">Price</th>
+                                    <th class="border-top-0">Price(Excl. TAX)</th>
+                                    <th class="border-top-0">MRP</th>
+                                    <th class="border-top-0">Tax</th>
                                     <th class="border-top-0">Pieces</th>
                                 </tr>
                             </thead>
@@ -173,6 +191,27 @@
                         <label class="col-md-3 label-control" for="flat-area-name">Product price</label>
                         <div class="col-md-9 mx-auto">
                             <input type="text" class="form-control" placeholder="Product Price*" name="prod_price_edit" id="prod_price_edit">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 label-control" for="flat-area-name">Product MRP</label>
+                        <div class="col-md-9 mx-auto">
+                            <input type="text" class="form-control" placeholder="MRP*" name="mrp_edit" id="mrp_edit">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 label-control" for="flat-area-name">Tax Percentage(%)</label>
+                        <div class="col-md-9 mx-auto">
+                            <select class="select2 form-control" data-placeholder="Tax Percentage(%)*" id="tax_edit" name="tax_edit">
+                                <option></option>
+                                <?php if(isset($taxes)): ?>
+                                <?php    foreach ($taxes as $tax) { ?>       
+                                            <option value="<?=$tax['id']?>"><?=$tax['percentage']?></option>
+                                <?php    } ?>
+                                <?php endif; ?>
+                            </select>
                         </div>
                     </div>
 
