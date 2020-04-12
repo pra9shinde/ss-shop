@@ -121,10 +121,13 @@
 
 			$table = 'sss_order_items as order';
 			$this->db->where('order.order_id', $order_id);
-			$this->db->select('order.id as order_items_id, order.product_id, order.quantity, order.order_price as line_item_price, order.buyer_id, order.status, order.status_change_count, order.cancel_reason, product.seller_id, product.name, product.price, product.description, product.pieces, product.seller_id, product.name, product.price, product.pieces, seller.name as seller_name, seller.shop_name, seller.phone, seller.pin', false);
-			$this->db->from($table);
+			$this->db->select('order.id as order_items_id, order.product_id, order.quantity, order.order_price as line_item_price, order.line_tax, order.buyer_id, order.status, order.status_change_count, order.cancel_reason, product.seller_id, product.name, product.category_id, product.price, product.mrp, product.tax as tax_id, product.description, product.pieces, product.seller_id, product.name, product.price, product.pieces, cat.name as category_name, seller.name as seller_name, seller.shop_name, seller.phone, seller.pin, taxes.percentage as tax_percentage', false);
+			$this->db->from($table); 
 			$this->db->join('sss_products as product', 'order.product_id = product.id ','inner');
+			$this->db->join('sss_category as cat', 'cat.id = product.category_id ','left');
 			$this->db->join('sss_seller as seller', 'seller.id = product.seller_id ','inner');
+			$this->db->join('sss_tax as taxes', 'taxes.id = product.tax ','left');
+
 
 			$query = $this->db->get();
 			return ($query->num_rows() > 0) ? $query->result_array() : array();

@@ -245,6 +245,7 @@ $(document).ready(function() {
         }
     });
 
+    //Draw Mobile view product table
     $(window).resize(function(){
         //Redraw datable
         if ($(window).width() <= 767) {  

@@ -649,6 +649,9 @@ class Shop extends CI_Controller {
 	{
 		$arr = array();
 		$order = $this->shop_model->get_order_items($order_id);
+
+		
+
 		$buyer_details = $this->My_model->get('sss_buyer',array(
 			'id' => $order[0]['buyer_id']
 		));
@@ -656,13 +659,42 @@ class Shop extends CI_Controller {
 
 		foreach($order as $item)
 		{
-			if(!key_exists($item['seller_id'], $arr)){
-				//No key
-				$arr[$item['seller_id']] = array();//Create New Key
+			//push only if confirmed orders
+			if($item['status'] == 2)
+			{
+				if(!key_exists($item['seller_id'], $arr)){
+					//No key
+					$arr[$item['seller_id']] = array();//Create New Key
+					$arr[$item['seller_id']]['items'] = array();//Create New Key
+				}
+
+				//Arrange Array correctly - Remove global data items form order items array
+				$arr[$item['seller_id']]['shop_name'] = $item['shop_name'];
+				$arr[$item['seller_id']]['seller_name'] = $item['seller_name'];
+				$arr[$item['seller_id']]['phone'] = $item['phone'];
+				$arr[$item['seller_id']]['pin'] = $item['pin'];
+
+				unset($item['shop_name']);
+				unset($item['shop_seller_namename']);
+				unset($item['phone']);
+				unset($item['pin']);
+
+
+
+				//Push by grouping according to category
+				if(!key_exists($item['category_id'],  $arr[$item['seller_id']]['items']  ))
+				{
+					$arr[$item['seller_id']]['items'][$item['category_id']] = array();
+				}
+
+				array_push($arr[$item['seller_id']]['items'][$item['category_id']] , $item);//Push item in key
+
 			}
-			array_push($arr[$item['seller_id']], $item);//Push item in key
 
 		}
+
+		
+		
 		
 		$data['order'] = $arr;
 		$data['order_id'] = $order_id;

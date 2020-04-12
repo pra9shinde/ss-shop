@@ -132,11 +132,12 @@
               </ul>
           </div>
 
+          <?php if($this->uri->segment(2) != 'products_config' && $this->uri->segment(2) != 'my_orders'):?>
+            
             <div class="cart-btn">
-            <?php if($this->uri->segment(2) !== 'products_config' ||                $this->uri->segment(2) !== 'my_orders' ):?>
                 <a class="nav-link nav-link-label" id="cart-link" href="<?=base_url()?>Shop/cart"><i class="ficon ft-shopping-cart" id="cart-icon"></i><span class="badge badge-pill badge-danger badge-up badge-glow" id="cart-count">0</span></a>                    
-                <?php endif;?>
             </div>
+         <?php endif;?>
 
           <div class="navbar-container content">
               <div class="collapse navbar-collapse" id="navbar-mobile">

@@ -24,20 +24,20 @@
                   <div id="invoice-company-details" class="row">
                       <div class="col-sm-6 col-12 text-center text-sm-left">
                           <div class="media row">
-                              <div class="col-12 col-sm-3 col-xl-2">
-                                  <img src="<?=base_url()?>assets/login/Smart Society Logo.png" alt="Smart Society Services" class="mb-1 mb-sm-0" />
+                              <div class="col-12 col-sm-4 col-xl-4">
+                                  <img src="<?=base_url()?>assets/login/LogoBig.png" alt="Smart Society Services" class="mb-1 mb-sm-0" width="100%"/>
                               </div>
-                              <div class="col-12 col-sm-9 col-xl-10">
+                              <div class="col-12 col-sm-8 col-xl-8">
                                   <div class="media-body">
                                       <ul class="ml-2 px-0 list-unstyled">
                                           <li class="text-bold-800" style="font-size: 2rem;color: #a73737;">Smart Society Services</li>
                                           
-                                          <li>Seller : <?=$item[0]['shop_name']?>,</li>
-                                          <?php if(!empty($item[0]['seller_name'])):?>
-                                            <li><?=$item[0]['shop_name']?>,</li>
+                                          <li>Seller : <?=$item['shop_name']?>,</li>
+                                          <?php if(!empty($item['seller_name'])):?>
+                                            <li><?=$item['shop_name']?>,</li>
                                           <?php endif;?>
-                                          <li>Mobile No : +91-<?=$item[0]['phone']?>,</li>
-                                          <li>Pincode : <?=$item[0]['pin']?> </li>
+                                          <li>Mobile No : +91-<?=$item['phone']?>,</li>
+                                          <li>Pincode : <?=$item['pin']?> </li>
                                       </ul>
                                   </div>
                               </div>
@@ -79,27 +79,59 @@
                                       <tr>
                                           <th>#</th>
                                           <th>Item & Description</th>
+                                          <th>UOM</th>
                                           <th class="text-right">Quantity</th>
-                                          <th class="text-right">Price</th>
-                                          <th class="text-right">Amount</th>
+                                          <th class="text-right">Price(Excl. TAX)</th>
+                                          <th>Discount</th>
+                                          <th>Total(Inc. TAX)</th>
+                                          <th>MRP</th>
+                                          <th class="text-right">Tax(%)</th>
                                       </tr>
                                   </thead>
                                   <tbody>
-                                    <?php $seller_total = 0;?>
-                                    <?php for($i=0; $i< count($item); $i++): ?>
-                                      <tr>
-                                          <td scope="row"><?=$i+1?></td>
-                                          <td>
-                                              <p><?=$item[$i]['name']?></p>
-                                              <p class="text-muted"><?=$item[$i]['description']?>.
-                                              </p>
-                                          </td>
-                                          <td class="text-right"><?=$item[$i]['quantity']?></td>
-                                          <td class="text-right">₹<?=number_format($item[$i]['price'])?></td>
-                                          <td class="text-right">₹<?=number_format($item[$i]['line_item_price'])?></td>
-                                      </tr>
-                                      <?php $seller_total += doubleval($item[$i]['line_item_price']);?>
-                                    <?php endfor; ?>
+                                    <?php $order_item_count = 0; ?>
+                                    <?php $sub_total = 0; ?>
+                                    <?php $tax_total = 0; ?>
+                                    <?php $total = 0; ?>
+
+                                    <?php foreach($item['items'] as $order_item):?>
+
+                                        <tr class="group"><td colspan="9"><h6 class="mb-0">Category - <span class="text-bold-600"><?=$order_item[0]['category_name']?></span></h6></td></tr>
+                                        <?php foreach($order_item as $data) : ?>
+                                            <?php $order_item_count += 1;?>
+
+                                            <tr>
+                                                <td scope="row"><?=$order_item_count?></td>
+
+                                                <td>
+                                                    <p><?=$data['name']?></p>
+                                                    <p class="text-muted"><?=$data['description']?>
+                                                    </p>
+                                                </td>
+
+                                                <td class="text-center"><?=$data['pieces']?></td>
+
+                                                <td class="text-center"><?=$data['quantity']?></td>
+
+                                                <td class="text-center">₹<?=$data['price']?></td>
+                                                <?php $sub_total += doubleval($data['price']);?>
+
+
+                                                <td class="text-center">₹0</td>
+
+                                                <td class="text-center">₹<?=$data['line_item_price']?></td>
+                                                <?php $total += doubleval($data['line_item_price']);?>
+
+                                                
+                                                <td class="text-center">₹<?=$data['mrp']?></td>
+
+                                                <td class="text-center"><?=$data['tax_percentage']?>%</td>
+                                                <?php $tax_total += doubleval($data['line_tax']);?>
+
+
+                                            </tr>
+                                        <?php endforeach;?>
+                                    <?php endforeach;?>
                                   </tbody>
                               </table>
                           </div>
@@ -117,15 +149,19 @@
                                       <tbody>
                                           <tr>
                                               <td>Sub Total</td>
-                                              <td class="text-right">₹<?=number_format($seller_total)?></td>
+                                              <td class="text-right">₹<?=$sub_total?></td>
                                           </tr>
                                           <tr>
                                               <td>TAX</td>
+                                              <td class="text-right">₹<?=$tax_total?></td>
+                                          </tr>
+                                          <tr>
+                                              <td>Discount</td>
                                               <td class="text-right">₹0</td>
                                           </tr>
                                           <tr>
-                                              <td class="text-bold-800">Total</td>
-                                              <td class="text-bold-800 text-right">₹<?=number_format($seller_total)?></td>
+                                              <td class="text-bold-800"><b>Total</b></td>
+                                              <td class="text-bold-800 text-right"><b>₹<?=$total?></b></td>
                                           </tr>
                                       </tbody>
                                   </table>
