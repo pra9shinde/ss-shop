@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 11, 2020 at 05:42 PM
+-- Generation Time: Apr 12, 2020 at 08:04 AM
 -- Server version: 10.4.10-MariaDB
 -- PHP Version: 7.3.12
 
@@ -66,6 +66,13 @@ CREATE TABLE `sss_cart` (
   `total` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `sss_cart`
+--
+
+INSERT INTO `sss_cart` (`id`, `ip_address`, `item_id`, `item_quantity`, `delivery_charges`, `item_price`, `line_tax`, `total`) VALUES
+(16, '182.237.163.52', '1', '1', '0', '8', '0.96', '8.96');
+
 -- --------------------------------------------------------
 
 --
@@ -99,7 +106,7 @@ CREATE TABLE `sss_orders` (
   `id` int(11) NOT NULL,
   `buyer_id` int(10) NOT NULL,
   `total_items` int(10) NOT NULL,
-  `total_price` int(10) NOT NULL,
+  `total_price` varchar(10) NOT NULL,
   `create_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `update_date` timestamp NULL DEFAULT NULL,
   `status` int(4) NOT NULL DEFAULT 1
@@ -110,8 +117,7 @@ CREATE TABLE `sss_orders` (
 --
 
 INSERT INTO `sss_orders` (`id`, `buyer_id`, `total_items`, `total_price`, `create_date`, `update_date`, `status`) VALUES
-(1, 1, 3, 251, '2020-04-11 15:25:45', NULL, 1),
-(2, 1, 3, 502, '2020-04-11 15:40:09', NULL, 1);
+(2, 1, 3, '502', '2020-04-11 15:40:09', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -318,7 +324,7 @@ ALTER TABLE `sss_buyer`
 -- AUTO_INCREMENT for table `sss_cart`
 --
 ALTER TABLE `sss_cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `sss_category`
