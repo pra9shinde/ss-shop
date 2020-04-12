@@ -93,6 +93,30 @@ class Shop extends CI_Controller {
 			echo json_encode($output);
 	}
 
+	public function ajax_list_mini()
+	{
+			$list = $this->all_products_model->get_datatables();
+			
+			$data = array();
+			$no = $_POST['start'];
+			foreach ($list as $fetched_data) {
+					$no++;
+					$row = array();
+					$row[] = $this->all_products_model->get_product_details_mini($fetched_data);
+					
+					$data[] = $row;
+			}
+
+			$output = array(
+											"draw" => $_POST['draw'],
+											"recordsTotal" => $this->all_products_model->count_all(),
+											"recordsFiltered" => $this->all_products_model->count_filtered(),
+											"data" => $data,
+							);
+			//output to json format
+			echo json_encode($output);
+	}
+
 	public function cart($ip, $from = '')
 	{
 		
@@ -345,9 +369,6 @@ class Shop extends CI_Controller {
 			//get cart items
 			$cart_items = $this->shop_model->get_cart_items( $this->input->post('ip_address') );
 			
-
-
-
 			//insert into order_items
 			$cart_total = 0;
 			foreach($cart_items as $item)

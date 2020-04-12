@@ -87,8 +87,6 @@
 
 			if(count($orders) > 0){
 				$data_array['orders'] = $orders;
-				// print_r($data_array['orders']);exit;
-
 				for($i = 0; $i < count($data_array['orders']); $i++)
 				{
 					// $current_order = $data_array['orders'][$i];
@@ -112,6 +110,8 @@
 
 				}
 			}
+
+			
 			
 			return $data_array;
 		}

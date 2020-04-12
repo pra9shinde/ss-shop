@@ -156,6 +156,74 @@
 
 
 
+    /*------Mobile DT */
+    public function get_product_details_mini($obj)
+    {
+        //Image
+        $data = '
+              <div class="tb-prod-details">
+                   <div class="prod-image">
+                        <img src="';
+        $data .= $obj->image_url;
+        $data .= '" alt="Product Image" style="width: 60px;height: auto;">
+                   </div>';
+
+        //Product Name
+        $data .= '<h6 class="prod-name mb-prod"><b>Product Name : </b>';
+        $data .= $obj->product_name;
+        $data .= '</h6>';
+
+        //Product Description
+        $data .= '<h6 class="prod-desc mb-prod"><b>Product Description :</b>';
+        $data .= $obj->description;
+        $data .= '</h6>';
+
+        //Product Category
+        $data .= '<div class="prod-category mb-prod">
+                    <h6 class="prod-name"><b>Category : </b> <button type="button" class="btn btn-sm btn-outline-info round">';
+        $data .= $obj->category_name;
+        $data .= '</button> </h6>  
+                    </div>';
+
+        //Prdocut pieces
+        $data .= '<div class="prod-pieces">
+                    <h6 class="prod-name"><b>Pieces per order: </b> <p class="badge badge-warning" style="">Pieces - ';
+        $data .= $obj->pieces;
+        $data .= '</p></h6>
+                    </div>';
+
+        //Product Quantity
+        $data .= '<div class="rem-stock mb-prod">
+                        <h6 class="prod-name"><b>Remaining Stock: </b> ';
+        $data .= '<span class="badge badge badge-';
+        if($obj->rem_quantity <= 10) : 
+            $data .= 'danger';
+        else :
+            $data .= 'success';
+        endif;
+        $data .= ' badge-glow badge-pill">';
+        $data .=$obj->rem_quantity;
+        $data .='</span>  
+                    </h6>
+                    </div>';
+
+        //Product Price
+        $data .= '<p class="prod-price mb-prod">
+                    <h6 class="prod-name"><b>Price: ₹';
+        $data .= $obj->price;
+        $data .= '</b> </h6>
+                    </p>';   
+             
+        //Add to Cart
+        $data .='<div class="prod-add-cart">
+                <button type="button" class="btn btn-outline-blue-grey"  onclick="addToCart(';
+        $data .= $obj->id;        
+        $data .= ')">Add to Cart <i class="ft-shopping-cart"></i></button>
+                    </div>
+                    </div>';
+        
+        return $data;
+    }
 
 }
 ?>

@@ -118,13 +118,26 @@
       <div class="navbar-wrapper">
           <div class="navbar-header">
               <ul class="nav navbar-nav flex-row">
-                  <li class="nav-item mobile-menu d-md-none mr-auto"><a class="nav-link nav-menu-main menu-toggle hidden-xs" href="#"><i class="ft-menu font-large-1"></i></a></li>
-                  <li class="nav-item"><a class="navbar-brand" href="http://smartsocietyservices.in"><img class="brand-logo" alt="modern admin logo" src="<?=base_url()?>assets/login/Logo.png">
+                <li class="nav-item mobile-menu d-md-none mr-auto"><a class="nav-link nav-menu-main menu-toggle hidden-xs" href="#"><i class="ft-menu font-large-1"></i></a>
+                </li>
+                <li class="nav-item"><a class="navbar-brand" href="http://smartsocietyservices.in"><img class="brand-logo" alt="modern admin logo" src="<?=base_url()?>assets/login/Logo.png">
                           <h3 class="brand-text"><b>SMART SOCIETY</b> SERVICES</h3>
-                      </a></li>
+                      </a>
+                </li>
+
+                <?php if($this->uri->segment(2) === 'products_config' ||                $this->uri->segment(2) === 'my_orders' ):?>
+
                   <li class="nav-item d-md-none"><a class="nav-link open-navbar-container" data-toggle="collapse" data-target="#navbar-mobile"><i class="la la-ellipsis-v"></i></a></li>
+                <?php endif;?>
               </ul>
           </div>
+
+            <div class="cart-btn">
+            <?php if($this->uri->segment(2) !== 'products_config' ||                $this->uri->segment(2) !== 'my_orders' ):?>
+                <a class="nav-link nav-link-label" id="cart-link" href="<?=base_url()?>Shop/cart"><i class="ficon ft-shopping-cart" id="cart-icon"></i><span class="badge badge-pill badge-danger badge-up badge-glow" id="cart-count">0</span></a>                    
+                <?php endif;?>
+            </div>
+
           <div class="navbar-container content">
               <div class="collapse navbar-collapse" id="navbar-mobile">
                   <ul class="nav navbar-nav mr-auto float-left">
@@ -142,11 +155,7 @@
                           </div>
                       </li>
                   </ul>
-                  <ul class="nav navbar-nav float-right">
-                      <li class="dropdown dropdown-language nav-item"><a class="dropdown-toggle nav-link" id="dropdown-flag" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="flag-icon flag-icon-gb"></i><span class="selected-language"></span></a>
-                          <div class="dropdown-menu" aria-labelledby="dropdown-flag"><a class="dropdown-item" href="#" data-language="en"><i class="flag-icon flag-icon-us"></i> English</a><a class="dropdown-item" href="#" data-language="fr"><i class="flag-icon flag-icon-fr"></i> French</a><a class="dropdown-item" href="#" data-language="pt"><i class="flag-icon flag-icon-pt"></i> Portuguese</a><a class="dropdown-item" href="#" data-language="de"><i class="flag-icon flag-icon-de"></i> German</a></div>
-                      </li>
-                      
+                  <ul class="nav navbar-nav float-right">               
                       <?php if($this->uri->segment(2) === 'products_config' ||         $this->uri->segment(2) === 'my_orders' ):?>
                             <li class="dropdown dropdown-notification nav-item"><a class="nav-link nav-link-label" href="#" data-toggle="dropdown"><i class="ficon ft-bell"></i><span class="badge badge-pill badge-danger badge-up badge-glow">0</span></a>
                                 <ul class="dropdown-menu dropdown-menu-media dropdown-menu-right">
@@ -173,9 +182,6 @@
                                 <div class="dropdown-menu dropdown-menu-right">
                                     <div class="dropdown-divider"></div><a class="dropdown-item" href="<?=base_url()?>Shop/seller"><i class="ft-power"></i> Logout</a>
                                 </div>
-                            </li>
-                        <?php else:?>
-                            <li class="dropdown dropdown-notification nav-item"><a class="nav-link nav-link-label" id="cart-link" href="<?=base_url()?>Shop/cart"><i class="ficon ft-shopping-cart"></i><span class="badge badge-pill badge-danger badge-up badge-glow" id="cart-count">0</span></a>
                             </li>
                         <?php endif; ?>
                   </ul>

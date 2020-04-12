@@ -10,8 +10,9 @@
                 <li class=""><a class="menu-item" href="<?=base_url()?>Shop/my_orders"><i class="la la-cart-plus"></i><span>My Orders</span></a>
                 </li>
               </ul>
+            </li>
           <?php endif; ?>   
-          </li>
+          
           <li class="nav-item <?php if($this->uri->segment(2) == '' || $this->uri->segment(2) == 'cart' ):?> active<?php endif;?>">
             <a href="<?=base_url()?>"><i class="mbri-sites"></i><span class="menu-title" data-i18n="Templates">Shop</span></a>
           </li>

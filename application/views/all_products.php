@@ -94,7 +94,7 @@
 
 
               <!-- DOM - jQuery events table -->
-              <section id="dom">
+              <section id="all_products_desktop">
                   <div class="row">
                       <div class="col-12">
                           <div class="card">
@@ -146,6 +146,45 @@
               </section>
               <!-- DOM - jQuery events table -->  
           </section>
+
+          <!-- DOM - jQuery events table -->
+          <section id="all_products_mini">
+              <div class="row">
+                  <div class="col-12">
+                      <div class="card">
+                          <div class="card-header">
+                              <h4 class="card-title">All Products</h4>
+                              <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
+                              <div class="heading-elements">
+                                  <ul class="list-inline mb-0">
+                                      <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
+                                      <li><a data-action="reload"><i class="ft-rotate-cw"></i></a></li>
+                                      <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+                                      <li><a data-action="close"><i class="ft-x"></i></a></li>
+                                  </ul>
+                              </div>
+                          </div>
+
+                          <div class="card-content collapse show">
+                              <div class="card-body card-dashboard dataTables_wrapper dt-bootstrap">
+                                  <div class="table-responsive">
+                                      <table id="tb-all-products-mini" class="table table-hover table-xl mb-0 dataex-fixh-reorder" style="width:100%;">
+                                          <thead>
+                                              <tr> 
+                                              <th class="border-top-0" style="width:900px">List</th>
+                                              
+                                              </tr>
+                                          </thead>
+                                          <tbody>
+                                          </tbody>
+                                      </table>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </section>
           <!-- // Shopping cards section end -->
       </div>
   </div>
@@ -163,6 +202,43 @@ function addFilters()
             <?php endforeach;?>
     </select>`;
     $('#category_filter').append($html);
+
+    //Initialize Select2
+    $('.select2-full-bg').each(function(i, obj) {
+      var variation = "",
+      textVariation = "",
+      textColor = "";
+      var color = $(this).data('bgcolor');
+      variation = $(this).data('bgcolor-variation');
+      textVariation = $(this).data('text-variation');
+      textColor = $(this).data('text-color');
+      if(variation !== ""){
+        variation = " bg-"+variation;
+      }
+      if(textVariation !== ""){
+        textVariation = " "+textVariation;
+      }
+      var className = "bg-"+color + variation + " " + textColor + textVariation + " border-"+color + ' border-darken-2 ';
+
+      $(this).select2({
+        dropdownAutoWidth: true,
+        width: '100%',
+        containerCssClass: className,
+        dropdownCssClass: className
+      });
+    });
+}
+
+function addFiltersMini()
+{
+    $html = `<select class="select2-full-bg form-control" id="select_category_dw_mini" data-bgcolor="pink" data-bgcolor-variation="lighten-3" data-text-color="white" data-placeholder="Filter by Category">
+            <option></option>
+            <option value="all">All</option>
+            <?php foreach($categories as $category): ?>
+              <option value="<?=$category['name']?>"><?=$category['name']?></option>
+            <?php endforeach;?>
+    </select>`;
+    $('#category_filter_mini').append($html);
 
     //Initialize Select2
     $('.select2-full-bg').each(function(i, obj) {

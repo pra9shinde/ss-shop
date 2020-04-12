@@ -41,7 +41,7 @@ $(document).ready(function() {
                     }
                 }
             }
-        ],
+        ], 
         fixedHeader: {
             header: true,
             headerOffset: $('.header-navbar').outerHeight()
@@ -200,6 +200,70 @@ $(document).ready(function() {
         }
     });
 
+    
+
+     //Products mobile view
+     var all_products_mini = $('#tb-all-products-mini').DataTable({ 
+        dom: 'B<"#category_filter_mini">lfrtip',
+        buttons: [
+          
+        ],
+        "destroy": true,
+        "processing": true, //Feature control the processing indicator.
+        "serverSide": true, //Feature control DataTables' server-side processing mode.
+        "order": [], //Initial no order.
+ 
+        // Load data for the table's content from an Ajax source
+        "ajax": {
+            "cache": false,
+            "url": $('#base_url').val() + 'Shop/ajax_list_mini',
+            "type": "POST",
+            "data": function(d){
+                d.category =  $('#current_category').attr("value");
+                // d.category =  'all';
+            }
+        },
+        
+        //Set column definition initialisation properties.
+        "columnDefs": [
+            
+        ],
+        "initComplete": function( settings, json ) {
+            
+            addFiltersMini();//Add Filer Button to Datatable
+            
+        },
+        "drawCallback": function( settings ) {
+            
+            // Default Spin
+            $(".touchspin").TouchSpin({
+                buttondown_class: "btn btn-primary",
+                buttonup_class: "btn btn-primary",
+                buttondown_txt: '<i class="ft-minus"></i>',
+                buttonup_txt: '<i class="ft-plus"></i>'
+            });
+        }
+    });
+
+    $(window).resize(function(){
+        //Redraw datable
+        if ($(window).width() <= 767) {  
+            all_products_mini.draw();
+            $('#tb-all-products-mini').dataTable().fnAdjustColumnSizing();//Automatically sets header size
+        }     
+    
+    });
+
+     //Filter by Category - All products Mobile (Reload Datatable)
+     $(document.body).on("change","#select_category_dw_mini",function(){
+        // alert(this.value);
+        //alert($('#select_category_dw').select2().val());
+        $('#current_category').attr("value",this.value);
+        $('#current_category').attr("data-test",this.value);
+        $('#tb-all-products-mini').DataTable().ajax.reload();
+    });
+
+
     //Seller Orders
     var seller_orders = $('#tb-seller-orders').DataTable({ 
         dom: 'Blfrtip',
@@ -300,6 +364,9 @@ $(document).ready(function() {
         $('#current_category').attr("data-test",this.value);
         $('#tb-all-products').DataTable().ajax.reload()
     });
+
+  
+    
 
 
 
