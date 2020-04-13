@@ -130,8 +130,6 @@
           });
       }
 
-       
-
       function removeFromCart(id, ip_address = $('#cart-link').data('ip_address')){
         if(ip_address){
           $.ajax({

@@ -13,9 +13,17 @@
             </li>
           <?php endif; ?>   
           
-          <li class="nav-item <?php if($this->uri->segment(2) == '' || $this->uri->segment(2) == 'cart' ):?> active<?php endif;?>">
+          <li class="nav-item <?php if($this->uri->segment(2) == ''):?> active<?php endif;?>">
             <a href="<?=base_url()?>"><i class="mbri-sites"></i><span class="menu-title" data-i18n="Templates">Shop</span></a>
           </li>
+
+          <?php if($this->uri->segment(2) !== 'products_config' && $this->uri->segment(2) !== 'my_orders' ):?>
+            <li class="nav-item <?php if($this->uri->segment(2) == 'cart' ):?> active<?php endif;?>">
+            <a href="<?=base_url()?>Shop/cart" id="buyer_my_orders"><i class="mbri-sites"></i><span class="menu-title" data-i18n="Templates">My Order <br> History</span></a>
+          </li>
+          <?php endif; ?>   
+
+
           <li class=" nav-item"><a href="<?=base_url()?>Shop/seller"><i class="mbri-file"></i><span class="menu-title" data-i18n="Document">Seller Login</span></a>
           </li>
       </ul>

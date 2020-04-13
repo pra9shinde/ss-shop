@@ -61,6 +61,7 @@
             client_ip = data.ip.toString();
             $('#cart-link').attr('data-ip_address', client_ip); 
             $('#cart-link').attr('href', '<?=base_url()?>Shop/cart/'+ client_ip); 
+            $('#buyer_my_orders').attr('href', '<?=base_url()?>Shop/cart/'+ client_ip + '#orders'); 
             //Create a cookie
             if (!!$.cookie('client_ip')) {
                 // have cookie

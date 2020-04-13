@@ -103,6 +103,55 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-borderless mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Items</th>
+                                                    <th>Total Tax(₹)</th>
+                                                    <th>Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="padding-right:0;padding-left:0;"> 
+                                                        <div class="cart-prod-details clearfix">
+                                                            <div class="product-img-cart">
+                                                                <img class="img-fluid" src="http://localhost:8080/ss-shop/assets/theme/images/buy.svg" alt="No Image">
+                                                            </div>
+
+                                                            <div class="cart-prod-content">
+                                                                <div class="">Parle G</div>
+
+                                                                <div class=""><strong>Category : </strong> Dairy</div>
+
+                                                                <div class=""><strong>Pieces per order : </strong> 1</div>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                    </td>
+
+                                                    <td>
+                                                        <div class="total-price">₹100</div>
+                                                    </td>
+
+                                                    <td>
+                                                        <div class="total-price">₹200</div>
+                                                    </td>
+                                                </tr>                                            
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
                         <div class="row match-height">
                             <div class="col-lg-6 col-md-12">
                                 <div class="card">
@@ -295,6 +344,18 @@
 
 
 <script>
+$(document).ready(function(){
+    var hash = window.location.hash.slice(1);
+    
+    if(hash === 'orders'){
+        //Show Orders tab
+        $('.nav-tabs a[href="#' + 'comp-order-tab' + '"]').tab('show');
+        //Remove the orders hash
+        history.replaceState(null, null, ' ');
+    }
+
+});
+
 
 //open checkout tab and populate checkout data
 function activeTab(tab){
