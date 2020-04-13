@@ -23,7 +23,8 @@
                 </ul>
                 <div class="tab-content pt-1">
                     <div role="tabpanel" class="tab-pane active" id="shop-cart-tab" aria-expanded="true" aria-labelledby="shopping-cart">
-                        <div class="card">
+
+                        <div class="card" id="cart-desktop">
                             <div class="card-content">
                                 <div class="card-body">
                                     <div class="table-responsive">
@@ -57,7 +58,7 @@
                                                         </td>
                                                         <td>
                                                             <div class="input-group">
-                                                                <input type="text" class="text-center count touchspin" value="<?=$cart_item['item_quantity']?>" onchange="quantityUpdate(<?=$cart_item['item_id']?>, this)" />
+                                                                <input type="text" class="text-center count touchspin" value="<?=$cart_item['item_quantity']?>" onchange="quantityUpdate(<?=$cart_item['item_id']?>, this,'desktop')" />
                                                             </div>
                                                         </td>
                                                         <td>
@@ -91,7 +92,7 @@
                                                   <?php } ?>  
                                               <?php else:?>
                                                 <tr>
-                                                  <td colspan="5">
+                                                  <td colspan="8">
                                                     No Items
                                                   </td>
                                                 </tr>    
@@ -104,7 +105,7 @@
                             </div>
                         </div>
 
-                        <div class="card">
+                        <div class="card" id="cart-mobile">
                             <div class="card-content">
                                 <div class="card-body">
                                     <div class="table-responsive">
@@ -117,32 +118,59 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                            <?php if(!empty($cart_items)):?>
+                                                <?php foreach($cart_items as $cart_item) { ?>
                                                 <tr>
                                                     <td style="padding-right:0;padding-left:0;"> 
                                                         <div class="cart-prod-details clearfix">
                                                             <div class="product-img-cart">
-                                                                <img class="img-fluid" src="http://localhost:8080/ss-shop/assets/theme/images/buy.svg" alt="No Image">
+                                                                <img class="img-fluid"  src="<?=$cart_item['image_url']?>" alt="No Image">
                                                             </div>
 
                                                             <div class="cart-prod-content">
-                                                                <div class="">Parle G</div>
+                                                                <div class="mb-prod-2"><strong>Product : </strong><?=$cart_item['product_name']?></div>
 
-                                                                <div class=""><strong>Category : </strong> Dairy</div>
+                                                                <div class="mb-prod-2"><strong>Category : </strong><?=$cart_item['category_name']?></div>
 
-                                                                <div class=""><strong>Pieces per order : </strong> 1</div>
+                                                                <div class="mb-prod-2"><strong>Pieces per order : </strong><?=$cart_item['pieces']?></div>
+
+                                                                <div class="mb-prod-2"><strong>Price(Excl. Tax) : </strong>₹<?=$cart_item['price']?></div>
+
+                                                                <div class="mb-prod-2"><strong>Tax(%) : </strong><?=$cart_item['percentage']?>%</div>
+
+                                                                <div class="input-group mb-prod" style="width:60%;" id="cart-counter-txtbx">
+                                                                    <input type="text" class="text-center count touchspin" value="<?=$cart_item['item_quantity']?>" onchange="quantityUpdate(<?=$cart_item['item_id']?>, this,'mobile')" />
+                                                                </div>
+
+                                                                <button type="button" class="btn btn-outline-blue-grey" onclick="removeFromCart(<?=$cart_item['item_id']?>)">Remove <i class="ft-trash-2"></i></button>
                                                             </div>
                                                         </div>
                                                         
                                                     </td>
 
                                                     <td>
-                                                        <div class="total-price">₹100</div>
+                                                        <div class="">₹
+                                                            <?php
+                                                                $qty_price = doubleval($cart_item['price']) * doubleval($cart_item['item_quantity']);
+                                                    
+                                                                $line_tax = ($qty_price * doubleval($cart_item['percentage'])) / 100;
+                                                                echo $line_tax;
+                                                            ?>
+                                                        </div>
                                                     </td>
 
                                                     <td>
-                                                        <div class="total-price">₹200</div>
+                                                        <div class="">₹<?=$qty_price + $line_tax?></div>
                                                     </td>
-                                                </tr>                                            
+                                                </tr>  
+                                            <?php } ?>  
+                                            <?php else:?>
+                                                    <tr>
+                                                        <td colspan="3">
+                                                            No Items
+                                                        </td>
+                                                    </tr>    
+                                            <?php endif;?>                                          
                                             </tbody>
                                         </table>
                                     </div>

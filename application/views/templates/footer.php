@@ -169,10 +169,23 @@
         } 
       }
 
-      function quantityUpdate(id,obj, ip_address = $('#cart-link').data('ip_address')){
-        let line_total = obj.parentElement.parentElement.parentElement.children[6].firstElementChild;
+      function quantityUpdate(id,obj,device, ip_address = $('#cart-link').data('ip_address')){
+        let line_total;
+        let line_tax;
 
-        let line_tax = obj.parentElement.parentElement.parentElement.children[5].firstElementChild;
+        if(device === 'desktop'){
+          
+          line_total = obj.parentElement.parentElement.parentElement.children[6].firstElementChild;
+
+          line_tax = obj.parentElement.parentElement.parentElement.children[5].firstElementChild; 
+        }
+
+        else{
+          line_total = obj.parentElement.parentElement.parentElement.parentElement.parentElement.children[2].firstElementChild;
+
+          line_tax = obj.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].firstElementChild;
+
+        }
 
         if(ip_address){
           $.ajax({

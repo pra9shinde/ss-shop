@@ -196,6 +196,7 @@ class Shop extends CI_Controller {
 
 	public function update_cart_quantity($id)
 	{
+		
 		$item_details = $this->My_model->get('sss_products',array('id' => $id));
 		$item_price = $item_details[0]['price'];
 		$tax_percent =  $this->My_model->get('sss_tax',array('id' => $item_details[0]['tax']));
@@ -204,6 +205,8 @@ class Shop extends CI_Controller {
 		$item_qty_price = doubleval($this->input->post('new_quantity')) * doubleval($item_price);
 		$line_tax = (doubleval($item_qty_price) * doubleval($tax_percent) ) / 100;
 		$cart_line_total = $item_qty_price + $line_tax;
+
+		
 		
 		$update_quantity = $this->My_model->update('sss_cart', 
 			array('item_id' => strval($id), 'ip_address' => strval($this->input->post('ip_address'))),
