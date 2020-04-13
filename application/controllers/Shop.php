@@ -487,6 +487,7 @@ class Shop extends CI_Controller {
 			$data['taxes'] = $this->My_model->get('sss_tax');
 			$data['seller_name'] = $seller_details[0]['shop_name'];
 			$data['categories'] = $this->My_model->get('sss_category');
+			$data['uoms'] = $this->My_model->get('sss_uom');
 
 			$this->load->view('templates/header',$data);
 			$this->load->view('templates/menu');

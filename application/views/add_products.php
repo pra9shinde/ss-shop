@@ -9,10 +9,6 @@
                             <div class="form-body">
                                 <div class="row">
                                     <div class="col-md-4 form-group">
-                                        <input type="text" class="form-control" placeholder="Product Name*" name="prod_name" id="prod_name">
-                                    </div>
-
-                                    <div class="col-md-4 form-group">
                                         <select class="select2 form-control" data-placeholder="Product Category*" id="prod_category" name="prod_category">
                                             <option></option>
                                             <?php if(isset($categories)): ?>
@@ -22,6 +18,12 @@
                                             <?php endif; ?>
                                          </select>
                                     </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <input type="text" class="form-control" placeholder="Product Name*" name="prod_name" id="prod_name">
+                                    </div>
+
+                                   
                                     <div class="col-md-4">
                                         <fieldset class="form-group">
                                             <div class="custom-file">
@@ -34,22 +36,39 @@
 
 
                                 <div class="row">
+                                    
+
                                     <div class="col-md-4 form-group">
-                                        <input type="text" class="form-control" placeholder="Product Pieces*" name="prod_pieces" id="prod_pieces">
+                                        <select class="select2 form-control" data-placeholder="UOM*" id="uom" name="uom">
+                                            <option></option>
+                                            <?php if(isset($uoms)): ?>
+                                            <?php    foreach ($uoms as $uom) { ?>       
+                                                        <option value="<?=$uom['id']?>"><?=$uom['name']?></option>
+                                            <?php    } ?>
+                                            <?php endif; ?>
+                                         </select>
                                     </div>
+
                                     <div class="col-md-4 form-group">
-                                        <input type="text" class="form-control" placeholder="Product Quantity*" name="prod_quantity" id="prod_quantity">
+                                        <input type="text" class="form-control" placeholder="UOM unit*" name="uom_qty" id="uom_qty">
                                     </div>
+
                                     <div class="col-md-4 form-group">
-                                        <input type="text" class="form-control" placeholder="Product Price(Excl. TAX)*" name="prod_price" id="prod_price">
+                                        <input type="text" class="form-control" placeholder="Pieces per unit*" name="prod_pieces" id="prod_pieces">
                                     </div>
+ 
                                 </div>
 
-                                <div class="form-group row">
+                                <div class="row">
                                     <div class="col-md-4 form-group">
-                                        <textarea rows="2" class="form-control " name="prod_desc" id="prod_desc" placeholder="Product Description"></textarea>
+                                        <input type="text" class="form-control" placeholder="Total Stock*" name="prod_quantity" id="prod_quantity">
                                     </div>
-                                    <div class="col-md-4 form-group">
+
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" placeholder="Product Price(Excl. TAX)*" name="prod_price" id="prod_price">
+                                    </div>
+
+                                    <div class="col-md-4">
                                         <select class="select2 form-control" data-placeholder="Tax Percentage(%)*" id="tax" name="tax">
                                             <option></option>
                                             <?php if(isset($taxes)): ?>
@@ -59,13 +78,19 @@
                                             <?php endif; ?>
                                          </select>
                                     </div>
-                                    <div class="col-md-4 form-group">
-                                        <input type="text" class="form-control" placeholder="MRP*" name="mrp" id="mrp">
-                                    </div>
+
                                     
                                 </div>
 
                                 <div class="form-group row">
+                                    <div class="col-md-4 form-group">
+                                        <input type="text" class="form-control" placeholder="MRP*" name="mrp" id="mrp">
+                                    </div>
+                                   
+                                    <div class="col-md-4 form-group">
+                                        <textarea rows="2" class="form-control " name="prod_desc" id="prod_desc" placeholder="Product Description"></textarea>
+                                    </div> 
+
                                     <div class="col-md-4 form-group">
                                         <button type="button" class="btn btn-secondary btn-min-width box-shadow-3 mr-1 mb-1" style="width:100%;margin-top:1%;" id="btn-add-product">Add</button>
                                     </div>
@@ -107,6 +132,7 @@
                                     <th class="border-top-0">Price(Excl. TAX)</th>
                                     <th class="border-top-0">MRP</th>
                                     <th class="border-top-0">Tax</th>
+                                    <th class="border-top-0">UOM</th>
                                     <th class="border-top-0">Pieces</th>
                                 </tr>
                             </thead>
@@ -177,6 +203,28 @@
                         <label class="col-md-3 label-control" for="flat-area-name">Product Pieces</label>
                         <div class="col-md-9 mx-auto">
                             <input type="text" class="form-control" name="prod_pieces_edit" id="prod_pieces_edit">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 label-control" for="flat-area-name">UOM</label>
+                        <div class="col-md-9 mx-auto">
+                            <select class="select2 form-control" data-placeholder="UOM*" id="uom_edit" name="uom_edit">
+                                <option></option>
+                                <?php if(isset($uoms)): ?>
+                                <?php    foreach ($uoms as $uom) { ?>       
+                                            <option value="<?=$uom['id']?>"><?=$uom['name']?></option>
+                                <?php    } ?>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 label-control" for="flat-area-name">UOM Unit</label>
+                        <div class="col-md-9 mx-auto">
+                            <input type="text" class="form-control" name="uom_qty_edit" id="uom_qty_edit">
+
                         </div>
                     </div>
 

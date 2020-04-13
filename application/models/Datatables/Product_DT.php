@@ -21,10 +21,11 @@
             $this->db->where('product.is_delete', 0);
         }
         
-        $this->db->select('product.id, product.name as product_name, category.name as category_name, product.category_id, product.description, product.image_url, product.total_quantity, product.rem_quantity, product.price,product.pieces, product.mrp, product.tax as tax_id, taxes.percentage as tax', false);
+        $this->db->select('product.id, product.name as product_name, category.name as category_name, product.category_id, product.description, product.image_url, product.total_quantity, product.rem_quantity, product.price, product.pieces, product.uom_unit, product.mrp, product.tax as tax_id, taxes.percentage as tax, uom.id as uom, uom.name as uom_name', false);
         $this->db->from($this->table);
         $this->db->join('sss_category as category', 'product.category_id = category.id ','inner');
         $this->db->join('sss_tax as taxes', 'product.tax = taxes.id ','left');
+        $this->db->join('sss_uom as uom', 'uom.id = product.uom ','left');
         
         	
 		$i = 0;

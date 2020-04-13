@@ -112,6 +112,7 @@ $("document").ready(function() {
           $('.custom-file input').next('.custom-file-label').html('Product Image');
           $( "#prod_category" ).val('').trigger('change');
           $( "#tax" ).val('').trigger('change');
+          $( "#uom" ).val('').trigger('change');
         } else {
 					toastr.error(data.message,'Product Addition', { "timeOut": 1000 });
         }
@@ -177,6 +178,13 @@ function editProduct(obj){
     $('#old_img_path').attr("value", obj.image_url);
 
     $('#prod_pieces_edit').attr("value",obj.pieces);
+
+    $('#uom_edit').val(obj.uom);
+    $('#uom_edit').trigger('change');
+
+    $('#uom_qty_edit').attr("value",obj.uom_unit);
+
+
     $('#prod_quantity_edit').attr("value",obj.rem_quantity);
     $('#prod_price_edit').attr("value",obj.price);
     $('#prod_desc_edit').val(obj.description);

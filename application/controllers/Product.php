@@ -315,6 +315,7 @@ class Product extends CI_Controller {
 					$row[] = '₹'.$fetched_data->price;
 					$row[] = '₹'.$fetched_data->mrp;
 					$row[] = $fetched_data->tax.'%';
+					$row[] = $fetched_data->uom_unit.' '.$fetched_data->uom_name;
 					$row[] = $fetched_data->pieces;
 					$data[] = $row;
 			}
@@ -345,7 +346,9 @@ class Product extends CI_Controller {
 		$this->form_validation->set_rules('prod_category', 'Product Category', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('prod_pieces', 'Product Category', 'trim|numeric|required|xss_clean');
 		$this->form_validation->set_rules('prod_quantity', 'Product Category', 'trim|numeric|required|xss_clean');
-		$this->form_validation->set_rules('prod_price', 'Product Category', 'trim|numeric|required|xss_clean');
+		$this->form_validation->set_rules('prod_quantity', 'Product Category', 'trim|numeric|required|xss_clean');
+		$this->form_validation->set_rules('uom_qty', 'UOM Unit', 'trim|numeric|required|xss_clean');
+		$this->form_validation->set_rules('uom', 'UOM', 'trim|numeric|required|xss_clean');
 		$this->form_validation->set_rules('tax', 'Tax Percentage', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('mrp', 'MRP', 'trim|numeric|required|xss_clean');
 
@@ -434,6 +437,8 @@ class Product extends CI_Controller {
 			'rem_quantity' => $this->input->post('prod_quantity'),
 			'price' => $this->input->post('prod_price'),
 			'pieces' => $this->input->post('prod_pieces'),
+			'uom' => $this->input->post('uom'),
+			'uom_unit' => $this->input->post('uom_qty'),
 			'mrp' => $this->input->post('mrp'),
 			'tax' => $this->input->post('tax'),
 		);
@@ -448,6 +453,8 @@ class Product extends CI_Controller {
 					'message' => 'Operation failed. please try again later'
 			)));
 		}
+
+		
 
 		return $this->output
 			->set_content_type('application/json')
@@ -529,7 +536,9 @@ class Product extends CI_Controller {
 		$this->form_validation->set_rules('old_img_path', 'Old Image Path', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('prod_pieces_edit', 'Product Category', 'trim|numeric|required|xss_clean');
 		$this->form_validation->set_rules('prod_quantity_edit', 'Product Category', 'trim|numeric|required|xss_clean');
-		$this->form_validation->set_rules('prod_price_edit', 'Product Category', 'trim|numeric|required|xss_clean');
+		$this->form_validation->set_rules('uom_edit', 'UOM', 'trim|numeric|required|xss_clean');
+		$this->form_validation->set_rules('uom_qty_edit', 'UOM Unit', 'trim|numeric|required|xss_clean');
+		$this->form_validation->set_rules('tax_edit', 'Tax Percentage', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('tax_edit', 'Tax Percentage', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('mrp_edit', 'Product MRP', 'trim|required|xss_clean');
 
@@ -613,6 +622,8 @@ class Product extends CI_Controller {
 			'rem_quantity' => $this->input->post('prod_quantity_edit'),
 			'price' => $this->input->post('prod_price_edit'),
 			'pieces' => $this->input->post('prod_pieces_edit'),
+			'uom' => $this->input->post('uom_edit'),
+			'uom_unit' => $this->input->post('uom_qty_edit'),
 			'tax' => $this->input->post('tax_edit'),
 			'mrp' => $this->input->post('mrp_edit')
 		);

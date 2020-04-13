@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.2
+-- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Apr 12, 2020 at 08:04 AM
--- Server version: 10.4.10-MariaDB
--- PHP Version: 7.3.12
+-- Host: 127.0.0.1
+-- Generation Time: Apr 13, 2020 at 06:08 PM
+-- Server version: 10.4.11-MariaDB
+-- PHP Version: 7.4.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -186,11 +185,13 @@ CREATE TABLE `sss_products` (
   `total_quantity` int(10) NOT NULL,
   `rem_quantity` int(10) NOT NULL,
   `price` int(10) NOT NULL,
+  `uom` int(8) NOT NULL,
+  `uom_unit` varchar(10) NOT NULL,
   `mrp` int(10) NOT NULL,
   `tax` varchar(10) NOT NULL,
   `pieces` int(10) NOT NULL DEFAULT 1,
   `create_date` timestamp NOT NULL DEFAULT current_timestamp(),
-  `update_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `update_date` timestamp NULL DEFAULT NULL,
   `is_delete` int(2) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -198,10 +199,12 @@ CREATE TABLE `sss_products` (
 -- Dumping data for table `sss_products`
 --
 
-INSERT INTO `sss_products` (`id`, `seller_id`, `category_id`, `name`, `description`, `image_url`, `total_quantity`, `rem_quantity`, `price`, `mrp`, `tax`, `pieces`, `create_date`, `update_date`, `is_delete`) VALUES
-(1, 1, 2, 'Parle G', 'Big Packet', 'http://localhost:8080/ss-shop/assets/theme/images/buy.svg', 200, 200, 8, 10, '2', 1, '2020-04-11 06:42:55', '0000-00-00 00:00:00', 0),
-(2, 1, 1, 'Amul Milk', 'Amul 1 ltr. pasteurized milk', 'http://localhost:8080/ss-shop/uploads/dairy9.svg', 50, 50, 43, 50, '1', 1, '2020-04-11 07:32:37', '0000-00-00 00:00:00', 0),
-(3, 1, 2, 'Gits Gulab Jamun', 'Gits ready made 200mg pack', 'http://localhost:8080/ss-shop/uploads/market1.svg', 123, 123, 200, 250, '2', 1, '2020-04-11 07:34:58', '0000-00-00 00:00:00', 0);
+INSERT INTO `sss_products` (`id`, `seller_id`, `category_id`, `name`, `description`, `image_url`, `total_quantity`, `rem_quantity`, `price`, `uom`, `uom_unit`, `mrp`, `tax`, `pieces`, `create_date`, `update_date`, `is_delete`) VALUES
+(1, 1, 2, 'Parle G', 'Big Packet', 'http://localhost:8080/ss-shop/assets/theme/images/buy.svg', 200, 200, 8, 1, '2', 10, '2', 1, '2020-04-11 06:42:55', '0000-00-00 00:00:00', 0),
+(2, 1, 1, 'Amul Milk', 'Amul 1 ltr. pasteurized milk', 'http://localhost:8080/ss-shop/uploads/dairy9.svg', 50, 50, 43, 1, '1', 50, '1', 1, '2020-04-11 07:32:37', '0000-00-00 00:00:00', 0),
+(3, 1, 2, 'Gits Gulab Jamun', 'Gits ready made 200mg pack', 'http://localhost:8080/ss-shop/uploads/market1.svg', 123, 123, 200, 1, '1', 250, '2', 1, '2020-04-11 07:34:58', '0000-00-00 00:00:00', 0),
+(4, 1, 2, 'Test', 'Test UOM', 'http://localhost/ss-shop/assets/theme/images/buy.svg', 100, 100, 17, 2, '1', 20, '1', 10, '2020-04-13 15:22:35', NULL, 0),
+(5, 1, 1, 'Gokul Milk', 'Gokul Pasturized Milk', 'http://localhost/ss-shop/assets/theme/images/buy.svg', 20, 20, 45, 3, '2', 50, '1', 1, '2020-04-13 15:46:23', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -251,6 +254,29 @@ INSERT INTO `sss_tax` (`id`, `percentage`) VALUES
 (1, '5'),
 (2, '12'),
 (3, '18');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sss_uom`
+--
+
+CREATE TABLE `sss_uom` (
+  `id` int(11) NOT NULL,
+  `name` varchar(30) NOT NULL,
+  `is_delete` int(4) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `sss_uom`
+--
+
+INSERT INTO `sss_uom` (`id`, `name`, `is_delete`) VALUES
+(1, 'pieces', 0),
+(2, 'kgs', 0),
+(3, 'ltrs', 0),
+(4, 'ml', 0),
+(5, 'gms', 0);
 
 --
 -- Indexes for dumped tables
@@ -311,6 +337,12 @@ ALTER TABLE `sss_tax`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `sss_uom`
+--
+ALTER TABLE `sss_uom`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -354,7 +386,7 @@ ALTER TABLE `sss_order_status`
 -- AUTO_INCREMENT for table `sss_products`
 --
 ALTER TABLE `sss_products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `sss_seller`
@@ -367,6 +399,12 @@ ALTER TABLE `sss_seller`
 --
 ALTER TABLE `sss_tax`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `sss_uom`
+--
+ALTER TABLE `sss_uom`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
