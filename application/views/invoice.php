@@ -8,13 +8,25 @@
                 <div class="col-sm-7 col-12 text-center text-sm-left">
                     
                 </div>
-                <div class="col-sm-5 col-12 text-center">
-                    <button type="button" class="btn btn-info btn-print btn-lg my-1" onclick="printDiv()"><i class="la la-paper-plane-o mr-50" ></i>
-                        Print
-                        Invoice</button>
-                </div>
+                <?php if(count($order) > 0): ?>
+                    <div class="col-sm-5 col-12 text-center">
+                        <button type="button" class="btn btn-info btn-print btn-lg my-1" onclick="printDiv()"><i class="la la-paper-plane-o mr-50" ></i>
+                            Print
+                            Invoice</button>
+                    </div>
+                <?php endif?>
             </div>
         </div>
+
+    <?php if(count($order) < 1): ?>
+        <section class="card">
+            <div  class="card-body p-4">
+                <h4>Order not Confirmed by Seller. Once Seller confirms the order, You can print the invoice.</h2>
+            </div>
+        </section>
+    <?php endif;?>
+
+
     <?php $invoice_count = 1;?>
     <?php foreach($order as $item):?>
       <div class="content-body" id="invoice-template-<?=$invoice_count?>">
@@ -30,7 +42,7 @@
                               <div class="col-12 col-sm-8 col-xl-8">
                                   <div class="media-body">
                                       <ul class="ml-2 px-0 list-unstyled">
-                                          <li class="text-bold-800" style="font-size: 2rem;color: #a73737;">Smart Society Services</li>
+                                          <li class="text-bold-800" style="font-size: 1.5rem;color: #a73737;">Smart Society Services</li>
                                           
                                           <li>Seller : <?=$item['shop_name']?>,</li>
                                           <?php if(!empty($item['seller_name'])):?>
@@ -160,6 +172,10 @@
                                               <td class="text-right">₹0</td>
                                           </tr>
                                           <tr>
+                                              <td>Delivery Charges</td>
+                                              <td class="text-right">₹0</td>
+                                          </tr>
+                                          <tr class="group" style="color:#a73737;">
                                               <td class="text-bold-800"><b>Total</b></td>
                                               <td class="text-bold-800 text-right"><b>₹<?=$total?></b></td>
                                           </tr>
@@ -200,6 +216,5 @@ function printDiv() {
 
   document.body.innerHTML = originalContents;
   $('#invoice-footer-'+id).css('display','block');
-
 }
 </script>

@@ -416,6 +416,9 @@ class Shop extends CI_Controller {
 			
 		}
 
+		// $create_invoice = $this->shop_model->create_buyer_invoice($last_id);
+		
+
 		return $this->output
 			->set_content_type('application/json')
 			->set_status_header(200)
