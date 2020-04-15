@@ -1,41 +1,5 @@
 
 <div class="row match-height">
-    <div class="col-xl-6 col-12" id="ecommerceChartView">
-        <div class="card card-shadow" style="height: 423.117px;">
-            <div class="card-header card-header-transparent py-20">
-                <h4 class="card-title">Add New Category</h4>
-                    <div class="card-body" style="padding:1.5rem 0">
-                        <form class="form form-horizontal" id="add-category-form" action="<?=base_url()?>Product/add_category">
-                            <div class="form-body">
-                                <div class="form-group row">
-                                    <label class="col-md-3 label-control" for="eventRegInput1">Category Name*</label>
-                                    <div class="col-md-6">
-                                        <input type="text" class="form-control" placeholder="e.g. Food" name="category_name" id="category_name">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 label-control" for="eventRegInput2">Category Description</label>
-                                    <div class="col-md-6">
-                                        <textarea rows="6" class="form-control " name="category_desc" id="category_desc" placeholder="e.g. Company Packaged with 2 months expiry"></textarea>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <div class="col-md-6">
-
-                                    </div>
-                                    <div class="col-md-3">
-                                        <button type="button" class="btn btn-secondary btn-min-width box-shadow-3 mr-1 mb-1" style="width:100%" id="btn-add-category">Add</button>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </form>
-                    </div>
-            </div>
-        </div>
-    </div>
     <div class="col-xl-6 col-lg-12">
         <div class="card">
             <div class="card-header">
@@ -73,6 +37,44 @@
             </div>
         </div>
     </div>
+
+    <div class="col-xl-6 col-12" id="ecommerceChartView">
+        <div class="card card-shadow" style="height: 423.117px;">
+            <div class="card-header card-header-transparent py-20">
+                <h4 class="card-title">Add New Category</h4>
+                    <div class="card-body" style="padding:1.5rem 0">
+                        <form class="form form-horizontal" id="add-category-form" action="<?=base_url()?>Product/add_category">
+                            <div class="form-body">
+                                <div class="form-group row">
+                                    <label class="col-md-3 label-control" for="eventRegInput1">Category Name*</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" placeholder="e.g. Food" name="category_name" id="category_name">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 label-control" for="eventRegInput2">Category Description</label>
+                                    <div class="col-md-6">
+                                        <textarea rows="6" class="form-control " name="category_desc" id="category_desc" placeholder="e.g. Company Packaged with 2 months expiry"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-md-6">
+
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="button" class="btn btn-secondary btn-min-width box-shadow-3 mr-1 mb-1" style="width:100%" id="btn-add-category">Add</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+            </div>
+        </div>
+    </div>
+    
 </div>
 
  <!-- Modal -->
