@@ -1,10 +1,6 @@
 <style>
     .table th, .table td {
-        padding: 0.75rem 0px;
-    }
-
-    .table td p, .table td{
-       font-size : 12px;
+        padding: 0.75rem 10px;
     }
 </style>
  <!-- BEGIN: Content-->
@@ -92,21 +88,21 @@
 
                   <!-- Invoice Items Details -->
                   <div id="invoice-items-details" class="pt-2"> 
-                      <div class="row" id="invoice_row-<?=$invoice_count?>" >
+                      <div class="row invoice_row" style="width:1200px;">
                           <div class="table-responsive col-12">
-                              <table class="table" style="table-layout: fixed;" >
+                              <table class="table" >
                                   <thead>
                                       <tr>
-                                          <th style="width: 2%;">#</th>
-                                          <th style="width: 12%;">Item & Description</th>
-                                          <th style="width: 9%;">UOM</th>
-                                          <th style="width: 6%;">Pieces</th>
-                                          <th class="text-right" style="width: 6%;">Quantity</th>
-                                          <th class="text-right" style="width: 10%;">Price(Excl. TAX)</th>
-                                          <th style="width: 7%;">Discount</th>
-                                          <th style="width: 10%;">Total(Inc. TAX)</th>
-                                          <th class="text-center" style="width: 7%;">MRP</th>
-                                          <th class="text-right" style="width: 8%;">Tax(%)</th>
+                                          <th>#</th>
+                                          <th>Item & Description</th>
+                                          <th>UOM</th>
+                                          <th>Pieces</th>
+                                          <th class="text-right">Quantity</th>
+                                          <th class="text-right">Price(Excl. TAX)</th>
+                                          <th>Discount</th>
+                                          <th>Total(Inc. TAX)</th>
+                                          <th class="text-center">MRP</th>
+                                          <th class="text-right">Tax(%)</th>
                                       </tr>
                                   </thead>
                                   <tbody>
@@ -217,12 +213,10 @@ function printDiv() {
   var divName = 'invoice-template';
   $('#invoice-footer').css('display','none');
 
-  var tables = document.querySelectorAll('*[id^="invoice_row-"]');
+  //Scale and shift margin of table to fit in A4 Size
   
-    // for (var i = 0; i < tables.length; i++) {
-    //     tables[i].style.transform = ("scale(0.8)");
-    //     tables[i].style.margin = ("0 0 0 -15%");
-    // }
+  document.querySelector('.invoice_row').style.transform = "scale(0.8)";
+  document.querySelector('.invoice_row').style.margin = "0 0 0 -15%";
 
   var printContents = document.getElementById(divName).innerHTML;
   var originalContents = document.body.innerHTML;
@@ -233,12 +227,8 @@ function printDiv() {
 
   document.body.innerHTML = originalContents;
   $('#invoice-footer').css('display','block');
-
-  var tables_new = document.querySelectorAll('*[id^="invoice_row-"]');
-//   for (var i = 0; i < tables_new.length; i++) {
-//         tables_new[i].style.transform = ("scale(1)");
-//         tables_new[i].style.margin = ("0");
-//     }
+  document.querySelector('.invoice_row').style.transform = ("scale(1)");
+  document.querySelector('.invoice_row').style.margin = ("0");
 
 }
 </script>
