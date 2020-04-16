@@ -187,7 +187,7 @@ table.dataTable tr:hover td{
 }
 
 .dataTables_filter{
-  float: right;
+  /* float: right; */
   margin-top: 20px;
 }
 
@@ -354,7 +354,7 @@ form .form-control::placeholder {
   width: 600px;
   max-width: 100%;
   position: fixed;
-  top: 60%;
+  top: 50%;
   left: 50%;
   -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
@@ -467,7 +467,6 @@ form .form-control::placeholder {
 
 #add-product-body{
   margin-top: 120px;
-
   position: relative;
 }
 
@@ -481,11 +480,10 @@ form .form-control::placeholder {
 
 .img-card-top{
   position: absolute;
-  left: 39%;
-  top: -120px;
-  height: 240px;
-  z-index: 2; 
-  
+  top: -90px;
+  height: 120px;
+  z-index: 2;
+  right: 0%;
 }
 
 .img-card-top img{
@@ -679,7 +677,7 @@ html body a:hover {
 
 .cart-btn{
   position: absolute;
-  right: 15px;
+  right: 1%;
   z-index: 99999999999;
   top: 15px;
 }
@@ -713,6 +711,7 @@ html body a:hover {
 
 .prod-desc, .prod-name{
   width: 80%;
+  max-width: 250px;
 }
 
 .btn-outline-blue-grey {
@@ -747,6 +746,21 @@ html body a:hover {
   float: right;
 }
 
+.my_orders_tb_col1{
+  width: 15%;
+  float: left;
+}
+
+.my_orders_tb_col2{
+  width: 85%;
+  float: left;
+}
+
+.prod-name_seller {
+  width: 100%;
+  max-width: 250px;
+}
+
 
 
 @media screen and (max-width: 490px) {
@@ -757,7 +771,7 @@ html body a:hover {
 
 @media screen and (max-width: 500px) {
   .prod-image{
-    left: 50%;
+    left: 75%;
     bottom: 0;
   }
 }
@@ -788,12 +802,10 @@ html body a:hover {
   }
 
   #cart-counter-txtbx{
-    width: 100%;
+    width: 50%;
   }
 
-  #cart-counter-txtbx .input-group-prepend {
-    margin-right: -10px;
-  }
+
 
   .product-img-cart img {
     height: 50px;
@@ -826,5 +838,12 @@ html body a:hover {
 
   #cart-desktop{
     display: none;
+  }
+
+  div.dt-buttons {
+      float: none;
+      text-align: center;
+      margin-bottom: 0.5em;
+      width: auto;
   }
 }

@@ -89,16 +89,23 @@
         return $checkbox;
     }
 
-    public function load_multi_btns($obj){
-        $btns = '<div class="btn-group mx-2" role="group" aria-label="Second Group">';
-        $btns .= '<button type="button" data-toggle="modal" class="btn btn-icon btn-warning" onclick=\'editCategory(';
-        $btns .= json_encode($obj);
-        $btns .= ')\'><i class="la la-edit"></i></button>';
-        $btns .= '<button type="button" class="btn btn-icon btn-danger" onclick="deleteCategory(';
-        $btns .= $obj->id;
-        $btns .= ')"><i class="la la-trash"></i></button></div>';
-        
-        return $btns;
+   
+
+    public function load_data($obj)
+    {
+        $data = '<h6 class="prod-name mb-prod"><b>Category Name : </b>'.$obj->name.'</h6>';
+        $data .= '<h6 class="prod-name mb-prod"><b>Description : </b>'.$obj->description.'</h6>';
+
+        //Buttons
+        $data .= '<div class="btn-group" role="group" aria-label="Second Group">';
+        $data .= '<button type="button" data-toggle="modal" class="btn btn-icon btn-warning" onclick=\'editCategory(';
+        $data .= json_encode($obj);
+        $data .= ')\'><i class="la la-edit"></i></button>';
+        $data .= '<button type="button" class="btn btn-icon btn-danger" onclick="deleteCategory(';
+        $data .= $obj->id;
+        $data .= ')"><i class="la la-trash"></i></button></div>';
+
+        return $data;
     }
 
 

@@ -181,9 +181,9 @@
         }
 
         else{
-          line_total = obj.parentElement.parentElement.parentElement.parentElement.parentElement.children[2].firstElementChild;
+          line_total = obj.parentElement.parentElement.parentElement.children[1].children[6].children[1];
 
-          line_tax = obj.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].firstElementChild;
+          line_tax = obj.parentElement.parentElement.parentElement.children[1].children[5].children[1];
 
         }
 

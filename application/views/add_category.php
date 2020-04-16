@@ -14,19 +14,10 @@
             <div class="card-content">
                 <div id="new-orders" class="media-list position-relative ps">
                     <div class="table-responsive">
-                        <table id="tb-category" class="table table-hover table-xl mb-0 dataex-fixh-reorder " style="width:100%;">
+                        <table id="tb-category" class="table table-hover table-xl mb-0 dataex-fixh-reorder ">
                             <thead>
                                 <tr>
-                                    <th class="border-top-0">
-                                        <div class="skin skin-flat">
-                                            <fieldset>
-                                                    <input type="checkbox" id="select-all-category">
-                                            </fieldset>
-                                        </div>	
-                                    </th>
-                                    <th class="border-top-0">Action</th>
-                                    <th class="border-top-0">Name</th>
-                                    <th class="border-top-0">Description</th>
+                                    <th class="border-top-0">List</th>
                                 </tr>
                             </thead>
                             <tbody>

@@ -83,20 +83,21 @@
                   <!-- Invoice Customer Details -->
 
                   <!-- Invoice Items Details -->
-                  <div id="invoice-items-details" class="pt-2">
-                      <div class="row">
+                  <div id="invoice-items-details" class="pt-2"> 
+                      <div class="row" style="width:1200px;">
                           <div class="table-responsive col-12">
-                              <table class="table">
+                              <table class="table" >
                                   <thead>
                                       <tr>
                                           <th>#</th>
                                           <th>Item & Description</th>
                                           <th>UOM</th>
+                                          <th>Pieces</th>
                                           <th class="text-right">Quantity</th>
                                           <th class="text-right">Price(Excl. TAX)</th>
                                           <th>Discount</th>
                                           <th>Total(Inc. TAX)</th>
-                                          <th>MRP</th>
+                                          <th class="text-center">MRP</th>
                                           <th class="text-right">Tax(%)</th>
                                       </tr>
                                   </thead>
@@ -108,7 +109,7 @@
 
                                     <?php foreach($item['items'] as $order_item):?>
 
-                                        <tr class="group"><td colspan="9"><h6 class="mb-0">Category - <span class="text-bold-600"><?=$order_item[0]['category_name']?></span></h6></td></tr>
+                                        <tr class="group"><td colspan="10"><h6 class="mb-0">Category - <span class="text-bold-600"><?=$order_item[0]['category_name']?></span></h6></td></tr>
                                         <?php foreach($order_item as $data) : ?>
                                             <?php $order_item_count += 1;?>
 
@@ -120,6 +121,8 @@
                                                     <p class="text-muted"><?=$data['description']?>
                                                     </p>
                                                 </td>
+
+                                                <td class="text-center"><?=$data['uom_unit'].' '.$data['uom_name']?></td>
 
                                                 <td class="text-center"><?=$data['pieces']?></td>
 
@@ -215,6 +218,6 @@ function printDiv() {
   window.print();
 
   document.body.innerHTML = originalContents;
-  $('#invoice-footer-'+id).css('display','block');
+  $('#invoice-footer').css('display','block');
 }
 </script>

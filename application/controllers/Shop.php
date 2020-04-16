@@ -351,11 +351,15 @@ class Shop extends CI_Controller {
 
 	}
 
+	public function email_template()
+	{
+		$this->load->view('email/thank_you');
+	}
+
 	public function create_new_order()
 	{
 		if($this->input->post('ip_address') && $this->input->post('phone'))
 		{
-
 			//get buyer id
 			$buyer_data = $this->My_model->get('sss_buyer', array('phone' => $this->input->post('phone')));
 
@@ -413,10 +417,15 @@ class Shop extends CI_Controller {
 				'ip_address' => $this->input->post('ip_address') 
 			));
 
+
+			//Send order details to sellers
+			//$send_to_seller = $this->shop_model->send_order_details_seller($last_id);
+
+
+
 			
 		}
 
-		// $create_invoice = $this->shop_model->create_buyer_invoice($last_id);
 		
 
 		return $this->output
@@ -518,6 +527,7 @@ class Shop extends CI_Controller {
 		$this->form_validation->set_rules('shop', 'Shop Name', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('mobile', 'Mobile No.', 'trim|required|numeric|max_length[10]|xss_clean');
 		$this->form_validation->set_rules('pin', 'Shop Pincode', 'trim|required|numeric|max_length[6]|xss_clean');
+		$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|xss_clean');
 		$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[6]|xss_clean');
 		$this->form_validation->set_rules('confirm_password', 'Confirm Password', 'trim|required|min_length[6]|xss_clean');
 		$this->form_validation->set_rules('password', 'Password Mismatch', 'required|matches[confirm_password]');
@@ -553,6 +563,38 @@ class Shop extends CI_Controller {
 					'type' => 'error',
 					'message' => 'Operation failed. please try again later'
 			)));
+		}
+
+
+		$config = Array(
+			'protocol' => 'smtp',
+			'smtp_host' => SMTP_HOST,
+			'smtp_port' => SMPT_PORT,
+			'smtp_user' => SMPT_USER,
+			'smtp_pass' => SMPT_PASSWORD,
+			'mailtype'  => 'html', 
+			'charset'   => 'utf-8'
+		);
+		$this->load->library('email',$config);
+		$this->email->set_newline("\r\n");
+
+    $this->email->from('pranavshnd006@gmail.com', "Smart Society Services");
+    $this->email->to($this->input->post('email'));
+    $this->email->subject("Smart Society Services Registration");
+		//$mesg = $this->load->view('email_template',true);
+    $mesg = $this->load->view('email/thank_you','',true);
+		$this->email->message($mesg);
+
+		if(!$this->email->send())
+		{
+			// $this->email->print_debugger();
+				return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+						'type' => 'error',
+						'message' => 'Failed Sending Email'
+				)));
 		}
 
 		return $this->output
@@ -666,8 +708,8 @@ class Shop extends CI_Controller {
 
 		foreach($order as $item)
 		{
-			//push only if confirmed orders
-			if($item['status'] == 2)
+			//push only if they are not cancelled orders
+			if($item['status'] !== 3)
 			{
 				if(!key_exists($item['seller_id'], $arr)){
 					//No key

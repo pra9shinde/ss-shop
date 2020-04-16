@@ -26,15 +26,15 @@
                                   <table id="tb-seller-orders" class="table table-hover table-xl mb-0 dataex-fixh-reorder dataex-select-selectitems">
                                       <thead>
                                           <tr>
-                                          <th class="border-top-0">Order No.</th>
+                                          <th class="border-top-0" style="min-width:250px;width:100%">Orders List</th>
                                           <!--Hidden Column which stores order items array-->
                                           <th class="border-top-0">Order Details</th>
-                                          <th class="border-top-0">Confirm Order</th>
+                                          <!-- <th class="border-top-0">Confirm Order</th>
                                           <th class="border-top-0">Status</th>
                                           <th class="border-top-0">Buyer</th>
                                           <th class="border-top-0">Total Items</th>
                                           <th class="border-top-0">Total Price(₹)</th>
-                                          <th class="border-top-0">Date</th>
+                                          <th class="border-top-0">Date</th> -->
                                           </tr>
                                       </thead>
                                       <tbody>
@@ -89,25 +89,66 @@
 //Format Table inside datatable - (Order details inside order dt)
 function format(d){   
   // `d` is the original data object for the row
-  var html = `<table cellpadding="" cellspacing="0" border="0" style="padding-left:50px;">
-      <th>Product Name</th>
-      <th>Description</th>
-      <th>Category</th>
-      <th>Price</th>
-      <th>Quantity</th>
-      <th>Total</th>
-      <body>`;
+    var html = `<table cellpadding="" cellspacing="0" border="0" style="padding-left:10px;">
+        <th>Order Items</th>
+        <body>`;
+        let orderTotal = 0;
+        let taxTotal = 0;
         d[1].forEach(function(item, index){
           html += `<tr>
-              <td>${item.name}</td>
-              <td>${item.description}</td>
-              <td>${item.category_name}</td>
-              <td>${item.price}</td>
-              <td>${item.line_quantity}</td>
-              <td>${item.line_total}</td>
+              <td><h6 class="prod-name_seller mb-prod"><b>Name : </b>${item.name}</h6>
+              <h6 class="prod-name_seller mb-prod"><b>Description : </b>${item.description}</h6>
+              <h6 class="prod-name_seller mb-prod"><b>Category : </b>${item.category_name}</h6>
+              <h6 class="prod-name_seller mb-prod"><b>Price(Exl. Tax) : </b>₹${item.price}</h6>
+              <h6 class="prod-name_seller mb-prod"><b>MRP : </b>₹${item.mrp}</h6>
+              <h6 class="prod-name_seller mb-prod"><b>UOM : </b>${item.uom_unit} ${item.uom_name}</h6>
+              <h6 class="prod-name_seller mb-prod"><b>Pieces : </b>${item.pieces}</h6>
+              <h6 class="prod-name_seller mb-prod"><b>Quantity : </b>${item.line_quantity}</h6>
+              <h6 class="prod-name_seller mb-prod"><b>Tax(%) : </b>${item.tax}%</h6>
+              <h6 class="prod-name_seller mb-prod"><b>Tax : </b>₹${item.line_tax}</h6>
+              <h6 class="prod-name_seller mb-prod"><b>Total : </b>₹${item.line_total}</h6>
+              </td>
             </tr>`;
+        orderTotal += Number(item.line_total);
+        taxTotal += Number(item.line_tax);
         });
-  html +=`</body>
+    html += `<tr class="group">
+          <td>
+            <h6 class="mb-prod">Total Tax - <span class="text-bold-600">₹${taxTotal} (Incl. Tax)</span></h6>
+            <h6 class="mb-prod">Order Total - <span class="text-bold-600">₹${orderTotal} (Incl. Tax)</span></h6>`;
+
+        //Change Order Status Button
+        
+        html += '<div class="btn-group">';
+        html += '<button type="button" class="btn btn-secondary dropdown-toggle mr-1 mb-1"'; 
+        html +='data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size:10px;">Action</button>';
+        html += '<div class="dropdown-menu">';
+        if(d[1][0].item_status != 2)
+        {
+            html +='<a class="dropdown-item" href="#" onclick="ChangeOrderStatus(';
+            html += d[1][0].main_order_id;
+            html += ',';
+            html += 2;
+            html += ')">Confirm</a>';
+
+            html +='<a class="dropdown-item" href="#" onclick="ChangeOrderStatus(';
+            html += d[1][0].main_order_id;
+            html += ',';
+            html += 5;
+            html += ')">On Hold</a>';
+        }
+        if(d[1][0].status_change_count == 0)
+        {
+            html += '<a class="dropdown-item" href="#" onclick="cancelOrder(';
+            html += d[1][0].main_order_id;
+            html += ')">Cancel</a>';
+        }
+        html += '</div>';
+        html += '</div>';
+            
+    html += `</td>
+     </tr>`;
+    html +=`</body>
     </table>`;  
 
   return html;
@@ -124,7 +165,7 @@ function validateCancel(order_id, status_id){
 
 //Confirm Order
 function ChangeOrderStatus(order_id, status_id, reason=''){
-   
+
     $.ajax({
         type: "POST",
         dataType : 'json',

@@ -1,6 +1,6 @@
 
 <div class="row">
-    <div class="col-xl-12 col-12" id="ecommerceChartView" style="height: 400px;">
+    <div class="col-xl-12 col-12" id="ecommerceChartView" style="height: 100%;">
         <div class="card card-shadow">
             <div class="card-header card-header-transparent py-20">
                 <h4 class="card-title">Add New Product</h4>
@@ -64,11 +64,11 @@
                                         <input type="text" class="form-control" placeholder="Total Stock*" name="prod_quantity" id="prod_quantity">
                                     </div>
 
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 form-group">
                                         <input type="text" class="form-control" placeholder="Product Price(Excl. TAX)*" name="prod_price" id="prod_price">
                                     </div>
 
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 form-group">
                                         <select class="select2 form-control" data-placeholder="Tax Percentage(%)*" id="tax" name="tax">
                                             <option></option>
                                             <?php if(isset($taxes)): ?>
@@ -116,24 +116,7 @@
                         <table id="tb-products" class="table table-hover table-xl mb-0 dataex-fixh-reorder " style="width:100%;">
                             <thead>
                                 <tr>
-                                    <th class="border-top-0">
-                                        <div class="skin skin-flat">
-                                            <fieldset>
-                                                    <input type="checkbox" id="select-all-products">
-                                            </fieldset>
-                                        </div>	
-                                    </th>
-                                    <th class="border-top-0">Action</th>
-                                    <th class="border-top-0">Image</th>
-                                    <th class="border-top-0">Name</th>
-                                    <th class="border-top-0">Description</th>
-                                    <th class="border-top-0">Category</th>
-                                    <th class="border-top-0">In Stock</th>
-                                    <th class="border-top-0">Price(Excl. TAX)</th>
-                                    <th class="border-top-0">MRP</th>
-                                    <th class="border-top-0">Tax</th>
-                                    <th class="border-top-0">UOM</th>
-                                    <th class="border-top-0">Pieces</th>
+                                    <th class="border-top-0">List</th>
                                 </tr>
                             </thead>
                             <tbody>

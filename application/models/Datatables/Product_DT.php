@@ -85,44 +85,58 @@
 			
 			return $query->num_rows();
     }
- 
-    public function load_checkbox_btns($id){
-        $checkbox = '<div class="skin skin-flat"><fieldset><input type="checkbox" ';
-        $checkbox .= 'data-internalid="';
-        $checkbox	.= $id;
-        $checkbox	.= '"';
-        $checkbox .= 'name="input-15" class="child-checkbox-flatclass" ></fieldset></div>';
 
-        return $checkbox;
-    }
-
-    public function load_multi_btns($obj){
-        $btns = '<div class="btn-group mx-2" role="group" aria-label="Second Group">';
-        $btns .= '<button type="button" data-toggle="modal" class="btn btn-icon btn-warning" onclick=\'editProduct(';
-        $btns .= json_encode($obj);
-        $btns .= ')\'><i class="la la-edit"></i></button>';
-        $btns .= '<button type="button" class="btn btn-icon btn-danger" onclick="deleteProduct(';
-        $btns .= $obj->id;
-        $btns .= ')"><i class="la la-trash"></i></button></div>';
-        
-        return $btns;
-    }
-
-
-    public function load_image($img)
+    public function load_data($obj)
     {
-        $image = '<img src="';
-        $image .= $img['image_url'];
-        $image .= '" alt="Product Image" style="height:50px;">';
+        //Image
+        $data ='
+          <div class="tb-prod-details">
+            <div class="prod-image">';
+        $data .= '<img src="'.$obj->image_url.'" alt="Product Image" style="height:50px;">
+            </div>';
 
-        return $image;
+        //Name
+        $data .= '<h6 class="prod-name mb-prod"><b>Name : </b>'.$obj->product_name.'</h6>';
+            
+        //Description
+        $data .= '<h6 class="prod-desc mb-prod"><b>Description :</b>'.$obj->product_name.'</h6>';
+            
+        //Category
+        $data .= '<h6 class="prod-desc mb-prod"><b>Category :</b>'.$obj->category_name.'</h6>';
+
+        //Rem Stock
+        $data .= '<h6 class="prod-desc mb-prod"><b>In Stock :</b>'.$obj->rem_quantity.'</h6>';
+
+        //Price Excld. tax
+        $data .= '<h6 class="prod-desc mb-prod"><b>Price(Excl. Tax) :</b>₹'.$obj->price.'</h6>';
+
+        //Mrp
+        $data .= '<h6 class="prod-desc mb-prod"><b>MRP :</b>₹'.$obj->mrp.'</h6>';
+
+        //Tax(%)
+        $data .= '<h6 class="prod-desc mb-prod"><b>TAX(%) :</b>'.$obj->tax.'%</h6>';
+
+        //UOM
+        $data .= '<h6 class="prod-desc mb-prod"><b>UOM :</b>'.$obj->uom_unit.' '.$obj->uom_name.'</h6>';
+
+        //Pieces
+        $data .= '<h6 class="prod-desc mb-prod"><b>Pieces :</b>'.$obj->pieces.'</h6>';
+
+        //Buttons
+        $data .= '<div class="btn-group" role="group" aria-label="Second Group">';
+        $data .= '<button type="button" data-toggle="modal" class="btn btn-icon btn-warning" onclick=\'editProduct(';
+        $data .= json_encode($obj);
+        $data .= ')\'><i class="la la-edit"></i></button>';
+        $data .= '<button type="button" class="btn btn-icon btn-danger" onclick="deleteProduct(';
+        $data .= $obj->id;
+        $data .= ')"><i class="la la-trash"></i></button></div>';
+
+
+        $data .='</div>';
+            
+        return $data;
+
     }
-
-
-
-
-
-
 
 
 }

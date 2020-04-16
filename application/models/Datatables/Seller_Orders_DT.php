@@ -9,7 +9,7 @@
 
 	var $table = 'sss_products as product';
     var $column_order = array('product.id', 'product.name', 'category.name', 'product.quantity', 'product.rem_quantity', 'product.price','product.pieces'); //set column field database for datatable orderable
-    var $column_search = array('product.name', 'product.description', 'product.rem_quantity', 'product.price', 'product.pieces', 'category.name', 'order_items.quantity', 'order_items.order_price', 'order_items.status as item_status', 'buyer.name', 'buyer.phone', 'order.total_items', 'order.total_price', 'order.create_date', 'order.status', 'order_status.status_name'); //set column field database for datatable searchable 
+    var $column_search = array('product.name', 'product.description', 'product.rem_quantity', 'product.price', 'product.pieces', 'category.name', 'order_items.quantity', 'order_items.order_price', 'order_items.status as item_status', 'buyer.name', 'buyer.phone', 'order.total_items', 'order.total_price', 'order.create_date', 'order.status', 'order_status.status_name', 'product.uom_unit', 'product.mrp'); //set column field database for datatable searchable 
     var $order = array('order.id' => 'desc'); // default order 
  
  
@@ -21,13 +21,16 @@
             $this->db->where('product.is_delete', 0);
         }
         
-        $this->db->select('product.id as product_id, product.category_id, product.name, product.description, product.image_url, product.rem_quantity, product.price, product.pieces, category.name as category_name, order_items.order_id as main_order_id, order_items.buyer_id, order_items.quantity as line_quantity, order_items.order_price as line_total, order_items.status as item_status, order_items.status_change_count, buyer.name as buyer_name, buyer.phone, order.total_items, order.total_price, order.create_date, order.status, order_status.status_name', false);
+        $this->db->select('product.id as product_id, product.category_id, product.name, product.description, product.image_url, product.rem_quantity, product.price, product.pieces,, product.uom_unit, product.mrp, category.name as category_name, order_items.order_id as main_order_id, order_items.buyer_id, order_items.quantity as line_quantity, order_items.order_price as line_total, order_items.status as item_status,  order_items.line_tax, order_items.status_change_count, buyer.name as buyer_name, buyer.phone, order.total_items, order.total_price, order.create_date, order.status, order_status.status_name, , uom.id as uom, uom.name as uom_name, taxes.percentage as tax', false);
         $this->db->from($this->table);
         $this->db->join('sss_order_items as order_items', 'order_items.product_id = product.id ','inner');
         $this->db->join('sss_buyer as buyer', 'buyer.id = order_items.buyer_id ','inner');
         $this->db->join('sss_category as category', 'category.id = product.category_id ','inner');
         $this->db->join('sss_orders as order', 'order.id = order_items.order_id ','inner');
         $this->db->join('sss_order_status as order_status', 'order.status = order_status.id ','inner');
+        $this->db->join('sss_uom as uom', 'uom.id = product.uom ','left');
+        $this->db->join('sss_tax as taxes', 'product.tax = taxes.id ','left');
+
         
         	
 		$i = 0;
@@ -87,6 +90,19 @@
 			
 			return $query->num_rows();
     }
+
+    public function get_data($arr)
+    {
+        // <h6 class="prod-name mb-prod"><b>Category Name : </b>Dairy</h6>
+        
+        // <h6 class="prod-name mb-prod"><b>Description : </b>Milk items</h6>
+        
+        $data = '<i class="la la-plus-circle table-plus-icon"></i><span>';
+        $data .= 'ORD00'.$arr['order_id'];
+        $data .= '</span>';
+
+        return $data;
+    }
  
     public function load_checkbox_btns($id){
         $checkbox = '<div class="skin skin-flat"><fieldset><input type="checkbox" ';
@@ -142,14 +158,62 @@
         return $data;
     }
 
-    public function get_order_id($id)
+    public function get_order_id($arr)
     {
-        $link = '<i class="la la-plus-circle table-plus-icon"></i><span>';
-        $link .= $id;
-        $link .= '</span>';
-        return $link;
+        $data = '<div class="my_orders_tb_col1">
+                        <i class="la la-plus-circle table-plus-icon"></i>
+                    </div>';
+                    
+                    
+        $data .= '<div class="my_orders_tb_col2">
+                        <h6 class="prod-name mb-prod"><b>Order No: </b>'.$arr['order_id'].'</h6>' ;
+
+        //Order Status
+        $data .= '<h6 class="prod-name mb-prod"><b>Status: </b>';
+            if($arr['item_status'] == 1){
+                $data .= '<span class="badge badge-info badge-sm">';
+                $data .= 'Placed';
+                $data .= '</span>';
+            }
+            elseif($arr['item_status'] == 2){
+                $data .= '<span class="badge badge-success badge-sm">';
+                $data .= 'Confirmed';
+                $data .= '</span>';
+            }
+            elseif($arr['item_status'] == 3){
+                $data .= '<span class="badge badge-danger badge-sm">';
+                $data .= 'Cancelled';
+                $data .= '</span>';
+            }
+            elseif($arr['item_status'] == 5){
+                $data .= '<span class="badge badge-warning badge-sm">';
+                $data .= 'On Hold';
+                $data .= '</span>';
+            }
+            else{
+                $data .= '<span class="badge badge-primary badge-sm">';
+                $data .= 'Partial';
+                $data .= '</span>';
+            }
+        $data .= '</h6>' ; 
+        
+        //Buyer
+        $data .= '<h6 class="prod-name mb-prod"><b>Buyer Name: </b>'.$arr['buyer_name'].'</h6>'; 
+
+        //Date
+        $data .= '<h6 class="prod-name mb-prod"><b>Order Date: </b>'.$arr['create_date'].'</h6>'; 
+
+
+        $data .= '</div>';
+
+        
+
+
+
+
+        return $data;
     }
-    
+     
     public function get_confirm_order($order_id,$current_status, $status_change_count)
     {
         

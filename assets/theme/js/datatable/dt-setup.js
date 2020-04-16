@@ -17,36 +17,12 @@ $(document).ready(function() {
                     'pdf',
                     'print'
                 ]
-            },
-            {//Column Visibiity
-                extend: 'colvis',
-                columns: ':not(.noVis)'
-            },
-            {
-                text: '<i class="la la-trash"></i>',
-                className: '',
-                action: function ( e, dt, node, config ) {
-                    
-                    var selected_checkboxes = $('#tb-products td .skin.skin-flat .icheckbox_flat-red.checked');
-                    
-                    if(selected_checkboxes.length >= 1){
-                        var array_id = [];
-                        for(var i = 0; i < selected_checkboxes.length; i++){
-                            //get data id for deletion
-                            array_id.push(selected_checkboxes[i].children[0].getAttribute('data-internalid'));
-                        }
-                        //console.log(selected_checkboxes.children(0).data("internalid"));
-                        deleteProduct(array_id);
-                        
-                    }
-                }
             }
         ], 
-        fixedHeader: {
-            header: true,
-            headerOffset: $('.header-navbar').outerHeight()
-        },
-        colReorder: true,
+        "autoWidth": false,
+        "columns": [
+            { "width": "100%" }
+        ],
         
         "processing": true, //Feature control the processing indicator.
         "serverSide": true, //Feature control DataTables' server-side processing mode.
@@ -61,15 +37,7 @@ $(document).ready(function() {
         
         //Set column definition initialisation properties.
         "columnDefs": [
-            { 
-                "targets": [ 0,1 ], //first column / numbering column
-                "orderable": false, //set not orderable
-            },
-            {
-                //exclude col visibilty columns
-                "targets": [0,1],
-                "className": 'noVis'
-            }
+            
         ],
         "initComplete": function( settings, json ) {
             
@@ -77,8 +45,6 @@ $(document).ready(function() {
         },
         "drawCallback": function( settings ) {
             
-            //Checkbox initialization and Select all, pass select all checkbox id
-            select2Init('#select-all-products');
         }
     });
 
@@ -87,25 +53,7 @@ $(document).ready(function() {
         
         dom: 'Blfrtip',
         buttons: [
-            {
-                text: '<i class="la la-trash"></i>',
-                className: '',
-                action: function ( e, dt, node, config ) {
-                    
-                    var selected_checkboxes = $('#tb-category td .skin.skin-flat .icheckbox_flat-red.checked');
-                    
-                    if(selected_checkboxes.length >= 1){
-                        var array_id = [];
-                        for(var i = 0; i < selected_checkboxes.length; i++){
-                            //get data id for deletion
-                            array_id.push(selected_checkboxes[i].children[0].getAttribute('data-internalid'));
-                        }
-                        //console.log(selected_checkboxes.children(0).data("internalid"));
-                        deleteCategory(array_id);
-                        
-                    }
-                }
-            }
+            
         ],
         colReorder: true,
         
@@ -123,13 +71,10 @@ $(document).ready(function() {
         //Set column definition initialisation properties.
         "columnDefs": [
             { 
-                "targets": [ 0,1 ], //first column / numbering column
-                "orderable": false, //set not orderable
+                
             },
             {
-                //exclude col visibilty columns
-                "targets": [0,1],
-                "className": 'noVis'
+               
             }
         ],
         "initComplete": function( settings, json ) {
@@ -138,8 +83,6 @@ $(document).ready(function() {
         },
         "drawCallback": function( settings ) {
             
-            //Checkbox initialization and Select all, pass select all checkbox id
-            select2Init('#select-all-category');
         }
     });
   
@@ -199,10 +142,8 @@ $(document).ready(function() {
             });
         }
     });
-
     
-
-     //Products mobile view
+    //Products mobile view
      var all_products_mini = $('#tb-all-products-mini').DataTable({ 
         dom: 'B<"#category_filter_mini">lfrtip',
         buttons: [
@@ -255,6 +196,15 @@ $(document).ready(function() {
     
     });
 
+     //Filter by Category - All products (Reload Datatable)
+    $(document.body).on("change","#select_category_dw",function(){
+        //alert(this.value);
+        //alert($('#select_category_dw').select2().val());
+        $('#current_category').attr("value",this.value);
+        $('#current_category').attr("data-test",this.value);
+        $('#tb-all-products').DataTable().ajax.reload()
+    });
+
      //Filter by Category - All products Mobile (Reload Datatable)
      $(document.body).on("change","#select_category_dw_mini",function(){
         // alert(this.value);
@@ -279,10 +229,6 @@ $(document).ready(function() {
                     'pdf',
                     'print'
                 ]
-            },
-            {//Column Visibiity
-                extend: 'colvis',
-                columns: ':not(.noVis)'
             }
         ],
         fixedHeader: {
@@ -308,12 +254,8 @@ $(document).ready(function() {
       
         //Set column definition initialisation properties.
         "columnDefs": [
-            { 
-                "targets": [ 0,1 ], //first column / numbering column
-                "orderable": false, //set not orderable
-            },
             {
-                //exclude col visibilty columns
+                //add class to first td
                 "targets": [0],
                 "className": 'details-control'
             },
@@ -342,7 +284,7 @@ $(document).ready(function() {
             // This row is already open - close it
             row.child.hide();
             tr.removeClass('shown');
-            var icon = tr.first().children().first().children().first();
+            var icon = tr.first().children().first().children().first().children(0);
             icon.removeClass('la-minus-circle');
             icon.addClass('la-plus-circle');
         }
@@ -357,14 +299,7 @@ $(document).ready(function() {
 
 
 
-    //Filter by Category - All products (Reload Datatable)
-    $(document.body).on("change","#select_category_dw",function(){
-        //alert(this.value);
-        //alert($('#select_category_dw').select2().val());
-        $('#current_category').attr("value",this.value);
-        $('#current_category').attr("data-test",this.value);
-        $('#tb-all-products').DataTable().ajax.reload()
-    });
+   
 
   
     

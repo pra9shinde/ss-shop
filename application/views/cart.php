@@ -22,6 +22,7 @@
                     </li>
                 </ul>
                 <div class="tab-content pt-1">
+                    
                     <div role="tabpanel" class="tab-pane active" id="shop-cart-tab" aria-expanded="true" aria-labelledby="shopping-cart">
 
                         <div class="card" id="cart-desktop">
@@ -113,8 +114,6 @@
                                             <thead>
                                                 <tr>
                                                     <th>Items</th>
-                                                    <th>Total Tax(₹)</th>
-                                                    <th>Total</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -134,11 +133,27 @@
 
                                                                 <div class="mb-prod-2"><strong>Pieces per order : </strong><?=$cart_item['pieces']?></div>
 
+                                                                <div class="mb-prod-2"><strong>UOM : </strong><?=$cart_item['uom_unit'].' '.$cart_item['uom_name']?></div>
+
+                                                                <div class="mb-prod-2"><strong>MRP : </strong>₹<?=$cart_item['mrp']?></div>
+
                                                                 <div class="mb-prod-2"><strong>Price(Excl. Tax) : </strong>₹<?=$cart_item['price']?></div>
 
                                                                 <div class="mb-prod-2"><strong>Tax(%) : </strong><?=$cart_item['percentage']?>%</div>
 
-                                                                <div class="input-group mb-prod" style="width:60%;" id="cart-counter-txtbx">
+                                                                <div class="mb-prod-2"><strong>Total Tax : </strong><span>₹
+                                                                    <?php
+                                                                        $qty_price = doubleval($cart_item['price']) * doubleval($cart_item['item_quantity']);
+                                                            
+                                                                        $line_tax = ($qty_price * doubleval($cart_item['percentage'])) / 100;
+                                                                        echo $line_tax;
+                                                                    ?>
+                                                                    </span>
+                                                                </div>
+
+                                                                <div class="mb-prod-2"><strong>Total : </strong><span>₹<?=$qty_price + $line_tax?></span></div>
+
+                                                                <div class="input-group mb-prod" id="cart-counter-txtbx">
                                                                     <input type="text" class="text-center count touchspin" value="<?=$cart_item['item_quantity']?>" onchange="quantityUpdate(<?=$cart_item['item_id']?>, this,'mobile')" />
                                                                 </div>
 
@@ -148,20 +163,6 @@
                                                         
                                                     </td>
 
-                                                    <td>
-                                                        <div class="">₹
-                                                            <?php
-                                                                $qty_price = doubleval($cart_item['price']) * doubleval($cart_item['item_quantity']);
-                                                    
-                                                                $line_tax = ($qty_price * doubleval($cart_item['percentage'])) / 100;
-                                                                echo $line_tax;
-                                                            ?>
-                                                        </div>
-                                                    </td>
-
-                                                    <td>
-                                                        <div class="">₹<?=$qty_price + $line_tax?></div>
-                                                    </td>
                                                 </tr>  
                                             <?php } ?>  
                                             <?php else:?>
@@ -215,8 +216,8 @@
                                             <div class="price-detail">Payable Amount <span class="float-right" id="payable_amount">₹<?=$cart_total + $tax_total?></span></div>
                                             <!-- <div class="total-savings">Your Total Savings on this order $550</div> -->
                                             <div class="text-right">
-                                                    <a href="<?=base_url()?>" class="btn btn-info mr-2">Continue Shopping</a>
-                                                    <a class="btn btn-secondary <?php if(empty($cart_items)): ?> disabled <?php endif; ?>
+                                                    <a href="<?=base_url()?>" class="btn btn-info mb-2 ">Continue Shopping</a>
+                                                    <a class="btn btn-secondary mb-2 <?php if(empty($cart_items)): ?> disabled <?php endif; ?>
                                                             " onclick="activeTab('checkout-tab')">Place Order</a>
                                                 </div>
                                         </div>

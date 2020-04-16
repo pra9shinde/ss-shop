@@ -303,20 +303,7 @@ class Product extends CI_Controller {
 			foreach ($list as $fetched_data) {
 					$no++;
 					$row = array();
-					$row[] = $this->product_dt_model->load_checkbox_btns($fetched_data->id);
-					$row[] = $this->product_dt_model->load_multi_btns($fetched_data);
-					$img = array();
-					$img['image_url'] = $fetched_data->image_url;
-					$row[] = $this->product_dt_model->load_image($img);
-					$row[] = $fetched_data->product_name;
-					$row[] = $fetched_data->description;
-					$row[] = $fetched_data->category_name;
-					$row[] = $fetched_data->rem_quantity; 
-					$row[] = '₹'.$fetched_data->price;
-					$row[] = '₹'.$fetched_data->mrp;
-					$row[] = $fetched_data->tax.'%';
-					$row[] = $fetched_data->uom_unit.' '.$fetched_data->uom_name;
-					$row[] = $fetched_data->pieces;
+					$row[] = $this->product_dt_model->load_data($fetched_data);
 					$data[] = $row;
 			}
 
@@ -659,10 +646,8 @@ class Product extends CI_Controller {
 		foreach ($list as $fetched_data) {
 				$no++;
 				$row = array();
-				$row[] = $this->category_model_dt->load_checkbox_btns($fetched_data->id);
-				$row[] = $this->category_model_dt->load_multi_btns($fetched_data);
-				$row[] = $fetched_data->name;
-				$row[] = $fetched_data->description;
+				$row[] = $this->category_model_dt->load_data($fetched_data);
+
 				$data[] = $row;
 		}
 
@@ -682,9 +667,6 @@ class Product extends CI_Controller {
 		$this->load->model('Datatables/Seller_Orders_DT','seller_orders_model');
 
 		$list = $this->seller_orders_model->get_datatables();
-		
-		
-
 		$data_array = array();
 
 		if(count($list) > 0)
@@ -709,13 +691,13 @@ class Product extends CI_Controller {
 
 				//Delete above added keys from the result array
 				$main_order_id = $item['main_order_id'];
-				unset($item['main_order_id']);
+				// unset($item['main_order_id']);
 				unset($item['buyer_name']);
 				unset($item['create_date']);
 				unset($item['status']);
 				unset($item['status_name']);
-				unset($item['status_change_count']);
-				unset($item['item_status']);
+				// unset($item['status_change_count']);
+				// unset($item['item_status']);
 
 				array_push($data_array[$main_order_id]['items'], $item);//Push all items in key
 				$order_items_count = count($data_array[$main_order_id]['items']);
@@ -742,14 +724,18 @@ class Product extends CI_Controller {
 		foreach ($list as $fetched_data) {
 				$no++;
 				$row = array();
-				$row[] = $this->seller_orders_model->get_order_id($fetched_data['order_id']);
+				$row[] = $this->seller_orders_model->get_order_id($fetched_data);
+
+				// $row[] = $this->seller_orders_model->get_data($fetched_data);
 				$row[] = $fetched_data['items'];//hidden column which stores items array
-				$row[] = $this->seller_orders_model->get_confirm_order($fetched_data['order_id'], $fetched_data['item_status'], $fetched_data['status_change_count']);
-				$row[] = $this->seller_orders_model->get_status($fetched_data['item_status']);
-				$row[] = $fetched_data['buyer_name'];
-				$row[] = $fetched_data['seller_items_count'];
-				$row[] = $fetched_data['seller_order_total'];
-				$row[] = $fetched_data['create_date'];
+
+
+				// $row[] = $this->seller_orders_model->get_confirm_order($fetched_data['order_id'], $fetched_data['item_status'], $fetched_data['status_change_count']);
+				// $row[] = $this->seller_orders_model->get_status($fetched_data['item_status']);
+				// $row[] = $fetched_data['buyer_name'];
+				// $row[] = $fetched_data['seller_items_count'];
+				// $row[] = $fetched_data['seller_order_total'];
+				// $row[] = $fetched_data['create_date'];
 				$data[] = $row;
 		}
 

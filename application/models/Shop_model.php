@@ -32,6 +32,7 @@
         'shop_name'	=>  $data['shop'], 
         'phone'=>  $data['mobile'], 
 				'pin'	=>  $data['pin'],
+				'email'	=>  $data['email'],
         'password'	=>  $this->encryption->encrypt($data['password'])  
     	);
 			$this->db->insert('sss_seller', $data);
@@ -66,12 +67,14 @@
 		{
 			$table = 'sss_cart as cart';
 			$this->db->where('cart.ip_address', $ip);
-			$this->db->select('cart.id as cart_id, cart.ip_address, cart.item_id, cart.item_quantity, cart.delivery_charges, cart.item_price as cart_item_price, cart.line_tax, cart.total as car_line_total, product.id, product.seller_id , product.name as product_name, product.description, product.image_url, product.price, product.pieces, product.mrp, product.tax as tax_id, product.rem_quantity,category.id as category_id, category.name as category_name, category.description as category_description, taxes.percentage, seller.shop_name, seller.phone', false);
+			$this->db->select('cart.id as cart_id, cart.ip_address, cart.item_id, cart.item_quantity, cart.delivery_charges, cart.item_price as cart_item_price, cart.line_tax, cart.total as car_line_total, product.id, product.seller_id , product.name as product_name, product.description, product.image_url, product.price, product.pieces, product.uom_unit, product.mrp, product.tax as tax_id, product.rem_quantity, category.id as category_id, category.name as category_name, category.description as category_description, taxes.percentage, seller.shop_name, seller.phone, uom.id as uom, uom.name as uom_name', false);
 			$this->db->from($table);
 			$this->db->join('sss_products as product', 'cart.item_id = product.id ','inner');
 			$this->db->join('sss_category as category', 'cart.item_id = category.id ','left');
 			$this->db->join('sss_tax as taxes', 'taxes.id = product.tax ','left');
 			$this->db->join('sss_seller as seller', 'product.seller_id  = seller.id ','inner');
+			$this->db->join('sss_uom as uom', 'uom.id = product.uom ','left');
+
 			
 			$query = $this->db->get();
 			return ($query->num_rows() > 0) ? $query->result_array() : array();
@@ -121,17 +124,43 @@
 
 			$table = 'sss_order_items as order';
 			$this->db->where('order.order_id', $order_id);
-			$this->db->select('order.id as order_items_id, order.product_id, order.quantity, order.order_price as line_item_price, order.line_tax, order.buyer_id, order.status, order.status_change_count, order.cancel_reason, product.seller_id, product.name, product.category_id, product.price, product.mrp, product.tax as tax_id, product.description, product.pieces, product.seller_id, product.name, product.price, product.pieces, cat.name as category_name, seller.name as seller_name, seller.shop_name, seller.phone, seller.pin, taxes.percentage as tax_percentage', false);
+			$this->db->select('order.id as order_items_id, order.product_id, order.quantity, order.order_price as line_item_price, order.line_tax, order.buyer_id, order.status, order.status_change_count, order.cancel_reason, product.seller_id, product.name, product.category_id, product.price, product.mrp, product.tax as tax_id, product.description, product.pieces, product.seller_id, product.name, product.price, product.uom, product.uom_unit, product.pieces, cat.name as category_name, seller.name as seller_name, seller.shop_name, seller.phone, seller.pin, taxes.percentage as tax_percentage, uoms.name as uom_name', false);
 			$this->db->from($table); 
 			$this->db->join('sss_products as product', 'order.product_id = product.id ','inner');
 			$this->db->join('sss_category as cat', 'cat.id = product.category_id ','left');
 			$this->db->join('sss_seller as seller', 'seller.id = product.seller_id ','inner');
 			$this->db->join('sss_tax as taxes', 'taxes.id = product.tax ','left');
+			$this->db->join('sss_uom as uoms', 'uoms.id = product.uom ','left');
 
 
 			$query = $this->db->get();
 			return ($query->num_rows() > 0) ? $query->result_array() : array();
 		}
+
+		//Send order details to sellers via email
+		public function send_order_details_seller($order_id)
+		{
+			$order_details = $this->get_order_items($order_id);
+			$arr = array();
+
+			foreach($order_details as $order)
+			{
+				if(!key_exists($order['seller_id'], $arr)){
+					//No key
+					$arr[$order['seller_id']] = array();//Create New Key
+					$arr[$order['seller_id']]['items'] = array();//Create New Key
+				}
+
+				array_push($arr[$order['seller_id']]['items'] , $order);//Push item in key
+				unset($order['seller_id']);
+
+
+			}
+
+			
+			print_r($arr);exit;
+		}
+
 
 		//Seller Order products data
 		public function seller_order_products($seller_id, $order_id)

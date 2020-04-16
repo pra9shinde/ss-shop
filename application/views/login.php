@@ -19,7 +19,7 @@
 
   <body data-baseurl="<?= base_url(); ?>">
 
-		<div class="comp-logo clearfix" style="margin-top:20px;">
+		<div class="comp-logo clearfix" style="margin-top:40px;">
 			<img src="<?=base_url()?>assets/login/LogoBig.png" alt="" srcset="">
 		</div>
 		<div class="container" id="container" style="margin-top:10px;">
@@ -38,6 +38,7 @@
 						<img src="<?=base_url()?>assets/login/india.svg" alt="">
 						<input type="text" placeholder="Mobile no.*" name="mobile" id="mobile" maxlength="10">
 					</div>
+					<input type="text" placeholder="Email*" name="email" id="email">
 					<input type="text" placeholder="Shop Pincode*" name="pin" id="pin" maxlength="6">
 					<input type="password" placeholder="Password*" name="password" id="password">
 					<input type="password" placeholder="Confirm Password*" name="confirm_password" id="confirm_password">

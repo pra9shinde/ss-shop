@@ -21,10 +21,11 @@
         }
         
         $this->db->where('product.is_delete', 0);
-        $this->db->select('product.id, product.name as product_name, product.description, product.image_url,  product.total_quantity, product.rem_quantity, product.price,product.pieces, category.id as category_id, category.name as category_name, category.description as category_description, seller.id as seller_id, seller.shop_name', false);
+        $this->db->select('product.id, product.name as product_name, product.description, product.image_url,  product.total_quantity, product.rem_quantity, product.price,product.pieces, product.uom_unit, product.mrp, category.id as category_id, category.name as category_name, category.description as category_description, seller.id as seller_id, seller.shop_name,  uom.id as uom, uom.name as uom_name', false);
         $this->db->from($this->table);
         $this->db->join('sss_category as category', 'product.category_id = category.id ','inner');
         $this->db->join('sss_seller as seller', 'product.seller_id  = seller.id ','inner');
+        $this->db->join('sss_uom as uom', 'uom.id = product.uom ','left');
         
         	
 		$i = 0;
@@ -192,6 +193,13 @@
         $data .= '</p></h6>
                     </div>';
 
+        //UOM
+        $data .= '<p class="prod-price mb-prod">
+                <h6 class="prod-name"><b>UOM : ';
+        $data .= $obj->uom_unit.' '. $obj->uom_name;
+        $data .= '</b> </h6>
+                </p>'; 
+
         //Product Quantity
         $data .= '<div class="rem-stock mb-prod">
                         <h6 class="prod-name"><b>Remaining Stock: </b> ';
@@ -209,10 +217,12 @@
 
         //Product Price
         $data .= '<p class="prod-price mb-prod">
-                    <h6 class="prod-name"><b>Price: ₹';
-        $data .= $obj->price;
+                    <h6 class="prod-name"><b>MRP : ₹';
+        $data .= $obj->mrp;
         $data .= '</b> </h6>
-                    </p>';   
+                    </p>';  
+                    
+        
              
         //Add to Cart
         $data .='<div class="prod-add-cart">

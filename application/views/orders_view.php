@@ -4,7 +4,7 @@
 
     <div class="card pull-up">
       <div class="card-header">
-          <div class="float-left">
+          <div class="float-left mb-1">
               <a href="#" class="btn btn-info">#ORD<?=$order['id']?></a>
               <span style="margin-left:10px;">Status : </span>
               
@@ -24,8 +24,8 @@
            
           </div>
           <div class="float-right">
-              <a href='<?=base_url()?>Shop/load_invoice/<?=$order['id']?>' class="btn btn-outline-info mr-1"><i class="la la-print"></i> Print Invoice </a>
-              <a class="btn btn-outline-danger" onclick="cancel_order(<?=$order['id']?>)"><i class="la la-trash-o"></i>Cancel Order</a>
+              <a href='<?=base_url()?>Shop/load_invoice/<?=$order['id']?>' class="btn btn-outline-info mb-1" style="margin-right:0.2rem;margin-left:-2px;"><i class="la la-print"></i> Print Invoice </a>
+              <a class="btn btn-outline-danger mb-1" onclick="cancel_order(<?=$order['id']?>)"><i class="la la-trash-o"></i>Cancel Order</a>
           </div>
       </div>
 
