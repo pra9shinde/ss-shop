@@ -1,4 +1,8 @@
-
+<style>
+    .table th, .table td {
+        padding: 0.75rem 10px;
+    }
+</style>
  <!-- BEGIN: Content-->
  <div class="app-content content">
   <div class="content-overlay"></div>
@@ -84,7 +88,7 @@
 
                   <!-- Invoice Items Details -->
                   <div id="invoice-items-details" class="pt-2"> 
-                      <div class="row" style="width:1200px;">
+                      <div class="row invoice_row" style="width:1200px;">
                           <div class="table-responsive col-12">
                               <table class="table" >
                                   <thead>
@@ -205,10 +209,13 @@
 <!-- END: Content-->
 
 <script>
-
 function printDiv() {
   var divName = 'invoice-template';
   $('#invoice-footer').css('display','none');
+
+  //Scale and shift margin of table to fit in A4 Size
+  document.getElementById('invoice_row').style.transform = ("scale(0.8)");
+  document.getElementById('invoice_row').style.margin = ("0 0 0 -15%");
 
   var printContents = document.getElementById(divName).innerHTML;
   var originalContents = document.body.innerHTML;
@@ -219,5 +226,8 @@ function printDiv() {
 
   document.body.innerHTML = originalContents;
   $('#invoice-footer').css('display','block');
+  document.getElementById('invoice_row').style.transform = ("scale(1)");
+  document.getElementById('invoice_row').style.margin = ("0");
+
 }
 </script>

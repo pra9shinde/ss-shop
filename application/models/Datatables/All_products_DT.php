@@ -170,12 +170,12 @@
                    </div>';
 
         //Product Name
-        $data .= '<h6 class="prod-name mb-prod"><b>Product Name : </b>';
+        $data .= '<h6 class="prod-name mb-prod"><b>Name : </b>';
         $data .= $obj->product_name;
         $data .= '</h6>';
 
         //Product Description
-        $data .= '<h6 class="prod-desc mb-prod"><b>Product Description :</b>';
+        $data .= '<h6 class="prod-desc mb-prod"><b>Description :</b>';
         $data .= $obj->description;
         $data .= '</h6>';
 
@@ -188,17 +188,17 @@
 
         //Prdocut pieces
         $data .= '<div class="prod-pieces">
-                    <h6 class="prod-name"><b>Pieces per order: </b> <p class="badge badge-warning" style="">Pieces - ';
+                    <h6 style="margin-bottom:0;"><b>Pieces per order: </b> <p class="badge badge-warning" style="">Pieces - ';
         $data .= $obj->pieces;
         $data .= '</p></h6>
                     </div>';
 
         //UOM
-        $data .= '<p class="prod-price mb-prod">
+        $data .= '<div class="prod-price mb-prod">
                 <h6 class="prod-name"><b>UOM : ';
         $data .= $obj->uom_unit.' '. $obj->uom_name;
         $data .= '</b> </h6>
-                </p>'; 
+                </div>'; 
 
         //Product Quantity
         $data .= '<div class="rem-stock mb-prod">
