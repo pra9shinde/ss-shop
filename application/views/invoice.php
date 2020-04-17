@@ -1,11 +1,11 @@
 <style>
-    .table th, .table td {
+    /* .table th, .table td {
         padding: 0.75rem 0px;
     }
 
     .table td p, .table td{
        font-size : 12px;
-    }
+    } */
 </style>
  <!-- BEGIN: Content-->
  <div class="app-content content">
@@ -94,19 +94,19 @@
                   <div id="invoice-items-details" class="pt-2"> 
                       <div class="row" id="invoice_row-<?=$invoice_count?>" >
                           <div class="table-responsive col-12">
-                              <table class="table" style="table-layout: fixed;" >
+                              <table class="table" >
                                   <thead>
                                       <tr>
-                                          <th style="width: 2%;">#</th>
-                                          <th style="width: 12%;">Item & Description</th>
-                                          <th style="width: 9%;">UOM</th>
-                                          <th style="width: 6%;">Pieces</th>
-                                          <th class="text-right" style="width: 6%;">Quantity</th>
-                                          <th class="text-right" style="width: 10%;">Price(Excl. TAX)</th>
-                                          <th style="width: 7%;">Discount</th>
-                                          <th style="width: 10%;">Total(Inc. TAX)</th>
-                                          <th class="text-center" style="width: 7%;">MRP</th>
-                                          <th class="text-right" style="width: 8%;">Tax(%)</th>
+                                          <th>#</th>
+                                          <th>Item & Description</th>
+                                          <th class="text-center">UOM</th>
+                                          <th class="text-center">Pieces</th>
+                                          <th class="text-center">Quantity</th>
+                                          <th class="text-center">Price(Excl. TAX)</th>
+                                          <th class="text-center">Discount</th>
+                                          <th class="text-center">Total(Inc. TAX)</th>
+                                          <th class="text-center">MRP</th>
+                                          <th class="text-center">Tax(%)</th>
                                       </tr>
                                   </thead>
                                   <tbody>
@@ -214,31 +214,93 @@
 
 <script>
 function printDiv() {
-  var divName = 'invoice-template';
-  $('#invoice-footer').css('display','none');
+    var divName = 'invoice-template';
+    $('#invoice-footer').css('display','none');
 
-  var tables = document.querySelectorAll('*[id^="invoice_row-"]');
-  
-    // for (var i = 0; i < tables.length; i++) {
-    //     tables[i].style.transform = ("scale(0.8)");
-    //     tables[i].style.margin = ("0 0 0 -15%");
-    // }
+    //Make Invoice Details Table layout to fix - to Fit in A4 Size
+    var th_td = document.querySelectorAll('.table th, .table td');
+    var th_td_p = document.querySelectorAll('.table td p, .table td');
+    for(var i=0; i < th_td.length; i++){
+        th_td[i].style.padding = '0.75rem 0px';
+    }
+    for(var i=0; i < th_td_p.length; i++){
+        th_td_p[i].style.fontSize = '12px';
+    }
 
-  var printContents = document.getElementById(divName).innerHTML;
-  var originalContents = document.body.innerHTML;
+    var table_div = $('*[id^="invoice_row-"]');
+    var allTables = table_div.find('table');
+    allTables.each(function(i, val){
+        val.style.tableLayout = 'fixed';
+    });
+    $(table_div).each(function() {
+       var tableHeaders = $(this).find( 'table th' );
+       changeWidth(tableHeaders, 'fixed');
+      
+    });
 
-  document.body.innerHTML = printContents;
+    var printContents = document.getElementById(divName).innerHTML;
+    var originalContents = document.body.innerHTML;
 
-  window.print();
+    document.body.innerHTML = printContents;
 
-  document.body.innerHTML = originalContents;
-  $('#invoice-footer').css('display','block');
+    window.print();
 
-  var tables_new = document.querySelectorAll('*[id^="invoice_row-"]');
-//   for (var i = 0; i < tables_new.length; i++) {
-//         tables_new[i].style.transform = ("scale(1)");
-//         tables_new[i].style.margin = ("0");
-//     }
+    document.body.innerHTML = originalContents;
+    $('#invoice-footer').css('display','block');
 
+    setTimeout(function(){
+       //Bring Table Width to Normal ad=fter Printing
+        var th_td = document.querySelectorAll('.table th, .table td');
+        var th_td_p = document.querySelectorAll('.table td p, .table td');
+        for(var i=0; i < th_td.length; i++){
+            th_td[i].style.padding = '0.75rem 2rem';
+        }
+        for(var i=0; i < th_td_p.length; i++){
+            th_td_p[i].style.fontSize = 'inherit';
+        }
+
+        var table_div = $('*[id^="invoice_row-"]');
+        var allTables = table_div.find('table');
+        allTables.each(function(i, val){
+            val.style.tableLayout = 'auto';
+        });
+
+        $(table_div).each(function() {
+        var tableHeaders = $(this).find( 'table th' );
+        changeWidth(tableHeaders, 'auto');
+        });
+    }, 2000);
+
+
+
+}
+
+function changeWidth(tableHeaders, type)
+{
+    if(type === 'fixed'){
+        tableHeaders[0].style.width = '2%';
+        tableHeaders[1].style.width = '12%';
+        tableHeaders[2].style.width = '9%';
+        tableHeaders[3].style.width = '6%';
+        tableHeaders[4].style.width = '6%';
+        tableHeaders[5].style.width = '10%';
+        tableHeaders[6].style.width = '7%';
+        tableHeaders[7].style.width = '10%';
+        tableHeaders[8].style.width = '7%';
+        tableHeaders[9].style.width = '8%';
+    }
+    else{
+        tableHeaders[0].style.width = 'unset';
+        tableHeaders[1].style.width = 'unset';
+        tableHeaders[2].style.width = 'unset';
+        tableHeaders[3].style.width = 'unset';
+        tableHeaders[4].style.width = 'unset';
+        tableHeaders[5].style.width = 'unset';
+        tableHeaders[6].style.width = 'unset';
+        tableHeaders[7].style.width = 'unset';
+        tableHeaders[8].style.width = 'unset';
+        tableHeaders[9].style.width = 'unset';
+    }
+    
 }
 </script>
