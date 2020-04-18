@@ -353,7 +353,24 @@ class Shop extends CI_Controller {
 
 	public function email_template()
 	{
-		$this->load->view('email/thank_you');
+		$this->load->view('email/test');
+	}
+
+	public function testDomPDF()
+	{
+		$htmlContent = $this->load->view('email/test', '', TRUE);       
+		$this->load->library('Pdfdom');
+		$dompdf = new Pdfdom();
+		$dompdf->load_html($htmlContent);
+		$dompdf->setPaper('A4','landscape');//landscape
+		$dompdf->render();
+
+		// Output the generated PDF (1 = download and 0 = preview) 
+		// $dompdf->stream("codexworld", array("Attachment" => 0));
+
+		//Save File
+		$output = $dompdf->output();
+    file_put_contents(FCPATH.'Brochure.pdf', $output);
 	}
 
 	public function create_new_order()
@@ -418,11 +435,73 @@ class Shop extends CI_Controller {
 			));
 
 
-			//Send order details to sellers
-			//$send_to_seller = $this->shop_model->send_order_details_seller($last_id);
+			//Send order details to sellers via email
+			$order_data = $this->shop_model->send_order_details_seller($last_id);
+			print_r($order_data);exit;
 
+			$buyer_details = $this->My_model->get('sss_buyer',array(
+				'id' => $buyer_id
+			));
+			$order_totals = $this->My_model->get('sss_orders', array('id' => $last_id));		
 
+			if(count($order_data) > 0)
+			{
+				foreach($order_data as $item)
+				{
+					$htmlContent='';
+					$data['item'] = $item;
+					$data['order_id'] = $last_id;
+					$data['buyer_details'] = $buyer_details[0];
+					$data['order_totals'] = $order_totals[0];
 
+					$htmlContent = $this->load->view('email/orders_seller', $data, TRUE); 
+			
+					$this->load->library('Pdfdom');
+					$dompdf = new Pdfdom();
+					$dompdf->load_html($htmlContent);
+					$dompdf->setPaper('A4','landscape');//landscape
+					$dompdf->render();
+					$pdf = $dompdf->output();
+					// file_put_contents($item['shop_name'].time().'.pdf', $output);//Save File
+
+					//Send Email to Seller
+					$config = Array(
+						'protocol' => 'smtp',
+						'smtp_host' => SMTP_HOST,
+						'smtp_port' => SMPT_PORT,
+						'smtp_user' => SMPT_USER,
+						'smtp_pass' => SMPT_PASSWORD,
+						'mailtype'  => 'html', 
+						'charset'   => 'utf-8'
+					);
+					$this->load->library('email',$config);
+					$this->email->set_newline("\r\n");
+			
+					$this->email->from('pranavshnd006@gmail.com', "Smart Society Services");
+					$this->email->to($this->input->post('email'));
+					$this->email->subject("Smart Society Services Order Request");
+					//$mesg = $this->load->view('email_template',true);
+					
+					$this->email->message('Hello '.$item['shop_name']. 'Owner, You got a new Order from Smart Societ Services Portal. Please Login into the portal and Confirm/Cancel the order. Please find the attached order details.');
+
+					$this->email->attach($pdf, 'application/pdf', "Order-" . $last_id . ".pdf", false);
+
+			
+					if(!$this->email->send())
+					{
+						// $this->email->print_debugger();
+							return $this->output
+							->set_content_type('application/json')
+							->set_status_header(200)
+							->set_output(json_encode(array(
+									'type' => 'error',
+									'message' => 'Failed Sending Email'
+							)));
+					}
+					
+				}
+
+			}
 			
 		}
 
@@ -436,6 +515,8 @@ class Shop extends CI_Controller {
 					'message' => 'Order Successfully Created'
 			)));
 	}
+
+
 
 	public function get_orders_view($mobile_no)
 	{

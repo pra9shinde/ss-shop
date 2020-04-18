@@ -124,7 +124,7 @@
 
 			$table = 'sss_order_items as order';
 			$this->db->where('order.order_id', $order_id);
-			$this->db->select('order.id as order_items_id, order.product_id, order.quantity, order.order_price as line_item_price, order.line_tax, order.buyer_id, order.status, order.status_change_count, order.cancel_reason, product.seller_id, product.name, product.category_id, product.price, product.mrp, product.tax as tax_id, product.description, product.pieces, product.seller_id, product.name, product.price, product.uom, product.uom_unit, product.pieces, cat.name as category_name, seller.name as seller_name, seller.shop_name, seller.phone, seller.pin, taxes.percentage as tax_percentage, uoms.name as uom_name', false);
+			$this->db->select('order.id as order_items_id, order.product_id, order.quantity, order.order_price as line_item_price, order.line_tax, order.buyer_id, order.status, order.status_change_count, order.cancel_reason, product.seller_id, product.name, product.category_id, product.price, product.mrp, product.tax as tax_id, product.description, product.pieces, product.seller_id, product.name, product.price, product.uom, product.uom_unit, product.pieces, cat.name as category_name, seller.name as seller_name, seller.shop_name, seller.phone, seller.email as seller_email, seller.pin, taxes.percentage as tax_percentage, uoms.name as uom_name', false);
 			$this->db->from($table); 
 			$this->db->join('sss_products as product', 'order.product_id = product.id ','inner');
 			$this->db->join('sss_category as cat', 'cat.id = product.category_id ','left');
@@ -140,25 +140,50 @@
 		//Send order details to sellers via email
 		public function send_order_details_seller($order_id)
 		{
-			$order_details = $this->get_order_items($order_id);
 			$arr = array();
-
-			foreach($order_details as $order)
+			$order = $this->get_order_items($order_id);
+			
+			foreach($order as $item)
 			{
-				if(!key_exists($order['seller_id'], $arr)){
-					//No key
-					$arr[$order['seller_id']] = array();//Create New Key
-					$arr[$order['seller_id']]['items'] = array();//Create New Key
+				//push only if they are not cancelled orders
+				if($item['status'] !== 3)
+				{
+					if(!key_exists($item['seller_id'], $arr)){
+						//No key
+						$arr[$item['seller_id']] = array();//Create New Key
+						$arr[$item['seller_id']]['items'] = array();//Create New Key
+					}
+
+					//Arrange Array correctly - Remove global data items form order items array
+					$arr[$item['seller_id']]['shop_name'] = $item['shop_name'];
+					$arr[$item['seller_id']]['seller_name'] = $item['seller_name'];
+					$arr[$item['seller_id']]['phone'] = $item['phone'];
+					$arr[$item['seller_id']]['pin'] = $item['pin'];
+					$arr[$item['seller_id']]['seller_email'] = $item['seller_email'];
+					$arr[$item['seller_id']]['buyer_id'] = $item['buyer_id'];
+
+					unset($item['shop_name']);
+					unset($item['shop_seller_namename']);
+					unset($item['phone']);
+					unset($item['pin']);
+					unset($item['seller_email']);
+					unset($item['buyer_id']);
+
+
+
+					//Push by grouping according to category
+					if(!key_exists($item['category_id'],  $arr[$item['seller_id']]['items']  ))
+					{
+						$arr[$item['seller_id']]['items'][$item['category_id']] = array();
+					}
+
+					array_push($arr[$item['seller_id']]['items'][$item['category_id']] , $item);//Push item in key
+
 				}
-
-				array_push($arr[$order['seller_id']]['items'] , $order);//Push item in key
-				unset($order['seller_id']);
-
 
 			}
 
-			
-			print_r($arr);exit;
+			return $arr;
 		}
 
 
