@@ -22,6 +22,8 @@
     <script src="<?=base_url()?>assets/theme/js/vendors/icheck.min.js"></script>
     <script src="<?=base_url()?>assets/theme/js/vendors/toastr.min.js"></script>
     <script src="<?=base_url()?>assets/theme/js/vendors/tags/form-field.js"></script>
+    <script src="<?=base_url()?>assets/theme/js/vendors/transition.js"></script>
+    <script src="<?=base_url()?>assets/theme/js/vendors/zoom.min.js"></script>
     <!-- BEGIN Vendor JS-->
 
     <!-- BEGIN: Theme JS-->
@@ -261,6 +263,38 @@
         else{
           alert('something went wrong');
         }
+      }
+
+      function exportSellerOrders(){
+        $.ajax({
+          method:'POST',
+          async:false,
+          url: $('#base_url').val() +'Product/export_seller_orders',
+          data: {},
+          dataType:'JSON',
+          context:this,
+          success:function(data){
+            //Download File in client's Browser
+            var $a = $("<a>");
+            $a.attr("href",data.file);
+            $("body").append($a);
+            $a.attr("download","file.xlsx");
+            $a[0].click();
+            $a.remove();
+
+          },
+          error:function(res){
+            console.log(res);
+          },
+          beforeSend:function(){
+            $("#ajax-loader").fadeIn(500);
+          },
+          complete:function(){
+            setTimeout(function(){
+              $("#ajax-loader").fadeOut(500);
+            }, 500);
+          }
+        });
       }
 
       Array.prototype.remove = function() {

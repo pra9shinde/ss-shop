@@ -342,9 +342,10 @@ form .form-control::placeholder {
 
 .loader-container{
   position: fixed;
-  top: 40%;
+  top: 50%;
   left: 50%;
   z-index: 99999;
+  transform: translate(-50%,-50%);
 }
 
 /* ------------------ */
@@ -599,7 +600,8 @@ html body a:hover {
 
 
 .intro-images img{
-  width: 90%;
+  width: 100%;
+  max-width: 200px;
 }
 
 @media screen and (max-width: 767px) {

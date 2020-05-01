@@ -26338,7 +26338,7 @@
 
 
  <!-- BEGIN: Content-->
- <div class="app-content content" style="background:white; width: 100%; height:100%;">
+<div class="app-content content" style="background:white; width: 100%; height:100%;">
   <div class="content-wrapper" id="invoice-template">
    
 
@@ -26548,6 +26548,8 @@
         </section>
 
     </div>
+
+    
     
   </div>
 </div>

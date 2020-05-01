@@ -92,7 +92,7 @@
         $data ='
           <div class="tb-prod-details">
             <div class="prod-image">';
-        $data .= '<img src="'.$obj->image_url.'" alt="Product Image" style="height:50px;">
+        $data .= '<img src="'.$obj->image_url.'" alt="Product Image" style="height:50px;"  data-action="zoom">
             </div>';
 
         //Name

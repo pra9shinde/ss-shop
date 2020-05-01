@@ -59,7 +59,7 @@
                                   <h4 class="card-title text-white" style="font-size:3.12rem;">Your Digital Grocery Store!</h4>
                                   <p class="card-text ">Buy Groceries from your nearest shop in this lockdown.</p>
                                   <p class="card-text "> An initiative by Smart Society Services & Goregaon Welfare Association</p>
-                                  <button class="btn bg-white bg-darken-3 pink">Enter your Pincode & Go</button>
+                                  <button class="btn bg-white bg-darken-3 pink">Enter your Product & Go</button>
                               </div>
                           </div>
                       </div>
@@ -71,20 +71,16 @@
                       <div class="card-content">
                           <div class="card-body pt-3">
                             <div class="row">
-                              <div class="col-md-3 col-sm-12">
+                              <div class="col-md-12 col-sm-12 text-center">
                                 <div class="intro-images">
                                   <img src="<?=base_url()?>assets/login/LogoBig.png" alt="Smart Society Services Logo" class="">
+                                  
                                 </div>
                               </div>
-                              <div class="col-md-6 col-sm-12">
-                                <h4 class="card-title mt-3" style="font-size:3rem;">We care for you</h4>
-                                  <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita modi, esse maxime tempore optio reiciendis, magni earum, provident fugit cumque eos molestiae possimus odio officia? Exercitationem reiciendis assumenda non nisi?</p>
+                              <div class="col-md-12 col-sm-12" style="padding: 0 5%;">
+                                <h4 class="card-title mt-3" style="font-size:2.25rem;">We care for you</h4>
+                                  <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita modi, esse maxime tempore optio reiciendis, magni earum, provident fugit cumque eos molestiae possimus odio officia? Exercitationem reiciendis assumenda non nisi?Lorem ipsum dolor sit amet consectetur adipisicing elit.Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
                                   <button class="btn btn-danger">Know More!</button>
-                              </div>
-                              <div class="col-md-3 col-sm-12">
-                                <div class="intro-images">
-                                    <img src="<?=base_url()?>assets/login/GORWA-Logo.png" alt="Goregaon Welfare Association Logo" class="" width="">
-                                  </div>
                               </div>
                             </div>
                           </div>

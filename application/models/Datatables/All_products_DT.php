@@ -114,7 +114,7 @@
     }
 
 
-    public function load_remaining_stock($stock)
+    public function load_remaining_stock($stock,$uom)
     {
         $btn = '<span class="badge badge badge-';
         if($stock <= 10) : 
@@ -123,7 +123,7 @@
             $btn .= 'success';
         endif;
         $btn .= ' badge-glow badge-pill">';
-        $btn .=$stock;
+        $btn .=$stock.' '.$uom;
         $btn .='</span>';
 
         return $btn;
@@ -150,7 +150,7 @@
     {
        $img = '<img src="';
        $img .= $image['image_path'];
-       $img .='" alt="Product Image" style="width: 60px;height: auto;">';
+       $img .='" alt="Product Image" style="width: 60px;height: auto;" data-action="zoom">';
 
        return $img;
     }
@@ -166,7 +166,7 @@
                    <div class="prod-image">
                         <img src="';
         $data .= $obj->image_url;
-        $data .= '" alt="Product Image" style="width: 60px;height: auto;">
+        $data .= '" alt="Product Image" style="width: 60px;height: auto;" data-action="zoom">
                    </div>';
 
         //Product Name
@@ -210,7 +210,7 @@
             $data .= 'success';
         endif;
         $data .= ' badge-glow badge-pill">';
-        $data .=$obj->rem_quantity;
+        $data .=$obj->rem_quantity.' '.$obj->uom_name;
         $data .='</span>  
                     </h6>
                     </div>';

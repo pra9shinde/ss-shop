@@ -88,5 +88,5 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 //Custom Constants
 define('SMTP_HOST', 'ssl://smtp.googlemail.com');
 define('SMPT_PORT', 465);
-define('SMPT_USER', 'pranavshnd006@gmail.com');
-define('SMPT_PASSWORD', 'Pra9@shinde');
+define('SMPT_USER', 'kisan2consumer@gmail.com');
+define('SMPT_PASSWORD', 'We1c0me@123');

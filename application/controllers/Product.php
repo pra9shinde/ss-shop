@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class Product extends CI_Controller {
 
 	/**
@@ -20,6 +23,9 @@ class Product extends CI_Controller {
 	 */
 
 	public function __construct() {
+		header('Access-Control-Allow-Origin: *');
+    header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
 		parent::__construct();
 		$this->load->model('Shop_model','shop_model');
 		$this->load->model('Datatables/Product_DT','product_dt_model');
@@ -747,6 +753,132 @@ class Product extends CI_Controller {
 						);
 		//output to json format
 		echo json_encode($output);
+	}
+
+	public function export_seller_orders()
+	{
+		$this->load->model('Datatables/Seller_Orders_DT','seller_orders_model');
+		$list = $this->seller_orders_model->get_seller_orders();
+
+		$data_array = array();
+
+		if(count($list) > 0)
+		{
+			$sheet_total = 0;
+			$sheet_total_tax = 0;
+
+			foreach($list as $item)
+			{
+				
+				if(!key_exists($item['main_order_id'], $data_array)){
+					//No key
+					$data_array[$item['main_order_id']] = array();//Create New Key
+				}	
+			
+				//Delete above added keys from the result array
+				$main_order_id = $item['main_order_id'];
+		
+
+				array_push($data_array[$main_order_id], $item);//Push all items in key
+				$order_items_count = count($data_array[$main_order_id]);
+				$order_total = 0;
+				$tax_total = 0;
+				
+				foreach($data_array[$main_order_id] as $order_item)
+				{
+					$order_total += doubleval($order_item['line_total']);
+					$tax_total += doubleval($order_item['line_tax']);
+				}
+
+				foreach($data_array[$main_order_id] as $key => $value)
+				{
+					if($key === 0){
+						$data_array[$main_order_id][0]['seller_items_count'] = $order_items_count;// order item count
+						$data_array[$main_order_id][0]['seller_total_tax'] = $tax_total;// order item count
+						$data_array[$main_order_id][0]['seller_order_total'] = $order_total;// order item count
+					}	
+				}
+			}			
+		}
+
+		$list = $data_array;
+
+		$spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+    $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+
+		$header = array('Order No', 'Product Name', 'Product Description', 'Rem. Stock', 'Product Price(Excl. Tax)', 'Pieces per order', 'MRP', 'Product Category', 'Quantity', 'Line Total', 'Line Tax', 'Buyer Name', 'Buyer Contact', 'Order Date', 'Order Status', 'UOM', 'Tax(%)', 'No.of Items', 'Order Tax', 'Order Total');
+		$spreadsheet->getActiveSheet()->fromArray([$header], NULL, 'A1');
+
+		//Style Header of Excel
+		$styleArray = [
+			'font' => [
+					'bold' => true,
+			],
+			'alignment' => [
+					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
+			],
+			'borders' => [
+					'top' => [
+							'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+					],
+			],
+			'fill' => [
+					'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+					'rotation' => 90,
+					'startColor' => [
+							'argb' => 'FFA0A0A0',
+					],
+					'endColor' => [
+							'argb' => 'FFFFFFFF',
+					],
+			],
+		];
+		$spreadsheet->getActiveSheet()->getStyle('A1:T1')->applyFromArray($styleArray);
+
+		$col = 1;
+		$row= 2;
+		foreach($list as $order) //Order Array
+		{
+			foreach($order as $order_data) //Order Items Array
+			{
+				foreach($order_data as $key => $value) //Order Items data
+				{
+					$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value);
+					$col++;
+				}
+				$col = 1;	
+				$row++;
+			}
+		}
+
+		//Sheet Totals
+		$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(19, $row, 'All Orders Total');
+		$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(20, $row, $sheet_total);
+
+		$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(19, $row+1, 'All Orders Total');
+		$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(20, $row+1, $sheet_total_tax);
+
+		
+		$writer = new Xlsx($spreadsheet);
+
+		$filename = 'name-of-the-generated-file';
+
+		header('Content-Type: application/vnd.ms-excel');
+		header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+		header('Cache-Control: max-age=0');
+		
+		ob_start();
+		$writer->save('php://output'); // download file 
+		$xlsData = ob_get_contents();
+		ob_end_clean();
+
+		$response =  array(
+						'op' => 'ok',
+						'file' => "data:application/vnd.ms-excel;base64,".base64_encode($xlsData)
+		);
+
+		die(json_encode($response));
+		
 	}
 
 }

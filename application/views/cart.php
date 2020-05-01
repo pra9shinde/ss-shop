@@ -587,6 +587,7 @@ $('#contact_my_orders').on('change', function(){
 
 //create new order
 function createOrder(mobile_no, ip_address = $('#cart-link').data('ip_address')){
+    $("#ajax-loader").fadeIn(500);
     if(ip_address){
         $.ajax({
             type: "POST",

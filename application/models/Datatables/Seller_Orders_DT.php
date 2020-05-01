@@ -252,7 +252,27 @@
     }
 
 
+    public function get_seller_orders()
+    {
+        if($this->session->has_userdata('user')){
+            $this->db->where('product.seller_id ', $this->session->userdata('user'));
+            $this->db->where('product.is_delete', 0);
 
+            $this->db->select('order_items.order_id as main_order_id, product.name, product.description, product.rem_quantity, product.price, product.pieces, product.mrp, category.name as category_name, order_items.quantity as line_quantity, order_items.order_price as line_total, order_items.line_tax, buyer.name as buyer_name, buyer.phone, order.create_date, order_status.status_name, uom.name as uom_name, taxes.percentage as tax', false);
+            $this->db->from($this->table);
+            $this->db->join('sss_order_items as order_items', 'order_items.product_id = product.id ','inner');
+            $this->db->join('sss_buyer as buyer', 'buyer.id = order_items.buyer_id ','inner');
+            $this->db->join('sss_category as category', 'category.id = product.category_id ','inner');
+            $this->db->join('sss_orders as order', 'order.id = order_items.order_id ','inner');
+            $this->db->join('sss_order_status as order_status', 'order.status = order_status.id ','inner');
+            $this->db->join('sss_uom as uom', 'uom.id = product.uom ','left');
+            $this->db->join('sss_tax as taxes', 'product.tax = taxes.id ','left');
+
+            $query = $this->db->get();
+            return $query->result_array();
+        }
+        return 'No Orders';
+    }
 
 
 

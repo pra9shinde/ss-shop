@@ -42,7 +42,7 @@
     <link rel="stylesheet" type="text/css" href="<?=base_url()?>assets/theme/css/ecommerce-cart.css">
     <link rel="stylesheet" type="text/css" href="<?=base_url()?>assets/theme/css/checkboxes-radios.css">
     <link rel="stylesheet" type="text/css" href="<?=base_url()?>assets/theme/css/invoice.css">
-
+    <link rel="stylesheet" type="text/css" href="<?=base_url()?>assets/theme/css/zoom.css">
 
 
     <!-- END: Page CSS-->
@@ -196,11 +196,10 @@
 
 <div class="loader-wrapper" id="ajax-loader">
     <div class="loader-container">
-        <div class="folding-cube loader-blue-grey">
-            <div class="cube1 cube"></div>
-            <div class="cube2 cube"></div>
-            <div class="cube4 cube"></div>
-            <div class="cube3 cube"></div>
+        <div class="ball-scale-ripple loader-deep-orange">
+            <div></div>
         </div>
     </div>
 </div>
+
+

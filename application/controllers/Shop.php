@@ -20,6 +20,9 @@ class Shop extends CI_Controller {
 	 */
 
 	public function __construct() {
+		header('Access-Control-Allow-Origin: *');
+    header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
 		parent::__construct();
 		$this->load->model('Shop_model','shop_model');
 		$this->load->model('Datatables/All_products_DT','all_products_model');
@@ -27,6 +30,7 @@ class Shop extends CI_Controller {
 
 	public function index()
 	{
+		
 		$total_records = 0;
 		
 		$page = isset($_GET['page']) ? $_GET['page'] : 1;
@@ -78,7 +82,7 @@ class Shop extends CI_Controller {
 					$row[] = $this->all_products_model->load_category($fetched_data->category_name);
 					$row[] = '₹ '. $fetched_data->price;
 					$row[] = $this->all_products_model->load_pieces($fetched_data->pieces);
-					$row[] = $this->all_products_model->load_remaining_stock($fetched_data->rem_quantity);
+					$row[] = $this->all_products_model->load_remaining_stock($fetched_data->rem_quantity,$fetched_data->uom_name);
 					$row[] = $this->all_products_model->load_addcart_btns($fetched_data->id);
 					$data[] = $row;
 			}
@@ -437,8 +441,7 @@ class Shop extends CI_Controller {
 
 			//Send order details to sellers via email
 			$order_data = $this->shop_model->send_order_details_seller($last_id);
-			print_r($order_data);exit;
-
+			
 			$buyer_details = $this->My_model->get('sss_buyer',array(
 				'id' => $buyer_id
 			));
@@ -446,6 +449,57 @@ class Shop extends CI_Controller {
 
 			if(count($order_data) > 0)
 			{
+
+				//Send Bill and Email to Buyer
+				$htmlContent='';
+				$data['order_data'] = $order_data;
+				$data['order_id'] = $last_id;
+				$data['buyer_details'] = $buyer_details[0];
+				$data['order_totals'] = $order_totals[0];
+				$htmlContent = $this->load->view('email/orders_buyer', $data, TRUE);
+				$this->load->library('Pdfdom');
+				$dompdf = new Pdfdom();
+				$dompdf->load_html($htmlContent);
+				$dompdf->setPaper('A4','landscape');//landscape
+				$dompdf->render();
+				$output = $dompdf->output();
+
+				$config = Array(
+					'protocol' => 'smtp',
+					'smtp_host' => SMTP_HOST,
+					'smtp_port' => SMPT_PORT,
+					'smtp_user' => SMPT_USER,
+					'smtp_pass' => SMPT_PASSWORD,
+					'mailtype'  => 'html', 
+					'charset'   => 'utf-8'
+				);
+				$this->load->library('email',$config);
+				$this->email->set_newline("\r\n");
+		
+				$this->email->from(SMPT_USER, "Smart Society Services");
+				$this->email->to($this->input->post('email'));
+				$this->email->subject("Smart Society Services Order Request");
+				//$mesg = $this->load->view('email_template',true);
+				
+				$this->email->message('Hello '.$buyer_details[0]['name']. ', Thank you for shopping with us. Please find the attached order details and invoices for your reference. For any assistance please feel free to contact us.');
+
+				$this->email->attach($output, 'application/pdf', "Order-" . $last_id . ".pdf", false);
+
+		
+				if(!$this->email->send())
+				{
+					// $this->email->print_debugger();
+						return $this->output
+						->set_content_type('application/json')
+						->set_status_header(200)
+						->set_output(json_encode(array(
+								'type' => 'success',
+								'message' => 'Order Placed but Failed Sending Email to Buyer'
+						)));
+				}
+
+				
+				//Send Email and Bills to Sellers
 				foreach($order_data as $item)
 				{
 					$htmlContent='';
@@ -477,7 +531,7 @@ class Shop extends CI_Controller {
 					$this->load->library('email',$config);
 					$this->email->set_newline("\r\n");
 			
-					$this->email->from('pranavshnd006@gmail.com', "Smart Society Services");
+					$this->email->from(SMPT_USER, "Smart Society Services");
 					$this->email->to($this->input->post('email'));
 					$this->email->subject("Smart Society Services Order Request");
 					//$mesg = $this->load->view('email_template',true);
@@ -494,8 +548,8 @@ class Shop extends CI_Controller {
 							->set_content_type('application/json')
 							->set_status_header(200)
 							->set_output(json_encode(array(
-									'type' => 'error',
-									'message' => 'Failed Sending Email'
+									'type' => 'success',
+									'message' => 'Order Placed but Failed Sending Email to Seller'
 							)));
 					}
 					
@@ -515,8 +569,6 @@ class Shop extends CI_Controller {
 					'message' => 'Order Successfully Created'
 			)));
 	}
-
-
 
 	public function get_orders_view($mobile_no)
 	{

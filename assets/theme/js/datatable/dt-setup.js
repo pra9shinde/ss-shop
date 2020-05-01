@@ -7,7 +7,7 @@ $(document).ready(function() {
         
         dom: 'Blfrtip',
         buttons: [
-            { 
+            {  
                 extend: 'collection',
                 text: 'Export',
                 buttons: [
@@ -17,6 +17,13 @@ $(document).ready(function() {
                     'pdf',
                     'print'
                 ]
+            },
+            {
+                text: '<i class="la la-trash"></i>',
+                className: '',
+                action: function ( e, dt, node, config ) {
+                    alert( 'Button activated' );
+                }
             }
         ], 
         "autoWidth": false,
@@ -219,16 +226,12 @@ $(document).ready(function() {
     var seller_orders = $('#tb-seller-orders').DataTable({ 
         dom: 'Blfrtip',
         buttons: [
-            { 
-                extend: 'collection',
-                text: 'Export',
-                buttons: [
-                    'copy',
-                    'excel',
-                    'csv',
-                    'pdf',
-                    'print'
-                ]
+            {
+                text: 'Export<i class="la la-download" style="margin-left:3px;"></i>',
+                className: '',
+                action: function ( e, dt, node, config ) {
+                    exportSellerOrders();
+                }
             }
         ],
         fixedHeader: {
