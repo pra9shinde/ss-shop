@@ -56,9 +56,8 @@
                           <div class="card-content" id="banner-shop">
                               <img src="<?=base_url()?>assets/theme/images/supermarket.svg" alt="Relax" class="float-right img-fluid">
                               <div class="card-body pt-3">
-                                  <h4 class="card-title text-white" style="font-size:3.12rem;">Your Digital Grocery Store!</h4>
+                                  <h4 class="card-title text-white" style="font-size:3.12rem;">Kisaan 2 Consumer</h4>
                                   <p class="card-text ">Buy Groceries from your nearest shop in this lockdown.</p>
-                                  <p class="card-text "> An initiative by Smart Society Services & Goregaon Welfare Association</p>
                                   <button class="btn bg-white bg-darken-3 pink">Enter your Product & Go</button>
                               </div>
                           </div>
@@ -73,13 +72,12 @@
                             <div class="row">
                               <div class="col-md-12 col-sm-12 text-center">
                                 <div class="intro-images">
-                                  <img src="<?=base_url()?>assets/login/LogoBig.png" alt="Smart Society Services Logo" class="">
+                                  <img src="<?=base_url()?>assets/login/K2C LOGO.JPG" alt="Kisaan 2 Consumer Logo" class="">
                                   
                                 </div>
                               </div>
                               <div class="col-md-12 col-sm-12" style="padding: 0 5%;">
                                 <h4 class="card-title mt-3" style="font-size:2.25rem;">We care for you</h4>
-                                  <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita modi, esse maxime tempore optio reiciendis, magni earum, provident fugit cumque eos molestiae possimus odio officia? Exercitationem reiciendis assumenda non nisi?Lorem ipsum dolor sit amet consectetur adipisicing elit.Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
                                   <button class="btn btn-danger">Know More!</button>
                               </div>
                             </div>
@@ -124,9 +122,10 @@
                                                   <th class="border-top-0">Name</th>
                                                   <th class="border-top-0">Description</th>
                                                   <th class="border-top-0">Category</th>
-                                                  <th class="border-top-0">Price(₹)</th>
+                                                  <th class="border-top-0">MRP(₹)</th>
                                                   <th class="border-top-0">Pieces</th>
-                                                  <th class="border-top-0">Remaining Stock</th>
+                                                  <th class="border-top-0">In Stock</th>
+                                                  <th class="border-top-0">Offer Price</th>
                                                   <th class="border-top-0">Add to Cart</th>
                                                   </tr>
                                               </thead>

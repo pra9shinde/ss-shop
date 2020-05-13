@@ -20,7 +20,7 @@
   <body data-baseurl="<?= base_url(); ?>">
 
 		<div class="comp-logo clearfix" style="margin-top:40px;">
-			<img src="<?=base_url()?>assets/login/LogoBig.png" alt="" srcset="">
+			<img src="<?=base_url()?>assets/login/people.svg" alt="" srcset="">
 		</div>
 		<div class="container" id="container" style="margin-top:10px;">
 			<div class="form-container sign-up-container">
@@ -85,7 +85,7 @@
 
 		<footer>
 			<p>
-			Copyright &copy; <script>document.write(new Date().getFullYear());</script> All rights reserved |<a href="<?= base_url() ?>"> Smart Society Services</a><i class="fa fa-heart"></i> </a>
+			Copyright &copy; <script>document.write(new Date().getFullYear());</script> All rights reserved |<a href="<?= base_url() ?>"> Kisaan 2 Consumer</a><i class="fa fa-heart"></i> </a>
 			</p>
 		</footer>
 

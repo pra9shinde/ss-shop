@@ -155,6 +155,15 @@
        return $img;
     }
 
+    public function load_offer_price($price)
+    {
+        // $data = '<div class="badge badge-glow badge-pill badge-border border-success success text-center">₹'.$price.'</div>';
+        $data ='<img style="width:35px;" src="'.base_url().'assets/theme/images/price.svg">';
+        $data .= '<div style="display:inline-block; margin-left:5px"><b>₹'. $price .'</b></div>';
+
+        return $data;
+    }
+
 
 
     /*------Mobile DT */
@@ -202,7 +211,7 @@
 
         //Product Quantity
         $data .= '<div class="rem-stock mb-prod">
-                        <h6 class="prod-name"><b>Remaining Stock: </b> ';
+                        <h6 class="prod-name"><b>In Stock: </b> ';
         $data .= '<span class="badge badge badge-';
         if($obj->rem_quantity <= 10) : 
             $data .= 'danger';
@@ -217,10 +226,17 @@
 
         //Product Price
         $data .= '<p class="prod-price mb-prod">
-                    <h6 class="prod-name"><b>MRP : ₹';
+                        <b>MRP : <del class="grey">₹';
         $data .= $obj->mrp;
-        $data .= '</b> </h6>
+        $data .= '</del></b>
                     </p>';  
+
+        //Offer Price
+        $data .= '<p class="prod-price mb-prod">
+                <h6 class="prod-name"><b><span class="badge badge-success">Offer Price </span>';
+        $data .=': <span style="font-size:20px">₹'. $obj->price;
+        $data .= '</span></b> </h6>
+                </p>'; 
                     
         
              

@@ -80,9 +80,10 @@ class Shop extends CI_Controller {
 					$row[] = $fetched_data->product_name;
 					$row[] = $fetched_data->description;
 					$row[] = $this->all_products_model->load_category($fetched_data->category_name);
-					$row[] = '₹ '. $fetched_data->price;
+					$row[] = '₹'. $fetched_data->mrp;
 					$row[] = $this->all_products_model->load_pieces($fetched_data->pieces);
 					$row[] = $this->all_products_model->load_remaining_stock($fetched_data->rem_quantity,$fetched_data->uom_name);
+					$row[] = $this->all_products_model->load_offer_price($fetched_data->price);
 					$row[] = $this->all_products_model->load_addcart_btns($fetched_data->id);
 					$data[] = $row;
 			}
@@ -100,7 +101,7 @@ class Shop extends CI_Controller {
 	public function ajax_list_mini()
 	{
 			$list = $this->all_products_model->get_datatables();
-			
+
 			$data = array();
 			$no = $_POST['start'];
 			foreach ($list as $fetched_data) {
@@ -126,8 +127,6 @@ class Shop extends CI_Controller {
 		
 		$data['cart_items'] = $this->shop_model->get_cart_items($ip);
 		
-		
-
 		if($from == 'checkout_page')
 		{
 			echo json_encode(['cart_items' => $data['cart_items']]);
@@ -202,6 +201,8 @@ class Shop extends CI_Controller {
 	{
 		
 		$item_details = $this->My_model->get('sss_products',array('id' => $id));
+
+
 		$item_price = $item_details[0]['price'];
 		$tax_percent =  $this->My_model->get('sss_tax',array('id' => $item_details[0]['tax']));
 		$tax_percent = $tax_percent[0]['percentage'];
@@ -220,7 +221,11 @@ class Shop extends CI_Controller {
 				 		)
 		);
 
-		$cart = ['line_total' => strval($cart_line_total), 'line_tax' => strval($line_tax),'status' => 'success'];
+		$temp =(doubleval($item_details[0]['mrp']) * doubleval($this->input->post('new_quantity')));
+
+		$line_save = $temp - $cart_line_total;
+
+		$cart = ['line_total' => strval($cart_line_total), 'line_tax' => strval($line_tax), 'line_save' => strval($line_save),'status' => 'success'];
 		echo json_encode($cart);
 	}
 

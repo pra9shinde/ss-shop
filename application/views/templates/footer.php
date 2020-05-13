@@ -4,7 +4,7 @@
 
     <!-- BEGIN: Footer-->
     <footer class="footer footer-static footer-light navbar-border navbar-shadow">
-        <p class="clearfix blue-white lighten-2 text-sm-center mb-0 px-2"><span class="float-md-left d-block d-md-inline-block">Copyright &copy; <script>document.write(new Date().getFullYear());</script> All rights reserved | <a class="text-bold-800 grey darken-2 footer-link" href="http://smartsocietyservices.in" target="_blank">Smart Society Services</a></span><span class="float-md-right d-none d-lg-block">Hand-crafted & Made with <i class="ft-heart footer-link"></i><span id="scroll-top"></span></span></p>
+        <p class="clearfix blue-white lighten-2 text-sm-center mb-0 px-2"><span class="float-md-left d-block d-md-inline-block">Copyright &copy; <script>document.write(new Date().getFullYear());</script> All rights reserved | <a class="text-bold-800 grey darken-2 footer-link" href="http://smartsocietyservices.in" target="_blank">Kisaan 2 Consumer</a></span><span class="float-md-right d-none d-lg-block">Hand-crafted & Made with <i class="ft-heart footer-link"></i><span id="scroll-top"></span></span></p>
     </footer>
     <!-- END: Footer-->
 
@@ -174,20 +174,25 @@
       function quantityUpdate(id,obj,device, ip_address = $('#cart-link').data('ip_address')){
         let line_total;
         let line_tax;
+        let line_saved;
 
         if(device === 'desktop'){
           
           line_total = obj.parentElement.parentElement.parentElement.children[6].firstElementChild;
 
-          line_tax = obj.parentElement.parentElement.parentElement.children[5].firstElementChild; 
+          line_tax = obj.parentElement.parentElement.parentElement.children[5].firstElementChild;
+          
+          line_saved = obj.parentElement.parentElement.parentElement.children[7].firstElementChild.children[0];
+          
         }
 
         else{
-          line_total = obj.parentElement.parentElement.parentElement.children[1].children[6].children[1];
-
-          line_tax = obj.parentElement.parentElement.parentElement.children[1].children[5].children[1];
+          line_total = obj.parentElement.parentElement.children[8].children[1];
+          line_tax = obj.parentElement.parentElement.children[7].children[1];
+          line_saved = obj.parentElement.parentElement.children[9].children[1];
 
         }
+
 
         if(ip_address){
           $.ajax({
@@ -201,7 +206,8 @@
               if(data.status == 'success'){
                 line_total.innerText = '₹' + data.line_total;
                 line_tax.innerText = '₹' + data.line_tax;
-                updateCartTotal();
+                line_saved.innerText = data.line_save;
+                updateCartTotal(device);
               }
               else{
                 alert('Something Went Wrong!');
@@ -225,7 +231,14 @@
         }
       }
 
-      function updateCartTotal(ip_address = $('#cart-link').data('ip_address')){
+      function updateCartTotal(device, ip_address = $('#cart-link').data('ip_address')){
+        var line_saved = document.querySelectorAll('.line_saved');
+        let total_saved = 0;
+
+        for(let i=0; i<line_saved.length; i++){
+          total_saved += Number(line_saved[i].textContent);
+        }
+        
         if(ip_address){
           $.ajax({
             method:'POST',
@@ -241,7 +254,9 @@
                 $('#total_items').text(data.cart_items);
                 $('#total_amount').text('₹' + data.cart_total);
                 let pay_amt = Number(data.tax_total) + Number(data.cart_total);
-                $('#payable_amount').text('₹' + pay_amt);
+                $('#payable_amount').text('₹' + pay_amt.toFixed(2));
+                $('#total_saved').text(total_saved.toFixed(2));
+                
               }
               else{
                 alert('Something Went Wrong!');

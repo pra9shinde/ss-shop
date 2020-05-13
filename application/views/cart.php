@@ -39,11 +39,13 @@
                                                     <th>Tax(%)</th>
                                                     <th>Total Tax(₹)</th>
                                                     <th>Total</th>
+                                                    <th>Saved</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                               <?php if(!empty($cart_items)):?>
+                                                <?php $order_save = 0;?> 
                                                   <?php foreach($cart_items as $cart_item) { ?>
                                                     <tr>
                                                         <td>
@@ -85,6 +87,18 @@
                                                             <div class="total-price">₹<?=$qty_price + $line_tax?></div>
                                                         </td>
                                                         <td>
+                                                            <?php 
+                                                                $temp = (doubleval($cart_item['mrp']) * doubleval($cart_item['item_quantity']));
+
+                                                                $line_save = $temp - ($qty_price + $line_tax);
+
+                                                                $order_save += $line_save;
+                                                            ?>
+                                                            <div class="total-savings" style="font-size:1rem; margin-top:0;">₹
+                                                                <span class="line_saved"><?=$order_save?></span>
+                                                            </div>
+                                                        </td>
+                                                        <td>
                                                             <div class="product-action">
                                                                 <a onclick="removeFromCart(<?=$cart_item['item_id']?>)"><i class="ft-trash-2"></i></a>
                                                             </div>
@@ -118,6 +132,7 @@
                                             </thead>
                                             <tbody>
                                             <?php if(!empty($cart_items)):?>
+                                                <?php $order_save = 0;?> 
                                                 <?php foreach($cart_items as $cart_item) { ?>
                                                 <tr>
                                                     <td style="padding-right:0;padding-left:0;"> 
@@ -153,6 +168,16 @@
 
                                                                 <div class="mb-prod-2"><strong>Total : </strong><span>₹<?=$qty_price + $line_tax?></span></div>
 
+
+                                                                <?php 
+                                                                $temp = (doubleval($cart_item['mrp']) * doubleval($cart_item['item_quantity']));
+
+                                                                $line_save = $temp - ($qty_price + $line_tax);
+
+                                                                $order_save += $line_save;
+                                                                ?>
+                                                                <div class="mb-prod-2"><strong>You saved : </strong>₹<span class="line_saved"><?=$line_save?></span></div>
+
                                                                 <div class="input-group mb-prod" id="cart-counter-txtbx">
                                                                     <input type="text" class="text-center count touchspin" value="<?=$cart_item['item_quantity']?>" onchange="quantityUpdate(<?=$cart_item['item_id']?>, this,'mobile')" />
                                                                 </div>
@@ -185,7 +210,7 @@
                             <div class="col-lg-6 col-md-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h4 class="card-title">Apply Coupon</h4>
+                                        <h4 class="card-title">Apply Coupon </h4>
                                     </div>
                                     <div class="card-content">
                                         <div class="card-body">
@@ -214,7 +239,11 @@
                                             <div class="price-detail">TAX / VAT <span class="float-right" id="tax_total">₹<?=$tax_total?></span></div>
                                             <hr>
                                             <div class="price-detail">Payable Amount <span class="float-right" id="payable_amount">₹<?=$cart_total + $tax_total?></span></div>
-                                            <!-- <div class="total-savings">Your Total Savings on this order $550</div> -->
+                                            <div class="total-savings">Your Total Savings on this order is ₹<span id="total_saved">
+
+                                            <?php if(isset($order_save)): echo $order_save; ?>
+                                            <?php endif;?>
+                                            </span></div> <br>
                                             <div class="text-right">
                                                     <a href="<?=base_url()?>" class="btn btn-info mb-2 ">Continue Shopping</a>
                                                     <a class="btn btn-secondary mb-2 <?php if(empty($cart_items)): ?> disabled <?php endif; ?>
@@ -388,6 +417,13 @@ $(document).ready(function(){
 
 //open checkout tab and populate checkout data
 function activeTab(tab){
+    var payableAmount = document.getElementById('payable_amount').innerHTML;
+    var index  = payableAmount.indexOf('₹');
+    var amount = Number(payableAmount.substr(index+1));
+
+    console.log(typeof(amount));
+
+    /*
     ip_address = $('#cart-link').data('ip_address');
     $.ajax({
         method:'POST',
@@ -450,6 +486,7 @@ function activeTab(tab){
             }, 500);
         }
     });
+    */
 };
 
 //check phone no. checkout page

@@ -121,8 +121,8 @@
               <ul class="nav navbar-nav flex-row">
                 <li class="nav-item mobile-menu d-md-none mr-auto"><a class="nav-link nav-menu-main menu-toggle hidden-xs" href="#"><i class="ft-menu font-large-1"></i></a>
                 </li>
-                <li class="nav-item"><a class="navbar-brand" href="http://smartsocietyservices.in"><img class="brand-logo" alt="modern admin logo" src="<?=base_url()?>assets/login/Logo.png">
-                          <h3 class="brand-text"><b>SMART SOCIETY</b> SERVICES</h3>
+                <li class="nav-item"><a class="navbar-brand" href="http://smartsocietyservices.in"><img class="brand-logo" alt="modern admin logo" src="<?=base_url()?>assets/login/people.svg" style="width:70px;">
+                          <h3 class="brand-text" style="vertical-align: middle;"><b>Kisaan 2</b> Consumer</h3>
                       </a>
                 </li>
 
