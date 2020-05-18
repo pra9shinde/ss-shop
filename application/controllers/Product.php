@@ -1,10 +1,11 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-class Product extends CI_Controller {
+class Product extends CI_Controller
+{
 
 	/**
 	 * Index Page for this controller.
@@ -22,156 +23,164 @@ class Product extends CI_Controller {
 	 * @see https://codeigniter.com/user_guide/general/urls.html
 	 */
 
-	public function __construct() {
+	public function __construct()
+	{
 		header('Access-Control-Allow-Origin: *');
-    header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
-    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
+		header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+		header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
 		parent::__construct();
-		$this->load->model('Shop_model','shop_model');
-		$this->load->model('Datatables/Product_DT','product_dt_model');
+		$this->load->model('Shop_model', 'shop_model');
+		$this->load->model('Datatables/Product_DT', 'product_dt_model');
+	}
+
+	public function product_details($id)
+	{
+		$prod_details = $this->shop_model->get_product_details($id);
+		$data['prod_details'] = $prod_details[0];
+
+
+
+		$this->load->view('templates/header');
+		$this->load->view('templates/menu');
+		$this->load->view('prod_details', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function add_category()
 	{
-		if($this->input->server('REQUEST_METHOD') != 'POST') {
+		if ($this->input->server('REQUEST_METHOD') != 'POST') {
 			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
 					'type' => 'error',
 					'message' => 'Failed - Invalid Request!'
-			)));
+				)));
 		}
 
 		$this->form_validation->set_rules('category_name', 'Category Name', 'trim|required|xss_clean');
 
-		if( !$this->form_validation->run() ) {
+		if (!$this->form_validation->run()) {
 			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
 					'type' => 'error',
 					'message' => validation_errors()
-			)));
+				)));
 		}
 
 		$insert_category = $this->shop_model->insert_category($this->input->post());
-		
-		if(!$insert_category) { 
+
+		if (!$insert_category) {
 			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
 					'type' => 'error',
 					'message' => 'Operation failed. please try again later'
-			)));
+				)));
 		}
 
 		return $this->output
-		->set_content_type('application/json')
-		->set_status_header(200)
-		->set_output(json_encode(array(
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
 				'type' => 'success',
 				'message' => 'Product Category Added Successfully.'
-		)));
-
+			)));
 	}
-
-
-
 
 	public function delete_category()
 	{
-		if($this->input->server('REQUEST_METHOD') != 'POST') {
+		if ($this->input->server('REQUEST_METHOD') != 'POST') {
 			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
 					'type' => 'error',
 					'message' => 'Failed - Invalid Request!'
-			)));
+				)));
 		}
 
-		if(!$this->input->post('id')){
+		if (!$this->input->post('id')) {
 			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
 					'type' => 'error',
 					'message' => 'Operation failed. Category Id not found'
-			)));
+				)));
 		}
 
-		if(!is_array($this->input->post('id')))
-		{
+		if (!is_array($this->input->post('id'))) {
 			$arr = array();
-			array_push($arr,$this->input->post('id'));
-		}
-		else{
+			array_push($arr, $this->input->post('id'));
+		} else {
 			$arr = $this->input->post('id');
 		}
 
-		$check_dependency = $this->My_model->get_multiple('sss_products','category_id',$arr);
+		$check_dependency = $this->My_model->get_multiple('sss_products', 'category_id', $arr);
 
-		if(!empty($check_dependency))
-		{
+		if (!empty($check_dependency)) {
 			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
 					'type' => 'error',
 					'message' => 'Products Created with this category, Delete them first'
-			)));
+				)));
 		}
 
-		$deleteStatus = $this->My_model->delete_multiple('sss_category','id',$arr);
-		if(!$deleteStatus)
-		{
+		$deleteStatus = $this->My_model->delete_multiple('sss_category', 'id', $arr);
+		if (!$deleteStatus) {
 			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
 					'type' => 'error',
 					'message' => 'Database Operation failed.'
-			)));
+				)));
 		}
 
 		return $this->output
 			->set_content_type('application/json')
 			->set_status_header(200)
 			->set_output(json_encode(array(
-					'type' => 'success',
-					'message' => 'Category Deleted Successfully'
+				'type' => 'success',
+				'message' => 'Category Deleted Successfully'
 			)));
 	}
 
 	public function update_category()
 	{
-		if($this->input->server('REQUEST_METHOD') != 'POST') {
+		if ($this->input->server('REQUEST_METHOD') != 'POST') {
 			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
 					'type' => 'error',
 					'message' => 'Failed - Invalid Request!'
-			)));
+				)));
 		}
 
 		$this->form_validation->set_rules('category_id', 'Category ID', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('category_name_edit', 'Category Name', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('category_desc_edit', 'Category Description', 'trim|required|xss_clean');
-		
-		if( !$this->form_validation->run() ) {
+
+		if (!$this->form_validation->run()) {
 			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
 					'type' => 'error',
 					'message' => validation_errors()
-			)));
+				)));
 		}
 
-		$update = $this->My_model->update('sss_category', array(
+		$update = $this->My_model->update(
+			'sss_category',
+			array(
 				'id' => $this->input->post('category_id')
 			),
 			array(
@@ -181,28 +190,25 @@ class Product extends CI_Controller {
 		);
 
 		return $this->output
-		->set_content_type('application/json')
-		->set_status_header(200)
-		->set_output(json_encode(array(
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
 				'type' => 'success',
 				'message' => 'Product Updated Successfully'
-		)));
-
+			)));
 	}
 
 	public function change_order_status()
 	{
-		$cancel_reason = $this->input->post('reason');//order cancel reason
+		$cancel_reason = $this->input->post('reason'); //order cancel reason
 
 		$seller_order_details = $this->shop_model->seller_order_products($this->session->userdata('user'), $this->input->post('order_id'));
 
 
 		//Push all order product id's into an array
 		$seller_order_products = array();
-		if(count($seller_order_details) > 0)
-		{
-			foreach($seller_order_details as $prod)
-			{
+		if (count($seller_order_details) > 0) {
+			foreach ($seller_order_details as $prod) {
 				array_push($seller_order_products, $prod['product_id']);
 			}
 		}
@@ -210,30 +216,33 @@ class Product extends CI_Controller {
 		$update_array = array(
 			'status' => $this->input->post('status_id'),
 			'cancel_reason' => $cancel_reason,
-			'update_date' => date ("Y-m-d H:i:s", time())
+			'update_date' => date("Y-m-d H:i:s", time())
 		);
 
-		if($this->input->post('status_id') == 3)
-		{
+		if ($this->input->post('status_id') == 3) {
 			$update_array['status_change_count'] = 1;
 		}
 
 		//update order status of this order for only  this seller products
-		$update = $this->My_model->update_multiple('sss_order_items', 'product_id', 				  	$seller_order_products, $update_array, array(
+		$update = $this->My_model->update_multiple(
+			'sss_order_items',
+			'product_id',
+			$seller_order_products,
+			$update_array,
+			array(
 				'order_id' => $this->input->post('order_id')
 			)
 		);
 
-		
-		if(!$update)
-		{
+
+		if (!$update) {
 			return $this->output
 				->set_content_type('application/json')
 				->set_status_header(200)
 				->set_output(json_encode(array(
-						'type' => 'error',
-						'message' => 'Database - Operation Failed!'
-			)));
+					'type' => 'error',
+					'message' => 'Database - Operation Failed!'
+				)));
 		}
 
 		//Update Stock
@@ -242,51 +251,43 @@ class Product extends CI_Controller {
 		//Update the main order table status - If all sellers confirmed set it to complete else partial
 		$main_order_update = $this->shop_model->update_main_order_status($this->input->post('order_id'));
 
-		if(!$main_order_update)
-		{
+		if (!$main_order_update) {
 			return $this->output
 				->set_content_type('application/json')
 				->set_status_header(200)
 				->set_output(json_encode(array(
-						'type' => 'error',
-						'message' => 'Database - Operation Failed!'
-			)));
+					'type' => 'error',
+					'message' => 'Database - Operation Failed!'
+				)));
 		}
 
-	
+
 		return $this->output
-		->set_content_type('application/json')
-		->set_status_header(200)
-		->set_output(json_encode(array(
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
 				'type' => 'success',
 				'message' => 'Product Updated Successfully'
-		)));
-
+			)));
 	}
 
 	public function update_stock($status_id, $prod_arr = array())
 	{
-		if($status_id == 2)
-		{
+		if ($status_id == 2) {
 			//Reduce stock - Order COnfirmed
-			foreach($prod_arr as $prod)
-			{
+			foreach ($prod_arr as $prod) {
 				$update_quantity = $this->My_model->update('sss_products', array(
 					'id' => $prod['product_id']
 				), array(
 					'rem_quantity' => doubleval($prod['rem_quantity']) - doubleval($prod['order_quantity'])
 				));
 			}
-		}
-		else
-		{
+		} else {
 
 			//Reduce Stock - Order Cancelled
-			foreach($prod_arr as $prod)
-			{
+			foreach ($prod_arr as $prod) {
 				//Reduce Stock Only if the Order is Cancelled after Confirming. Cancelling Order will not modify the stock
-				if($prod['status'] == 2)
-				{
+				if ($prod['status'] == 2) {
 					$update_quantity = $this->My_model->update('sss_products', array(
 						'id' => $prod['product_id']
 					), array(
@@ -294,45 +295,44 @@ class Product extends CI_Controller {
 					));
 				}
 			}
-
 		}
 	}
 
 
 	public function product_ajax_list()
 	{
-			$user_id = $this->session->userdata('user');
-			$list = $this->product_dt_model->get_datatables();
+		$user_id = $this->session->userdata('user');
+		$list = $this->product_dt_model->get_datatables();
 
-			$data = array(); 
-			$no = $_POST['start'];
-			foreach ($list as $fetched_data) {
-					$no++;
-					$row = array();
-					$row[] = $this->product_dt_model->load_data($fetched_data);
-					$data[] = $row;
-			}
+		$data = array();
+		$no = $_POST['start'];
+		foreach ($list as $fetched_data) {
+			$no++;
+			$row = array();
+			$row[] = $this->product_dt_model->load_data($fetched_data);
+			$data[] = $row;
+		}
 
-			$output = array(
-											"draw" => $_POST['draw'],
-											"recordsTotal" => $this->product_dt_model->count_all(),
-											"recordsFiltered" => $this->product_dt_model->count_filtered(),
-											"data" => $data,
-							);
-			//output to json format
-			echo json_encode($output);
+		$output = array(
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->product_dt_model->count_all(),
+			"recordsFiltered" => $this->product_dt_model->count_filtered(),
+			"data" => $data,
+		);
+		//output to json format
+		echo json_encode($output);
 	}
 
 	public function add_product()
 	{
-		if($this->input->server('REQUEST_METHOD') != 'POST') {
+		if ($this->input->server('REQUEST_METHOD') != 'POST') {
 			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
 					'type' => 'error',
 					'message' => 'Failed - Invalid Request!'
-			)));
+				)));
 		}
 
 		$this->form_validation->set_rules('prod_name', 'Product Name', 'trim|required|xss_clean');
@@ -346,53 +346,51 @@ class Product extends CI_Controller {
 		$this->form_validation->set_rules('mrp', 'MRP', 'trim|numeric|required|xss_clean');
 
 
-		if( !$this->form_validation->run() ) {
+		if (!$this->form_validation->run()) {
 			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
 					'type' => 'error',
 					'message' => validation_errors()
-			)));
+				)));
 		}
-		
-		$pathToUploadedFile = base_url().'assets/theme/images/buy.svg';
+
+		$pathToUploadedFile = base_url() . 'assets/theme/images/buy.svg';
 		//Validate File
-		if (isset($_FILES['prod_image']) && $_FILES['prod_image']['size'] != 0) 
-		{
-			
+		if (isset($_FILES['prod_image']) && $_FILES['prod_image']['size'] != 0) {
+
 			$allowedExts = array("jpeg", "jpg", "png", "JPG", "JPEG", "PNG");
 			$allowedTypes = array(IMAGETYPE_PNG, IMAGETYPE_JPEG, IMAGETYPE_GIF);
 			$extension = pathinfo($_FILES["prod_image"]["name"], PATHINFO_EXTENSION);
 			$detectedType = exif_imagetype($_FILES['prod_image']['tmp_name']);
 			$type = $_FILES['prod_image']['type'];
 			if (!in_array($detectedType, $allowedTypes)) {
-					return $this->output
+				return $this->output
 					->set_content_type('application/json')
 					->set_status_header(200)
 					->set_output(json_encode(array(
-							'type' => 'error',
-							'message' => 'Only jpg,png files supported'
+						'type' => 'error',
+						'message' => 'Only jpg,png files supported'
 					)));
-					
 			}
-			if(filesize($_FILES['prod_image']['tmp_name']) > 1000000) {
+			if (filesize($_FILES['prod_image']['tmp_name']) > 1000000) {
 				return $this->output
-				->set_content_type('application/json')
-				->set_status_header(200)
-				->set_output(json_encode(array(
+					->set_content_type('application/json')
+					->set_status_header(200)
+					->set_output(json_encode(array(
 						'type' => 'error',
 						'message' => 'The Image file size shoud not exceed 20MB!'
-				)));
+					)));
 			}
-			if(!in_array($extension, $allowedExts)) {
+			if (!in_array($extension, $allowedExts)) {
 				return $this->output
-				->set_content_type('application/json')
-				->set_status_header(200)
-				->set_output(json_encode(array(
+					->set_content_type('application/json')
+					->set_status_header(200)
+					->set_output(json_encode(array(
 						'type' => 'error',
 						'message' => 'Invalid file extension'
-				)));
+					)));
 			}
 
 			//Upload file
@@ -403,21 +401,18 @@ class Product extends CI_Controller {
 
 			$this->upload->initialize($aConfig);
 
-			if($this->upload->do_upload('prod_image'))
-			{
-				$ret= $this->upload->data();
-			}
-			else {
+			if ($this->upload->do_upload('prod_image')) {
+				$ret = $this->upload->data();
+			} else {
 				return $this->output
-				->set_content_type('application/json')
-				->set_status_header(200) 
-				->set_output(json_encode(array(
+					->set_content_type('application/json')
+					->set_status_header(200)
+					->set_output(json_encode(array(
 						'type' => 'error',
 						'message' => $this->upload->display_errors()
-				)));
+					)));
 			}
-			$pathToUploadedFile = base_url().'uploads/'.$ret['file_name'];
-
+			$pathToUploadedFile = base_url() . 'uploads/' . $ret['file_name'];
 		}
 
 		$insert_data = array(
@@ -436,91 +431,87 @@ class Product extends CI_Controller {
 			'tax' => $this->input->post('tax'),
 		);
 
-		$insert = $this->My_model->insert('sss_products',$insert_data);
-		if(!$insert) { 
+		$insert = $this->My_model->insert('sss_products', $insert_data);
+		if (!$insert) {
 			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
 					'type' => 'error',
 					'message' => 'Operation failed. please try again later'
-			)));
+				)));
 		}
 
-		
+
 
 		return $this->output
 			->set_content_type('application/json')
 			->set_status_header(200)
 			->set_output(json_encode(array(
-					'type' => 'success',
-					'message' => 'Product Added Successfully'
+				'type' => 'success',
+				'message' => 'Product Added Successfully'
 			)));
-	
 	}
 
 	public function delete_product()
 	{
-		if($this->input->server('REQUEST_METHOD') != 'POST') {
+		if ($this->input->server('REQUEST_METHOD') != 'POST') {
 			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
 					'type' => 'error',
 					'message' => 'Failed - Invalid Request!'
-			)));
+				)));
 		}
 
-		if(!$this->input->post('id')){
+		if (!$this->input->post('id')) {
 			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
 					'type' => 'error',
 					'message' => 'Operation failed. Product Id not found'
-			)));
+				)));
 		}
 
-		if(!is_array($this->input->post('id')))
-		{
+		if (!is_array($this->input->post('id'))) {
 			$arr = array();
-			array_push($arr,$this->input->post('id'));
-		}
-		else{
+			array_push($arr, $this->input->post('id'));
+		} else {
 			$arr = $this->input->post('id');
 		}
 
-		$deleteStatus = $this->My_model->delete_multiple('sss_products','id',$arr);
-		if(!$deleteStatus)
-		{
+		$deleteStatus = $this->My_model->delete_multiple('sss_products', 'id', $arr);
+		if (!$deleteStatus) {
 			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
 					'type' => 'error',
 					'message' => 'Database Operation failed.'
-			)));
+				)));
 		}
 
 		return $this->output
 			->set_content_type('application/json')
 			->set_status_header(200)
 			->set_output(json_encode(array(
-					'type' => 'success',
-					'message' => 'Product Deleted Successfully'
+				'type' => 'success',
+				'message' => 'Product Deleted Successfully'
 			)));
 	}
 
 	public function update_product()
 	{
-		if($this->input->server('REQUEST_METHOD') != 'POST') {
+		if ($this->input->server('REQUEST_METHOD') != 'POST') {
 			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
 					'type' => 'error',
 					'message' => 'Failed - Invalid Request!'
-			)));
+				)));
 		}
 
 		$this->form_validation->set_rules('product_id', 'Product Name', 'trim|required|xss_clean');
@@ -535,21 +526,20 @@ class Product extends CI_Controller {
 		$this->form_validation->set_rules('tax_edit', 'Tax Percentage', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('mrp_edit', 'Product MRP', 'trim|required|xss_clean');
 
-		if( !$this->form_validation->run() ) {
+		if (!$this->form_validation->run()) {
 			return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
 					'type' => 'error',
 					'message' => validation_errors()
-			)));
+				)));
 		}
 
 		$pathToUploadedFile = '';
-		if (isset($_FILES['prod_image_edit']) && $_FILES['prod_image_edit']['size'] != 0) 
-		{
-			
-			$allowedExts = array("jpeg", "jpg", "png", "svg","JPG", "JPEG", "PNG", "SVG");
+		if (isset($_FILES['prod_image_edit']) && $_FILES['prod_image_edit']['size'] != 0) {
+
+			$allowedExts = array("jpeg", "jpg", "png", "svg", "JPG", "JPEG", "PNG", "SVG");
 			$allowedTypes = array(IMAGETYPE_PNG, IMAGETYPE_JPEG, IMAGETYPE_GIF);
 			$extension = pathinfo($_FILES["prod_image_edit"]["name"], PATHINFO_EXTENSION);
 			$detectedType = exif_imagetype($_FILES['prod_image_edit']['tmp_name']);
@@ -562,49 +552,47 @@ class Product extends CI_Controller {
 			// 				'type' => 'error',
 			// 				'message' => 'Only jpg,png files supported'
 			// 		)));
-					
+
 			// }
-			if(filesize($_FILES['prod_image_edit']['tmp_name']) > 1000000) {
+			if (filesize($_FILES['prod_image_edit']['tmp_name']) > 1000000) {
 				return $this->output
-				->set_content_type('application/json')
-				->set_status_header(200)
-				->set_output(json_encode(array(
+					->set_content_type('application/json')
+					->set_status_header(200)
+					->set_output(json_encode(array(
 						'type' => 'error',
 						'message' => 'The Image file size shoud not exceed 20MB!'
-				)));
+					)));
 			}
-			if(!in_array($extension, $allowedExts)) {
+			if (!in_array($extension, $allowedExts)) {
 				return $this->output
-				->set_content_type('application/json')
-				->set_status_header(200)
-				->set_output(json_encode(array(
+					->set_content_type('application/json')
+					->set_status_header(200)
+					->set_output(json_encode(array(
 						'type' => 'error',
 						'message' => 'Invalid file extension'
-				)));
+					)));
 			}
 
 			//Upload file
-			
+
 
 			$aConfig['upload_path']      =  'uploads/';
 			$aConfig['allowed_types']    = 'jpg|png|jpeg|svg';
 			$aConfig['max_size']     = '1000000';
 			$this->upload->initialize($aConfig);
-			if($this->upload->do_upload('prod_image_edit'))
-			{
-				$ret= $this->upload->data();
-			}
-			else {
+			if ($this->upload->do_upload('prod_image_edit')) {
+				$ret = $this->upload->data();
+			} else {
 				return $this->output
-				->set_content_type('application/json')
-				->set_status_header(200) 
-				->set_output(json_encode(array(
+					->set_content_type('application/json')
+					->set_status_header(200)
+					->set_output(json_encode(array(
 						'type' => 'error',
 						'message' => $this->upload->display_errors()
-				)));
+					)));
 			}
 
-			$pathToUploadedFile = base_url().'uploads/'.$ret['file_name'];
+			$pathToUploadedFile = base_url() . 'uploads/' . $ret['file_name'];
 		}
 
 		$update_array = 	array(
@@ -621,79 +609,273 @@ class Product extends CI_Controller {
 			'mrp' => $this->input->post('mrp_edit')
 		);
 
-		if(!empty($pathToUploadedFile))
-		{
+		if (!empty($pathToUploadedFile)) {
 			$update_array['image_url'] = $pathToUploadedFile;
 		}
 
-		$update = $this->My_model->update('sss_products', array(
+		$update = $this->My_model->update(
+			'sss_products',
+			array(
 				'id' => $this->input->post('product_id')
-			), $update_array
+			),
+			$update_array
 		);
 
 
 		return $this->output
-		->set_content_type('application/json')
-		->set_status_header(200)
-		->set_output(json_encode(array(
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
 				'type' => 'success',
 				'message' => 'Product Updated Successfully'
-		)));
+			)));
+	}
+
+	public function add_sub_category()
+	{
+		if ($this->input->server('REQUEST_METHOD') != 'POST') {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Failed - Invalid Request!'
+				)));
+		}
+
+		$this->form_validation->set_rules('category_in_subcat', 'Category Name', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('sub_cat_name', 'Sub-Category Name', 'trim|required|xss_clean');
+
+		if (!$this->form_validation->run()) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => validation_errors()
+				)));
+		}
+
+		$insert_data = array(
+			'category_id' => $this->input->post('category_in_subcat'),
+			'name' => $this->input->post('sub_cat_name'),
+			'description' => $this->input->post('sub_cat_desc')
+		);
+
+		$insert = $this->My_model->insert('sss_sub_category', $insert_data);
+
+		if (!$insert) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Database Operation failed.'
+				)));
+		}
+
+		return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
+				'type' => 'success',
+				'message' => 'Product Category Added Successfully.'
+			)));
+	}
+
+	public function update_sub_category()
+	{
+		if ($this->input->server('REQUEST_METHOD') != 'POST') {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Failed - Invalid Request!'
+				)));
+		}
+
+		$this->form_validation->set_rules('sub_category_id', 'Sub Category ID', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('sub_category_name_edit', 'Sub Category Name', 'trim|required|xss_clean');
+
+		if (!$this->form_validation->run()) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => validation_errors()
+				)));
+		}
+
+		$update = $this->My_model->update(
+			'sss_sub_category',
+			array(
+				'id' => $this->input->post('sub_category_id')
+			),
+			array(
+				'name' => $this->input->post('sub_category_name_edit'),
+				'description' => $this->input->post('sub_category_desc_edit')
+			)
+		);
+
+		return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
+				'type' => 'success',
+				'message' => 'Sub Category Updated Successfully'
+			)));
+	}
+
+	public function delete_sub_category()
+	{
+		if ($this->input->server('REQUEST_METHOD') != 'POST') {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Failed - Invalid Request!'
+				)));
+		}
+
+		if (!$this->input->post('id')) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Operation failed. Sub Category Id not found'
+				)));
+		}
+
+		if (!$this->input->post('category_id')) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Operation failed. Category Id not found'
+				)));
+		}
+
+		if (!is_array($this->input->post('id'))) {
+			$arr = array();
+			array_push($arr, $this->input->post('id'));
+		} else {
+			$arr = $this->input->post('id');
+		}
+
+		$check_dependency = $this->My_model->get_multiple('sss_products', 'sub_category_id', $arr);
+
+		if (!empty($check_dependency)) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Products Created with this Sub Category, Delete them first'
+				)));
+		}
+
+
+		$deleteStatus = $this->My_model->delete_multiple('sss_sub_category', 'id', $arr);
+		if (!$deleteStatus) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Database Operation failed.'
+				)));
+		}
+
+		return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
+				'type' => 'success',
+				'message' => 'Category Deleted Successfully'
+			)));
 	}
 
 	public function category_ajax_list()
 	{
-		$this->load->model('Datatables/Category_DT','category_model_dt');
+		$this->load->model('Datatables/Category_DT', 'category_model_dt');
 
 		$list = $this->category_model_dt->get_datatables();
 
-		$data = array(); 
+		$data = array();
 		$no = $_POST['start'];
 		foreach ($list as $fetched_data) {
-				$no++;
-				$row = array();
-				$row[] = $this->category_model_dt->load_data($fetched_data);
+			$no++;
+			$row = array();
+			$row[] = $this->category_model_dt->load_data($fetched_data);
 
-				$data[] = $row;
+			$data[] = $row;
 		}
 
 		$output = array(
-										"draw" => $_POST['draw'],
-										"recordsTotal" => $this->category_model_dt->count_all(),
-										"recordsFiltered" => $this->category_model_dt->count_filtered(),
-										"data" => $data,
-						);
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->category_model_dt->count_all(),
+			"recordsFiltered" => $this->category_model_dt->count_filtered(),
+			"data" => $data,
+		);
 		//output to json format
 		echo json_encode($output);
+	}
 
+	public function sub_category_ajax_list()
+	{
+		$this->load->model('Datatables/Sub_Category_DT', 'sub_category_model_dt');
+
+		$list = $this->sub_category_model_dt->get_datatables();
+
+		$data = array();
+		$no = $_POST['start'];
+		foreach ($list as $fetched_data) {
+			$no++;
+			$row = array();
+			$row[] = $this->sub_category_model_dt->load_data($fetched_data);
+
+			$data[] = $row;
+		}
+
+		$output = array(
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->sub_category_model_dt->count_all(),
+			"recordsFiltered" => $this->sub_category_model_dt->count_filtered(),
+			"data" => $data,
+		);
+		//output to json format
+		echo json_encode($output);
 	}
 
 	public function seller_orders_ajax_list()
 	{
-		$this->load->model('Datatables/Seller_Orders_DT','seller_orders_model');
+		$this->load->model('Datatables/Seller_Orders_DT', 'seller_orders_model');
 
 		$list = $this->seller_orders_model->get_datatables();
 		$data_array = array();
 
-		if(count($list) > 0)
-		{
-			foreach($list as $item)
-			{
-				
-				if(!key_exists($item['main_order_id'], $data_array)){
-					//No key
-					$data_array[$item['main_order_id']]['items'] = array();//Create New Key
-				}	
-				
-				$data_array[$item['main_order_id']]['order_id'] = $item['main_order_id'];//order id
-				$data_array[$item['main_order_id']]['buyer_name'] = $item['buyer_name'];//buyer name
-				$data_array[$item['main_order_id']]['create_date'] = $item['create_date']; //order date
-				$data_array[$item['main_order_id']]['status'] = $item['status'];// order status
-				$data_array[$item['main_order_id']]['status_name'] = $item['status_name'];// order status name
-				$data_array[$item['main_order_id']]['status_change_count'] = $item['status_change_count'];// order status change count
-				$data_array[$item['main_order_id']]['item_status'] = $item['item_status'];//Order Item Status - Seller Order Status
+		if (count($list) > 0) {
+			foreach ($list as $item) {
 
-				
+				if (!key_exists($item['main_order_id'], $data_array)) {
+					//No key
+					$data_array[$item['main_order_id']]['items'] = array(); //Create New Key
+				}
+
+				$data_array[$item['main_order_id']]['order_id'] = $item['main_order_id']; //order id
+				$data_array[$item['main_order_id']]['buyer_name'] = $item['buyer_name']; //buyer name
+				$data_array[$item['main_order_id']]['create_date'] = $item['create_date']; //order date
+				$data_array[$item['main_order_id']]['status'] = $item['status']; // order status
+				$data_array[$item['main_order_id']]['status_name'] = $item['status_name']; // order status name
+				$data_array[$item['main_order_id']]['status_change_count'] = $item['status_change_count']; // order status change count
+				$data_array[$item['main_order_id']]['item_status'] = $item['item_status']; //Order Item Status - Seller Order Status
+
+
 
 				//Delete above added keys from the result array
 				$main_order_id = $item['main_order_id'];
@@ -705,106 +887,101 @@ class Product extends CI_Controller {
 				// unset($item['status_change_count']);
 				// unset($item['item_status']);
 
-				array_push($data_array[$main_order_id]['items'], $item);//Push all items in key
+				array_push($data_array[$main_order_id]['items'], $item); //Push all items in key
 				$order_items_count = count($data_array[$main_order_id]['items']);
 				$order_total = 0;
 
-				foreach($data_array[$main_order_id]['items'] as $order_item)
-				{
+				foreach ($data_array[$main_order_id]['items'] as $order_item) {
 					$order_total += doubleval($order_item['line_total']);
 				}
 
-				$data_array[$main_order_id]['seller_items_count'] = $order_items_count;// order item count
-				$data_array[$main_order_id]['seller_order_total'] = $order_total;// order item count
+				$data_array[$main_order_id]['seller_items_count'] = $order_items_count; // order item count
+				$data_array[$main_order_id]['seller_order_total'] = $order_total; // order item count
 
 			}
 		}
 
 		$list = $data_array;
 
-		
 
 
-		$data = array(); 
+
+		$data = array();
 		$no = $_POST['start'];
 		foreach ($list as $fetched_data) {
-				$no++;
-				$row = array();
-				$row[] = $this->seller_orders_model->get_order_id($fetched_data);
+			$no++;
+			$row = array();
+			$row[] = $this->seller_orders_model->get_order_id($fetched_data);
 
-				// $row[] = $this->seller_orders_model->get_data($fetched_data);
-				$row[] = $fetched_data['items'];//hidden column which stores items array
+			// $row[] = $this->seller_orders_model->get_data($fetched_data);
+			$row[] = $fetched_data['items']; //hidden column which stores items array
 
 
-				// $row[] = $this->seller_orders_model->get_confirm_order($fetched_data['order_id'], $fetched_data['item_status'], $fetched_data['status_change_count']);
-				// $row[] = $this->seller_orders_model->get_status($fetched_data['item_status']);
-				// $row[] = $fetched_data['buyer_name'];
-				// $row[] = $fetched_data['seller_items_count'];
-				// $row[] = $fetched_data['seller_order_total'];
-				// $row[] = $fetched_data['create_date'];
-				$data[] = $row;
+			// $row[] = $this->seller_orders_model->get_confirm_order($fetched_data['order_id'], $fetched_data['item_status'], $fetched_data['status_change_count']);
+			// $row[] = $this->seller_orders_model->get_status($fetched_data['item_status']);
+			// $row[] = $fetched_data['buyer_name'];
+			// $row[] = $fetched_data['seller_items_count'];
+			// $row[] = $fetched_data['seller_order_total'];
+			// $row[] = $fetched_data['create_date'];
+			$data[] = $row;
 		}
 
 		$output = array(
-										"draw" => $_POST['draw'],
-										"recordsTotal" => $this->seller_orders_model->count_all(),
-										"recordsFiltered" => $this->seller_orders_model->count_filtered(),
-										"data" => $data,
-						);
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->seller_orders_model->count_all(),
+			"recordsFiltered" => $this->seller_orders_model->count_filtered(),
+			"data" => $data,
+		);
 		//output to json format
 		echo json_encode($output);
 	}
 
 	public function export_seller_orders()
 	{
-		$this->load->model('Datatables/Seller_Orders_DT','seller_orders_model');
+		$this->load->model('Datatables/Seller_Orders_DT', 'seller_orders_model');
 		$list = $this->seller_orders_model->get_seller_orders();
 
 		$data_array = array();
 
-		if(count($list) > 0)
-		{
+		if (count($list) > 0) {
 			$sheet_total = 0;
 			$sheet_total_tax = 0;
 
-			foreach($list as $item)
-			{
-				
-				if(!key_exists($item['main_order_id'], $data_array)){
+			foreach ($list as $item) {
+
+				if (!key_exists($item['main_order_id'], $data_array)) {
 					//No key
-					$data_array[$item['main_order_id']] = array();//Create New Key
-				}	
-			
+					$data_array[$item['main_order_id']] = array(); //Create New Key
+				}
+
 				//Delete above added keys from the result array
 				$main_order_id = $item['main_order_id'];
-		
 
-				array_push($data_array[$main_order_id], $item);//Push all items in key
+
+				array_push($data_array[$main_order_id], $item); //Push all items in key
 				$order_items_count = count($data_array[$main_order_id]);
 				$order_total = 0;
 				$tax_total = 0;
-				
-				foreach($data_array[$main_order_id] as $order_item)
-				{
+
+				foreach ($data_array[$main_order_id] as $order_item) {
 					$order_total += doubleval($order_item['line_total']);
 					$tax_total += doubleval($order_item['line_tax']);
 				}
 
-				foreach($data_array[$main_order_id] as $key => $value)
-				{
-					if($key === 0){
-						$data_array[$main_order_id][0]['seller_items_count'] = $order_items_count;// order item count
-						$data_array[$main_order_id][0]['seller_total_tax'] = $tax_total;// order item count
-						$data_array[$main_order_id][0]['seller_order_total'] = $order_total;// order item count
-					}	
+				foreach ($data_array[$main_order_id] as $key => $value) {
+					if ($key === 0) {
+						$data_array[$main_order_id][0]['seller_items_count'] = $order_items_count; // order item count
+						$data_array[$main_order_id][0]['seller_total_tax'] = $tax_total; // order item count
+						$data_array[$main_order_id][0]['seller_order_total'] = $order_total; // order item count
+					}
 				}
-			}			
+			}
 		}
 
 		$list = $data_array;
 
 		$spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-    $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+		$writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
 
 		$header = array('Order No', 'Product Name', 'Product Description', 'Rem. Stock', 'Product Price(Excl. Tax)', 'Pieces per order', 'MRP', 'Product Category', 'Quantity', 'Line Total', 'Line Tax', 'Buyer Name', 'Buyer Contact', 'Order Date', 'Order Status', 'UOM', 'Tax(%)', 'No.of Items', 'Order Tax', 'Order Total');
 		$spreadsheet->getActiveSheet()->fromArray([$header], NULL, 'A1');
@@ -812,41 +989,41 @@ class Product extends CI_Controller {
 		//Style Header of Excel
 		$styleArray = [
 			'font' => [
-					'bold' => true,
+				'bold' => true,
 			],
 			'alignment' => [
-					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
+				'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
 			],
 			'borders' => [
-					'top' => [
-							'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-					],
+				'top' => [
+					'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+				],
 			],
 			'fill' => [
-					'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
-					'rotation' => 90,
-					'startColor' => [
-							'argb' => 'FFA0A0A0',
-					],
-					'endColor' => [
-							'argb' => 'FFFFFFFF',
-					],
+				'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+				'rotation' => 90,
+				'startColor' => [
+					'argb' => 'FFA0A0A0',
+				],
+				'endColor' => [
+					'argb' => 'FFFFFFFF',
+				],
 			],
 		];
 		$spreadsheet->getActiveSheet()->getStyle('A1:T1')->applyFromArray($styleArray);
 
 		$col = 1;
-		$row= 2;
-		foreach($list as $order) //Order Array
+		$row = 2;
+		foreach ($list as $order) //Order Array
 		{
-			foreach($order as $order_data) //Order Items Array
+			foreach ($order as $order_data) //Order Items Array
 			{
-				foreach($order_data as $key => $value) //Order Items data
+				foreach ($order_data as $key => $value) //Order Items data
 				{
 					$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value);
 					$col++;
 				}
-				$col = 1;	
+				$col = 1;
 				$row++;
 			}
 		}
@@ -855,30 +1032,28 @@ class Product extends CI_Controller {
 		$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(19, $row, 'All Orders Total');
 		$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(20, $row, $sheet_total);
 
-		$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(19, $row+1, 'All Orders Total');
-		$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(20, $row+1, $sheet_total_tax);
+		$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(19, $row + 1, 'All Orders Total');
+		$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(20, $row + 1, $sheet_total_tax);
 
-		
+
 		$writer = new Xlsx($spreadsheet);
 
 		$filename = 'name-of-the-generated-file';
 
 		header('Content-Type: application/vnd.ms-excel');
-		header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+		header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
 		header('Cache-Control: max-age=0');
-		
+
 		ob_start();
 		$writer->save('php://output'); // download file 
 		$xlsData = ob_get_contents();
 		ob_end_clean();
 
 		$response =  array(
-						'op' => 'ok',
-						'file' => "data:application/vnd.ms-excel;base64,".base64_encode($xlsData)
+			'op' => 'ok',
+			'file' => "data:application/vnd.ms-excel;base64," . base64_encode($xlsData)
 		);
 
 		die(json_encode($response));
-		
 	}
-
 }

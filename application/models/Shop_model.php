@@ -1,287 +1,281 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-	class Shop_model extends CI_Model {
+class Shop_model extends CI_Model
+{
 
-		public function __construct() {
-			parent::__construct();
-			$this->load->database();
-			$this->load->library('encryption');
+	public function __construct()
+	{
+		parent::__construct();
+		$this->load->database();
+		$this->load->library('encryption');
+	}
+
+	public function get($table, $conditions = array())
+	{
+		if (!empty($conditions)) {
+			$this->db->where($conditions);
 		}
-		
-		public function get($table,$conditions = array())
-		{
-			if(!empty($conditions)){
-				$this->db->where($conditions);
-			}
-			$result = $this->db->get($table);
-      return $result->result_array();
-		}
-		
-		public function seller_exists($phone){
-			$this->db->where('phone', $phone);
-			$this->db->where('is_delete', '0');
-			$this->db->select('*');
-			$this->db->from('sss_seller'); 
-			$query = $this->db->get();
+		$result = $this->db->get($table);
+		return $result->result_array();
+	}
 
-			return ($query->num_rows() > 0) ? $query->result_array() : false;
-		}
+	public function seller_exists($phone)
+	{
+		$this->db->where('phone', $phone);
+		$this->db->where('is_delete', '0');
+		$this->db->select('*');
+		$this->db->from('sss_seller');
+		$query = $this->db->get();
 
-		public function addSeller($data){
-			$data = array( 
-        'shop_name'	=>  $data['shop'], 
-        'phone'=>  $data['mobile'], 
-				'pin'	=>  $data['pin'],
-				'email'	=>  $data['email'],
-        'password'	=>  $this->encryption->encrypt($data['password'])  
-    	);
-			$this->db->insert('sss_seller', $data);
-			// $this->encryption->decrypt($ciphertext);
+		return ($query->num_rows() > 0) ? $query->result_array() : false;
+	}
 
-			return ($this->db->affected_rows() > 0) ? true : false;
-		}
+	public function addSeller($data)
+	{
+		$data = array(
+			'shop_name'	=>  $data['shop'],
+			'phone' =>  $data['mobile'],
+			'pin'	=>  $data['pin'],
+			'email'	=>  $data['email'],
+			'password'	=>  $this->encryption->encrypt($data['password'])
+		);
+		$this->db->insert('sss_seller', $data);
+		// $this->encryption->decrypt($ciphertext);
 
-		public function seller_password($password){
-			$this->db->where('password', $this->encryption->decrypt($password));
-			$this->db->where('is_delete', '0');
-			$this->db->select('*');
-			$this->db->from('sss_seller'); 
-			$query = $this->db->get();
+		return ($this->db->affected_rows() > 0) ? true : false;
+	}
 
-			return ($query->num_rows() > 0) ? $query->result_array() : false;
-		}
+	public function seller_password($password)
+	{
+		$this->db->where('password', $this->encryption->decrypt($password));
+		$this->db->where('is_delete', '0');
+		$this->db->select('*');
+		$this->db->from('sss_seller');
+		$query = $this->db->get();
 
-		public function insert_category($data)
-		{
-			$insert = array( 
-        'name'	=>  $data['category_name'], 
-        'description'=>  $data['category_desc'] 
-			);
-			$this->db->insert('sss_category', $insert);
-			// $this->encryption->decrypt($ciphertext);
+		return ($query->num_rows() > 0) ? $query->result_array() : false;
+	}
 
-			return ($this->db->affected_rows() > 0) ? true : false;
-		}
+	public function insert_category($data)
+	{
+		$insert = array(
+			'name'	=>  $data['category_name'],
+			'description' =>  $data['category_desc']
+		);
+		$this->db->insert('sss_category', $insert);
+		// $this->encryption->decrypt($ciphertext);
 
-		public function get_cart_items($ip)
-		{
-			$table = 'sss_cart as cart';
-			$this->db->where('cart.ip_address', $ip);
-			$this->db->select('cart.id as cart_id, cart.ip_address, cart.item_id, cart.item_quantity, cart.delivery_charges, cart.item_price as cart_item_price, cart.line_tax, cart.total as car_line_total, product.id, product.seller_id , product.name as product_name, product.description, product.image_url, product.price, product.pieces, product.uom_unit, product.mrp, product.tax as tax_id, product.rem_quantity, category.id as category_id, category.name as category_name, category.description as category_description, taxes.percentage, seller.shop_name, seller.phone, uom.id as uom, uom.name as uom_name', false);
-			$this->db->from($table);
-			$this->db->join('sss_products as product', 'cart.item_id = product.id ','inner');
-			$this->db->join('sss_category as category', 'product.category_id = category.id ','left');
-			$this->db->join('sss_tax as taxes', 'taxes.id = product.tax ','left');
-			$this->db->join('sss_seller as seller', 'product.seller_id  = seller.id ','inner');
-			$this->db->join('sss_uom as uom', 'uom.id = product.uom ','left');
+		return ($this->db->affected_rows() > 0) ? true : false;
+	}
 
-			
-			$query = $this->db->get();
-			return ($query->num_rows() > 0) ? $query->result_array() : array();
-		}
+	public function get_cart_items($ip)
+	{
+		$table = 'sss_cart as cart';
+		$this->db->where('cart.ip_address', $ip);
+		$this->db->select('cart.id as cart_id, cart.ip_address, cart.item_id, cart.item_quantity, cart.delivery_charges, cart.item_price as cart_item_price, cart.line_tax, cart.total as car_line_total, product.id, product.seller_id , product.name as product_name, product.description, product.image_url, product.price, product.pieces, product.uom_unit, product.mrp, product.tax as tax_id, product.rem_quantity, category.id as category_id, category.name as category_name, category.description as category_description, taxes.percentage, seller.shop_name, seller.phone, uom.id as uom, uom.name as uom_name', false);
+		$this->db->from($table);
+		$this->db->join('sss_products as product', 'cart.item_id = product.id ', 'inner');
+		$this->db->join('sss_category as category', 'product.category_id = category.id ', 'left');
+		$this->db->join('sss_tax as taxes', 'taxes.id = product.tax ', 'left');
+		$this->db->join('sss_seller as seller', 'product.seller_id  = seller.id ', 'inner');
+		$this->db->join('sss_uom as uom', 'uom.id = product.uom ', 'left');
 
-		public function get_user_orders($user_id)
-		{
-			$data_array = array();
-			$orders = $this->My_model->get('sss_orders', 
-				array('buyer_id' => $user_id),
-				array('id','desc')
-			);
 
-			if(count($orders) > 0){
-				$data_array['orders'] = $orders;
-				for($i = 0; $i < count($data_array['orders']); $i++)
-				{
-					// $current_order = $data_array['orders'][$i];
-					$order_items = $this->get_order_items($data_array['orders'][$i]['id']);//order items
-				
-					
-					
-					$data_array['orders'][$i]['order_items']['confirmed'] = $order_items;//push order items in current order array index
+		$query = $this->db->get();
+		return ($query->num_rows() > 0) ? $query->result_array() : array();
+	}
 
-					$data_array['orders'][$i]['order_items']['cancelled'] = array();//blank array for cancelled orders if any
+	public function get_user_orders($user_id)
+	{
+		$data_array = array();
+		$orders = $this->My_model->get(
+			'sss_orders',
+			array('buyer_id' => $user_id),
+			array('id', 'desc')
+		);
 
-					//seperate cancelled orders if any
-					foreach($data_array['orders'][$i]['order_items']['confirmed'] as $key => $value)
-					{
-						if($value['status'] == 3)
-						{
-							array_push($data_array['orders'][$i]['order_items']['cancelled'], $value);
-							unset($data_array['orders'][$i]['order_items']['confirmed'][$key]);//Delete from confirmed
-						}
+		if (count($orders) > 0) {
+			$data_array['orders'] = $orders;
+			for ($i = 0; $i < count($data_array['orders']); $i++) {
+				// $current_order = $data_array['orders'][$i];
+				$order_items = $this->get_order_items($data_array['orders'][$i]['id']); //order items
+
+
+
+				$data_array['orders'][$i]['order_items']['confirmed'] = $order_items; //push order items in current order array index
+
+				$data_array['orders'][$i]['order_items']['cancelled'] = array(); //blank array for cancelled orders if any
+
+				//seperate cancelled orders if any
+				foreach ($data_array['orders'][$i]['order_items']['confirmed'] as $key => $value) {
+					if ($value['status'] == 3) {
+						array_push($data_array['orders'][$i]['order_items']['cancelled'], $value);
+						unset($data_array['orders'][$i]['order_items']['confirmed'][$key]); //Delete from confirmed
 					}
-
 				}
 			}
-
-			
-			
-			return $data_array;
 		}
 
-		public function get_order_items($order_id)
-		{
-
-			$table = 'sss_order_items as order';
-			$this->db->where('order.order_id', $order_id);
-			$this->db->select('order.id as order_items_id, order.product_id, order.quantity, order.order_price as line_item_price, order.line_tax, order.buyer_id, order.status, order.status_change_count, order.cancel_reason, product.seller_id, product.name, product.category_id, product.price, product.mrp, product.tax as tax_id, product.description, product.pieces, product.seller_id, product.name, product.price, product.uom, product.uom_unit, product.pieces, cat.name as category_name, seller.name as seller_name, seller.shop_name, seller.phone, seller.email as seller_email, seller.pin, taxes.percentage as tax_percentage, uoms.name as uom_name', false);
-			$this->db->from($table); 
-			$this->db->join('sss_products as product', 'order.product_id = product.id ','inner');
-			$this->db->join('sss_category as cat', 'cat.id = product.category_id ','left');
-			$this->db->join('sss_seller as seller', 'seller.id = product.seller_id ','inner');
-			$this->db->join('sss_tax as taxes', 'taxes.id = product.tax ','left');
-			$this->db->join('sss_uom as uoms', 'uoms.id = product.uom ','left');
 
 
-			$query = $this->db->get();
-			return ($query->num_rows() > 0) ? $query->result_array() : array();
-		}
+		return $data_array;
+	}
 
-		//Send order details to sellers via email
-		public function send_order_details_seller($order_id)
-		{
-			$arr = array();
-			$order = $this->get_order_items($order_id);
-			
-			foreach($order as $item)
-			{
-				//push only if they are not cancelled orders
-				if($item['status'] !== 3)
-				{
-					if(!key_exists($item['seller_id'], $arr)){
-						//No key
-						$arr[$item['seller_id']] = array();//Create New Key
-						$arr[$item['seller_id']]['items'] = array();//Create New Key
-					}
+	public function get_order_items($order_id)
+	{
 
-					//Arrange Array correctly - Remove global data items form order items array
-					$arr[$item['seller_id']]['shop_name'] = $item['shop_name'];
-					$arr[$item['seller_id']]['seller_name'] = $item['seller_name'];
-					$arr[$item['seller_id']]['phone'] = $item['phone'];
-					$arr[$item['seller_id']]['pin'] = $item['pin'];
-					$arr[$item['seller_id']]['seller_email'] = $item['seller_email'];
-					$arr[$item['seller_id']]['buyer_id'] = $item['buyer_id'];
-
-					unset($item['shop_name']);
-					unset($item['shop_seller_namename']);
-					unset($item['phone']);
-					unset($item['pin']);
-					unset($item['seller_email']);
-					unset($item['buyer_id']);
+		$table = 'sss_order_items as order';
+		$this->db->where('order.order_id', $order_id);
+		$this->db->select('order.id as order_items_id, order.product_id, order.quantity, order.order_price as line_item_price, order.line_tax, order.buyer_id, order.status, order.status_change_count, order.cancel_reason, product.seller_id, product.name, product.category_id, product.price, product.mrp, product.tax as tax_id, product.description, product.pieces, product.seller_id, product.name, product.price, product.uom, product.uom_unit, product.pieces, cat.name as category_name, seller.name as seller_name, seller.shop_name, seller.phone, seller.email as seller_email, seller.pin, taxes.percentage as tax_percentage, uoms.name as uom_name', false);
+		$this->db->from($table);
+		$this->db->join('sss_products as product', 'order.product_id = product.id ', 'inner');
+		$this->db->join('sss_category as cat', 'cat.id = product.category_id ', 'left');
+		$this->db->join('sss_seller as seller', 'seller.id = product.seller_id ', 'inner');
+		$this->db->join('sss_tax as taxes', 'taxes.id = product.tax ', 'left');
+		$this->db->join('sss_uom as uoms', 'uoms.id = product.uom ', 'left');
 
 
+		$query = $this->db->get();
+		return ($query->num_rows() > 0) ? $query->result_array() : array();
+	}
 
-					//Push by grouping according to category
-					if(!key_exists($item['category_id'],  $arr[$item['seller_id']]['items']  ))
-					{
-						$arr[$item['seller_id']]['items'][$item['category_id']] = array();
-					}
+	//Send order details to sellers via email
+	public function send_order_details_seller($order_id)
+	{
+		$arr = array();
+		$order = $this->get_order_items($order_id);
 
-					array_push($arr[$item['seller_id']]['items'][$item['category_id']] , $item);//Push item in key
-
+		foreach ($order as $item) {
+			//push only if they are not cancelled orders
+			if ($item['status'] !== 3) {
+				if (!key_exists($item['seller_id'], $arr)) {
+					//No key
+					$arr[$item['seller_id']] = array(); //Create New Key
+					$arr[$item['seller_id']]['items'] = array(); //Create New Key
 				}
 
-			}
+				//Arrange Array correctly - Remove global data items form order items array
+				$arr[$item['seller_id']]['shop_name'] = $item['shop_name'];
+				$arr[$item['seller_id']]['seller_name'] = $item['seller_name'];
+				$arr[$item['seller_id']]['phone'] = $item['phone'];
+				$arr[$item['seller_id']]['pin'] = $item['pin'];
+				$arr[$item['seller_id']]['seller_email'] = $item['seller_email'];
+				$arr[$item['seller_id']]['buyer_id'] = $item['buyer_id'];
 
-			return $arr;
-		}
+				unset($item['shop_name']);
+				unset($item['shop_seller_namename']);
+				unset($item['phone']);
+				unset($item['pin']);
+				unset($item['seller_email']);
+				unset($item['buyer_id']);
 
 
-		//Seller Order products data
-		public function seller_order_products($seller_id, $order_id)
-		{
-			$table = 'sss_products as product';
-			$this->db->where('product.seller_id', $seller_id);
-			$this->db->where('order_items.order_id', $order_id);
-			$this->db->select('product.id as product_id, order_items.quantity as order_quantity, product.rem_quantity, order_items.status,order_items.order_id as main_order_id, order_items.order_price as line_total', false);
-			$this->db->from($table);
-			$this->db->join('sss_order_items as order_items', 'order_items.product_id = product.id ','inner');
 
-			$query = $this->db->get();
-			$result = $query->result_array();
-
-			return count($result) > 0 ? $result :  array();
-		}
-
-		
-
-		public function update_main_order_status($order_id)
-		{
-			$order_items = $this->My_model->get('sss_order_items', array(
-				'order_id' => $order_id
-			));
-
-			$confirmed = array();
-			$cancelled = array();
-			
-			foreach($order_items as $item)
-			{
-				if($item['status'] == 2)
-				{
-					array_push($confirmed, $item['id']);
+				//Push by grouping according to category
+				if (!key_exists($item['category_id'],  $arr[$item['seller_id']]['items'])) {
+					$arr[$item['seller_id']]['items'][$item['category_id']] = array();
 				}
-				elseif($item['status'] == 3)
-				{
-					array_push($cancelled, $item['id']);
-				}
-			}
-	
-			if(count($cancelled) <= 0)
-			{
-				//all sellers confirmed order
-				$status = 2;
-			}
-			elseif(count($cancelled) > 0 && count($confirmed) < 1)
-			{
-				//Both sellers cancelled the order
-				$status = 3;
-			}
-			elseif(count($cancelled) > 0 && count($confirmed) > 0)
-			{
-				//Some Seller cancelled order
-				$status = 4;
-			}
-			else
-			{
-				$status = 1;
-			}
 
-			$update_order = $this->My_model->update('sss_orders', array(
-				'id' => $order_id
-			), array(
-				'status' => $status,
-				'update_date' => date ("Y-m-d H:i:s", time())
-			));
+				array_push($arr[$item['seller_id']]['items'][$item['category_id']], $item); //Push item in key
 
-
-			if($update_order)
-			{
-				return true;
 			}
-			else{
-				return false;
-			}
-
 		}
 
+		return $arr;
+	}
 
-		public function get_all_product_data($items,$current_page)
-		{
-			$table = 'sss_products as product';
-			$this->db->where('product.is_delete', 0);
-			$this->db->select('product.id, product.name as product_name, product.description,  product.total_quantity, product.rem_quantity, product.price,product.pieces, category.id as category_id, category.name as category_name, category.description as category_description, seller.id as seller_id, seller.shop_name', false);
-			$this->db->from($table);
-			$this->db->join('sss_category as category', 'product.category_id = category.id ','inner');
-			$this->db->join('sss_seller as seller', 'product.seller_id  = seller.id ','inner');
-			 
-			$skip = ($current_page - 1) * $items;
-			$this->db->limit($items,$skip);
 
-			$query = $this->db->get();
-			return ($query->num_rows() > 0) ? $query->result_array() : false;
+	//Seller Order products data
+	public function seller_order_products($seller_id, $order_id)
+	{
+		$table = 'sss_products as product';
+		$this->db->where('product.seller_id', $seller_id);
+		$this->db->where('order_items.order_id', $order_id);
+		$this->db->select('product.id as product_id, order_items.quantity as order_quantity, product.rem_quantity, order_items.status,order_items.order_id as main_order_id, order_items.order_price as line_total', false);
+		$this->db->from($table);
+		$this->db->join('sss_order_items as order_items', 'order_items.product_id = product.id ', 'inner');
 
+		$query = $this->db->get();
+		$result = $query->result_array();
+
+		return count($result) > 0 ? $result :  array();
+	}
+
+
+
+	public function update_main_order_status($order_id)
+	{
+		$order_items = $this->My_model->get('sss_order_items', array(
+			'order_id' => $order_id
+		));
+
+		$confirmed = array();
+		$cancelled = array();
+
+		foreach ($order_items as $item) {
+			if ($item['status'] == 2) {
+				array_push($confirmed, $item['id']);
+			} elseif ($item['status'] == 3) {
+				array_push($cancelled, $item['id']);
+			}
 		}
 
-  }
+		if (count($cancelled) <= 0) {
+			//all sellers confirmed order
+			$status = 2;
+		} elseif (count($cancelled) > 0 && count($confirmed) < 1) {
+			//Both sellers cancelled the order
+			$status = 3;
+		} elseif (count($cancelled) > 0 && count($confirmed) > 0) {
+			//Some Seller cancelled order
+			$status = 4;
+		} else {
+			$status = 1;
+		}
 
-?>
+		$update_order = $this->My_model->update('sss_orders', array(
+			'id' => $order_id
+		), array(
+			'status' => $status,
+			'update_date' => date("Y-m-d H:i:s", time())
+		));
+
+
+		if ($update_order) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+
+	public function get_all_product_data($items, $current_page)
+	{
+		$table = 'sss_products as product';
+		$this->db->where('product.is_delete', 0);
+		$this->db->select('product.id, product.name as product_name, product.description,  product.total_quantity, product.rem_quantity, product.price,product.pieces, category.id as category_id, category.name as category_name, category.description as category_description, seller.id as seller_id, seller.shop_name', false);
+		$this->db->from($table);
+		$this->db->join('sss_category as category', 'product.category_id = category.id ', 'inner');
+		$this->db->join('sss_seller as seller', 'product.seller_id  = seller.id ', 'inner');
+
+		$skip = ($current_page - 1) * $items;
+		$this->db->limit($items, $skip);
+
+		$query = $this->db->get();
+		return ($query->num_rows() > 0) ? $query->result_array() : false;
+	}
+
+	public function get_product_details($prod_id)
+	{
+		$this->db->where('product.id', intval($prod_id));
+		$this->db->where('product.is_delete', 0);
+		$this->db->select('product.id, product.name as product_name, product.description, product.image_url,  product.total_quantity, product.rem_quantity, product.price,product.pieces, product.uom_unit, product.mrp, category.id as category_id, category.name as category_name, category.description as category_description, seller.id as seller_id, seller.shop_name,  uom.id as uom, uom.name as uom_name', false);
+		$this->db->from('sss_products as product');
+		$this->db->join('sss_category as category', 'product.category_id = category.id ', 'inner');
+		$this->db->join('sss_seller as seller', 'product.seller_id  = seller.id ', 'inner');
+		$this->db->join('sss_uom as uom', 'uom.id = product.uom ', 'left');
+
+		$query = $this->db->get();
+		return $query->result();
+	}
+}
