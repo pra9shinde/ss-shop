@@ -49,6 +49,9 @@
 <?php endif; ?>
 <!------>
 
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+
+
 <script>
   function addToCart(id, obj, ip_address = $('#cart-link').data('ip_address')) {
     if (ip_address) {

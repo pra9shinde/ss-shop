@@ -62,6 +62,33 @@ class Shop extends CI_Controller
 		$this->load->view('templates/footer');
 	}
 
+	//Buyer Login
+	public function user_login()
+	{
+		$this->load->view('templates/header');
+		$this->load->view('templates/menu');
+		$this->load->view('buyer/login');
+		$this->load->view('templates/footer');
+	}
+
+	//Buyer Register
+	public function user_register()
+	{
+		$this->load->view('templates/header');
+		$this->load->view('templates/menu');
+		$this->load->view('buyer/register');
+		$this->load->view('templates/footer');
+	}
+
+	//Buyer Details
+	public function user_details()
+	{
+		$this->load->view('templates/header');
+		$this->load->view('templates/menu');
+		$this->load->view('buyer/user_details');
+		$this->load->view('templates/footer');
+	}
+
 	public function products()
 	{
 		$total_records = 0;
@@ -309,7 +336,78 @@ class Shop extends CI_Controller
 		echo json_encode($cart);
 	}
 
+	//Create Session for Buyer
+	public function create_user_session()
+	{
+		$user_data = $_POST['user_data'];
+		$_SESSION['buyer'] = $user_data;
 
+		return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
+				'type' => 'success',
+				'status' => 'complete'
+			)));
+	}
+
+	public function check_google_account()
+	{
+		$user_data = $_POST['google_data'];
+
+		$user_exists = $this->My_model->get('sss_buyer', array('login_oauth_uid' => $user_data['login_oauth_uid']));
+
+		if (
+			count($user_exists) > 0 && $user_exists[0]['phone'] !== '' && $user_exists[0]['address'] !== '' && $user_exists[0]['pin'] !== ''
+		) {
+			//Google User exists
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'success',
+					'status' => 'complete',
+					'mobileNo' => $user_exists[0]['phone']
+				)));
+		} elseif ($user_exists[0]['phone'] === '' || $user_exists[0]['address'] === '' || $user_exists[0]['pin'] === '') {
+			//Old user but incomplete data
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'success',
+					'status' => 'incomplete',
+					'user_data' => $user_data
+				)));
+		} else {
+			//User doesnt exists
+			$create_buyer = $this->My_model->insert('sss_buyer', array(
+				'login_oauth_uid' => $user_data['login_oauth_uid'],
+				'name' => $user_data['name'],
+				'lastname' => $user_data['last_name'],
+				'email' => $user_data['email'],
+				'profile_picture' => $user_data['profile_picture']
+			));
+
+			if (!$create_buyer) {
+				return $this->output
+					->set_content_type('application/json')
+					->set_status_header(200)
+					->set_output(json_encode(array(
+						'type' => 'error',
+						'message' => 'Database Operation Failed in Creation'
+					)));
+			}
+
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'success',
+					'status' => 'new'
+				)));
+		}
+	}
 
 	public function check_mobile_no($from = '')
 	{
@@ -374,17 +472,20 @@ class Shop extends CI_Controller
 				->set_status_header(200)
 				->set_output(json_encode(array(
 					'type' => 'error',
-					'message' => 'Failed - Invalid Request!'
+					'message' => 'Failed - Invalid Request!',
+					'redirect' => ''
 				)));
 		}
 
-		$this->form_validation->set_rules('user_name', 'Your Name', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('user_name', 'Name', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('last_name', 'Surnaname', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('user_contact', 'Mobile No.', 'trim|required|numeric|min_length[10]|xss_clean');
 		$this->form_validation->set_rules('user_email', 'Email Address', 'trim|valid_email|xss_clean');
 		$this->form_validation->set_rules('user_address_1', 'Address Line 1', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('user_pincode', 'Pincode', 'trim|required|numeric|min_length[6]|xss_clean');
-
-
+		$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[6]|xss_clean');
+		$this->form_validation->set_rules('confirm_password', 'Confirm Password', 'trim|required|min_length[6]|xss_clean');
+		$this->form_validation->set_rules('password', 'Password Mismatch', 'required|matches[confirm_password]');
 
 		if (!$this->form_validation->run()) {
 			return $this->output
@@ -392,14 +493,33 @@ class Shop extends CI_Controller
 				->set_status_header(200)
 				->set_output(json_encode(array(
 					'type' => 'error',
-					'message' => validation_errors()
+					'message' => validation_errors(),
+					'redirect' => ''
 				)));
 		}
 
+		$buyer_exists = $this->My_model->get('sss_buyer', array('phone' => $this->input->post('user_contact')));
+
+		if (count($buyer_exists) > 0) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Mobile no. already used. Try Forget Password!',
+					'redirect' => ''
+				)));
+		}
+
+		$this->load->library('encryption');
+
+
 		$create_buyer = $this->My_model->insert('sss_buyer', array(
 			'name' => $this->input->post('user_name'),
-			'email' => $this->input->post('user_email'),
+			'lastname' => $this->input->post('last_name'),
 			'phone' => $this->input->post('user_contact'),
+			'password' => $this->encryption->encrypt($this->input->post('password')),
+			'email' => $this->input->post('user_email'),
 			'address' => $this->input->post('user_address_1') . ' ' . $this->input->post('user_address_2'),
 			'pin' => $this->input->post('user_pincode')
 		));
@@ -410,7 +530,8 @@ class Shop extends CI_Controller
 				->set_status_header(200)
 				->set_output(json_encode(array(
 					'type' => 'error',
-					'message' => 'Database Operation Failed'
+					'message' => 'User Creation Database Operation Failed',
+					'redirect' => ''
 				)));
 		}
 
@@ -419,8 +540,60 @@ class Shop extends CI_Controller
 			->set_status_header(200)
 			->set_output(json_encode(array(
 				'type' => 'success',
-				'message' => 'Buyer registered successfully.'
+				'message' => 'Buyer registered successfully.',
+				'redirect' => base_url() . 'Shop/user_login'
 			)));
+	}
+
+	//Check if fb google user has filled all data
+	public function check_buyer_details()
+	{
+		if ($this->input->server('REQUEST_METHOD') != 'POST') {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Failed - Invalid Request!'
+				)));
+		}
+
+		if (!isset($_POST['user_data'])) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'No User Data'
+				)));
+		}
+
+
+		$user_data = $_POST['user_data'];
+		$user_exists = $this->My_model->get('sss_buyer', array('login_oauth_uid' => $user_data['login_oauth_uid']));
+
+		if (
+			count($user_exists) > 0 && $user_exists[0]['phone'] !== '' && $user_exists[0]['address'] !== '' && $user_exists[0]['pin'] !== ''
+		) {
+			//Google User exists
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'success',
+					'status' => 'complete'
+				)));
+		} else {
+			//Old user but incomplete data
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'success',
+					'status' => 'incomplete',
+					'user_data' => $user_data
+				)));
+		}
 	}
 
 	public function email_template()

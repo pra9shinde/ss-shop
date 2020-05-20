@@ -298,14 +298,20 @@
                                             <div class="mobile-check">
                                                 <div class="row">
                                                     <form id="form-mobile-no"></form>
-                                                    <div class="col-md-8 mb-3">
+                                                    <div class="col-md-4 mb-1">
                                                         <input type="text" class="form-control" id="contact" name="contact" placeholder="Mobile Number*" value="" maxlength="10">
                                                     </div>
-                                                    <div class="col-md-4 mb-3">
+                                                    <div class="col-md-4 mb-1">
                                                         <a class="btn btn-secondary" id="btn-check-phone">Check Details</a>
                                                     </div>
                                                     </form>
                                                 </div>
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                        <h4 class="card-title text-center" style="margin-bottom: 0">or</h4>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                             <div class="new-user" style="display:none;">
                                                 <form id="new-user-form" action="<?= base_url() ?>Shop/register_buyer">
@@ -416,11 +422,14 @@
 
     //open checkout tab and populate checkout data
     function activeTab(tab) {
+
+        //For testing only
+        document.getElementById('payable_amount').innerHTML = '₹50001';
+
         var payableAmount = document.getElementById('payable_amount').innerHTML;
         var index = payableAmount.indexOf('₹');
         var amount = Number(payableAmount.substr(index + 1));
 
-        console.log(typeof(amount));
 
         if (amount !== undefined && amount !== null && amount >= 5000) {
             ip_address = $('#cart-link').data('ip_address');
@@ -458,7 +467,7 @@
 
                     $('#checkout_cart_total').text('₹' + cart_total);
                     let pay_amt = Number(tax_total) + Number(cart_total);
-                    $('#checkout_payable_amount').text('₹' + pay_amt);
+                    $('#checkout_payable_amount').text('₹' + parseFloat(pay_amt).toFixed(2));
                     $('#checkout_tax_total').text('₹' + tax_total);
                     $('#checkout_items').text(data['cart_items'].length);
                     $('#checkout-items-list').append(list_html);

@@ -20,6 +20,9 @@
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/theme/css/select2.min.css">
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/theme/css/icheck/icheck.css">
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/theme/css/jquery.bootstrap-touchspin.css">
+    <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/theme/css/login-register.css">
+
+
 
     <!-- END: Vendor CSS-->
 
@@ -53,6 +56,11 @@
         <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/theme/css/ecommerce-shop.css">
     <?php endif; ?>
     <!--Product Details Page CSS-->
+
+    <!-- Google Login JS -->
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="213023407207-gk9vl3sbq1lli7gjm800ej99isrken3o.apps.googleusercontent.com">
+    <!-- Google Login JS -->
 
     <!-- BEGIN: Custom CSS-->
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/theme/css/theme-custom.css">

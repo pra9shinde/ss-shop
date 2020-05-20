@@ -762,6 +762,11 @@ html body a:hover {
   margin-top: 10px;
 }
 
+.social-login{
+  padding: 0 1.5rem;
+  margin: 0 auto;
+}
+
 
 @media screen and (max-width: 490px) {
   .brand-text {
