@@ -356,7 +356,7 @@ class Product extends CI_Controller
 				)));
 		}
 
-		$pathToUploadedFile = base_url() . 'assets/theme/images/buy.svg';
+		$pathToUploadedFile = 'assets/theme/images/buy.svg';
 		//Validate File
 		if (isset($_FILES['prod_image']) && $_FILES['prod_image']['size'] != 0) {
 
@@ -412,7 +412,7 @@ class Product extends CI_Controller
 						'message' => $this->upload->display_errors()
 					)));
 			}
-			$pathToUploadedFile = base_url() . 'uploads/' . $ret['file_name'];
+			$pathToUploadedFile = 'uploads/' . $ret['file_name'];
 		}
 
 		$insert_data = array(
@@ -592,7 +592,7 @@ class Product extends CI_Controller
 					)));
 			}
 
-			$pathToUploadedFile = base_url() . 'uploads/' . $ret['file_name'];
+			$pathToUploadedFile = 'uploads/' . $ret['file_name'];
 		}
 
 		$update_array = 	array(

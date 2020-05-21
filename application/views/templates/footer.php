@@ -338,6 +338,24 @@
     var results = regex.exec(url);
     return results == null ? null : results[1];
   }
+
+  //Use redirection with post http method
+  function postAndRedirect(url, postData) {
+    var postFormStr = "<form method='POST' action='" + url + "'>\n";
+
+    for (var key in postData) {
+      if (postData.hasOwnProperty(key)) {
+        postFormStr += "<input type='hidden' name='" + key + "' value='" + postData[key] + "'></input>";
+      }
+    }
+
+    postFormStr += "</form>";
+
+    var formElement = $(postFormStr);
+
+    $('body').append(formElement);
+    $(formElement).submit();
+  }
 </script>
 </body>
 <!-- END: Body-->

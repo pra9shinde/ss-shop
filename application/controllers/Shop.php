@@ -80,13 +80,39 @@ class Shop extends CI_Controller
 		$this->load->view('templates/footer');
 	}
 
-	//Buyer Details
+	//Buyer Details - if FB, Google incomplete data view
 	public function user_details()
 	{
-		$this->load->view('templates/header');
-		$this->load->view('templates/menu');
-		$this->load->view('buyer/user_details');
-		$this->load->view('templates/footer');
+		if ($this->input->server('REQUEST_METHOD') != 'POST') {
+			$this->user_login();
+			return;
+		}
+
+
+		//If Session oauth and passed oauth are same
+		if (isset($_SESSION['buyer']) && $_POST['login_oauth_uid'] === $_SESSION['buyer']['login_oauth_uid']) {
+
+			$user_data = array(
+				'success_redirect' => $this->input->get('redirect'),
+				'oauth' => $_POST['login_oauth_uid'],
+				'name' => $_POST['name'],
+				'last_name' => $_POST['last_name'],
+				'email' => $_POST['email'],
+				'profile_picture' => $_POST['profile_picture'],
+				'source' => $_POST['source']
+			);
+
+			$data['user_data'] = $user_data;
+
+			$this->load->view('templates/header');
+			$this->load->view('templates/menu');
+			$this->load->view('buyer/user_details_fb_google', $data);
+			$this->load->view('templates/footer');
+		} else {
+			//Session isnt created redirect to login page
+			$this->user_login();
+			return;
+		}
 	}
 
 	public function products()
@@ -189,6 +215,38 @@ class Shop extends CI_Controller
 			echo json_encode(['cart_items' => $data['cart_items']]);
 			return;
 		}
+
+		//Send the User Orders if the session is created
+		if (isset($_SESSION['buyer'])) {
+			$user_details = $_SESSION['buyer'];
+
+			if ($user_details['source'] === 'mobile') {
+				//Use userid passed in session
+				$buyer_id = $user_details['id'];
+			} else {
+				//get id from oauthID
+				$buyer_data = $this->My_model->get('sss_buyer', array(
+					'login_oauth_uid' => $user_details['login_oauth_uid'],
+					'phone' => $user_details['phone']
+				));
+
+				if (!count($buyer_data) > 0) {
+					return $this->output
+						->set_content_type('application/json')
+						->set_status_header(200)
+						->set_output(json_encode(array(
+							'type' => 'error',
+							'message' => 'Failed to Find User Details'
+						)));
+				}
+				$buyer_id = $buyer_data[0]['id'];
+			}
+
+			//All User Placed Orders
+			$data['user_orders'] = $this->shop_model->get_user_orders($buyer_id);
+		}
+
+
 
 		$cart_total = $this->My_model->get_column_sum('sss_cart', 'total', array('ip_address' => $ip));
 		$tax_total = $this->My_model->get_column_sum('sss_cart', 'line_tax', array('ip_address' => $ip));
@@ -337,18 +395,11 @@ class Shop extends CI_Controller
 	}
 
 	//Create Session for Buyer
-	public function create_user_session()
+	public function create_buyer_session($user_data)
 	{
-		$user_data = $_POST['user_data'];
 		$_SESSION['buyer'] = $user_data;
 
-		return $this->output
-			->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode(array(
-				'type' => 'success',
-				'status' => 'complete'
-			)));
+		return isset($_SESSION['buyer']) ? true : false;
 	}
 
 	public function check_google_account()
@@ -464,6 +515,7 @@ class Shop extends CI_Controller
 			)));
 	}
 
+	//Register K2C Buyer
 	public function register_buyer()
 	{
 		if ($this->input->server('REQUEST_METHOD') != 'POST') {
@@ -545,6 +597,126 @@ class Shop extends CI_Controller
 			)));
 	}
 
+	//Add or Update google/fb logged in users with all data
+	public function complete_buyer_details()
+	{
+		if ($this->input->server('REQUEST_METHOD') != 'POST') {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Failed - Invalid Request!'
+				)));
+		}
+
+		$this->form_validation->set_rules('oauth', 'Oauth', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('oauth_source', 'Oauth Login Source', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('user_name', 'Name', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('last_name', 'Surnaname', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('user_contact', 'Mobile No.', 'trim|required|numeric|min_length[10]|xss_clean');
+		$this->form_validation->set_rules('user_email', 'Email Address', 'trim|valid_email|xss_clean');
+		$this->form_validation->set_rules('user_address_1', 'Address Line 1', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('user_address_2', 'Address Line 2', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('user_pincode', 'Pincode', 'trim|required|numeric|min_length[6]|xss_clean');
+
+
+		if (!$this->form_validation->run()) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => validation_errors()
+				)));
+		}
+
+		$user_exists = $this->My_model->get('sss_buyer', array('login_oauth_uid' => $this->input->post('oauth')));
+
+		if (count($user_exists) > 0) {
+			//User exists update the data
+			$update_user = $this->My_model->update(
+				'sss_buyer',
+				array('login_oauth_uid' => $this->input->post('oauth')),
+				array(
+					'name' => $this->input->post('user_name'),
+					'lastname' => $this->input->post('last_name'),
+					'phone' => $this->input->post('user_contact'),
+					'email' => $this->input->post('user_email'),
+					'address' => $this->input->post('user_address_1') . ' ' . $this->input->post('user_address_2'),
+					'pin' => $this->input->post('user_pincode'),
+					'profile_picture' => $this->input->post('profile_picture')
+				)
+			);
+
+			if (!$update_user) {
+				return $this->output
+					->set_content_type('application/json')
+					->set_status_header(200)
+					->set_output(json_encode(array(
+						'type' => 'error',
+						'message' => 'User Updation Database Operation Failed'
+					)));
+			}
+		} else {
+			//insert the data
+			$create_buyer = $this->My_model->insert('sss_buyer', array(
+				'login_oauth_uid' => $this->input->post('oauth'),
+				'name' => $this->input->post('user_name'),
+				'lastname' => $this->input->post('last_name'),
+				'phone' => $this->input->post('user_contact'),
+				'email' => $this->input->post('user_email'),
+				'address' => $this->input->post('user_address_1') . ' ' . $this->input->post('user_address_2'),
+				'address' => $this->input->post('user_address_1') . ' ' . $this->input->post('user_address_2'),
+				'pin' => $this->input->post('user_pincode'),
+				'profile_picture' => $this->input->post('profile_picture')
+			));
+
+			if (!$create_buyer) {
+				return $this->output
+					->set_content_type('application/json')
+					->set_status_header(200)
+					->set_output(json_encode(array(
+						'type' => 'error',
+						'message' => 'User Creation Database Operation Failed',
+						'redirect' => ''
+					)));
+			}
+		}
+
+		//Create a buyer session
+		$user_data = array(
+			'email' => $this->input->post('user_email'),
+			'last_name' => $this->input->post('last_name'),
+			'login_oauth_uid' => $this->input->post('oauth'),
+			'name' => $this->input->post('user_name'),
+			'phone' => $this->input->post('user_contact'),
+			'address' => $this->input->post('user_address_1') . ' ' . $this->input->post('user_address_2'),
+			'pin' => $this->input->post('user_pincode'),
+			'profile_picture' => $this->input->post('profile_picture'),
+			'source' => $this->input->post('oauth_source')
+		);
+		$session = $this->create_buyer_session($user_data);
+
+		if (!$session) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Issue During Creating a Session'
+				)));
+		}
+
+		return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
+				'type' => 'success',
+				'message' => 'Profile Update Successfully'
+			)));
+	}
+
 	//Check if fb google user has filled all data
 	public function check_buyer_details()
 	{
@@ -596,6 +768,96 @@ class Shop extends CI_Controller
 		}
 	}
 
+	//Login using mobile number
+	public function k2clogin()
+	{
+		if ($this->input->server('REQUEST_METHOD') != 'POST') {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Failed - Invalid Request!'
+				)));
+		}
+
+		$this->form_validation->set_rules('mobile', 'Mobile No.', 'trim|required|numeric|max_length[10]|xss_clean');
+		$this->form_validation->set_rules('k2c-password', 'Password', 'trim|required|min_length[6]|xss_clean');
+
+		if (!$this->form_validation->run()) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => validation_errors()
+				)));
+		}
+
+		$this->load->library('encryption');
+		$user_exists = $this->My_model->get(
+			'sss_buyer',
+			array(
+				'phone' => $this->input->post('mobile'),
+				'login_oauth_uid' => NULL
+			)
+		);
+
+		if (count($user_exists) <= 0) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'No user found, please Register'
+				)));
+		}
+
+		$decrypted_pass =  $this->encryption->decrypt($user_exists[0]['password']);
+		if ($decrypted_pass !== $this->input->post('k2c-password')) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Wrong Password'
+				)));
+		}
+
+
+		// Create a buyer session
+		$user_data = array(
+			'email' => $user_exists[0]['email'],
+			'last_name' => $user_exists[0]['lastname'],
+			'id' => $user_exists[0]['id'],
+			'name' => $user_exists[0]['name'],
+			'phone' => $user_exists[0]['phone'],
+			'address' => $user_exists[0]['address'],
+			'pin' => $user_exists[0]['pin'],
+			'profile_picture' => $user_exists[0]['profile_picture'],
+			'source' => 'mobile'
+		);
+		$session = $this->create_buyer_session($user_data);
+		if (!$session) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Issue During Creating a Session'
+				)));
+		}
+
+
+		return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
+				'type' => 'success',
+				'message' => 'Login Successfull'
+			)));
+	}
+
 	public function email_template()
 	{
 		$this->load->view('email/test');
@@ -620,12 +882,32 @@ class Shop extends CI_Controller
 
 	public function create_new_order()
 	{
-		if ($this->input->post('ip_address') && $this->input->post('phone')) {
+		if (isset($_POST['ip_address']) && isset($_POST['user_details'])) {
 			//get buyer id
-			$buyer_data = $this->My_model->get('sss_buyer', array('phone' => $this->input->post('phone')));
+			$user_details = $_POST['user_details'];
 
+			if ($user_details['source'] === 'mobile') {
+				//Use userid passed in session
+				$buyer_id = $user_details['id'];
+			} else {
+				//get id from oauthID
+				$buyer_data = $this->My_model->get('sss_buyer', array(
+					'login_oauth_uid' => $user_details['login_oauth_uid'],
+					'phone' => $user_details['phone']
+				));
 
-			$buyer_id = $buyer_data[0]['id'];
+				if (!count($buyer_data) > 0) {
+					return $this->output
+						->set_content_type('application/json')
+						->set_status_header(200)
+						->set_output(json_encode(array(
+							'type' => 'error',
+							'message' => 'Failed to Find User Details'
+						)));
+				}
+				$buyer_id = $buyer_data[0]['id'];
+			}
+
 
 			//create a new order and fetch its id
 			$last_id = $this->My_model->insert('sss_orders', array(
@@ -788,9 +1070,16 @@ class Shop extends CI_Controller
 					}
 				}
 			}
+		} else {
+
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Incomplete Data'
+				)));
 		}
-
-
 
 		return $this->output
 			->set_content_type('application/json')
@@ -801,14 +1090,7 @@ class Shop extends CI_Controller
 			)));
 	}
 
-	public function get_orders_view($mobile_no)
-	{
-		$user_data = $this->My_model->get('sss_buyer', array('phone' => intval($mobile_no)));
-		$user_id = $user_data[0]['id'];
 
-		$data['user_orders'] = $this->shop_model->get_user_orders($user_id);
-		$this->load->view('orders_view', $data);
-	}
 
 	public function cancel_order_buyer($order_id)
 	{
@@ -1048,59 +1330,63 @@ class Shop extends CI_Controller
 
 	public function load_invoice($order_id)
 	{
-		$arr = array();
-		$order = $this->shop_model->get_order_items($order_id);
+		if (isset($_SESSION['buyer'])) {
+			$arr = array();
+			$order = $this->shop_model->get_order_items($order_id);
 
 
 
-		$buyer_details = $this->My_model->get('sss_buyer', array(
-			'id' => $order[0]['buyer_id']
-		));
-		$order_totals = $this->My_model->get('sss_orders', array('id' => $order_id));
+			$buyer_details = $this->My_model->get('sss_buyer', array(
+				'id' => $order[0]['buyer_id']
+			));
+			$order_totals = $this->My_model->get('sss_orders', array('id' => $order_id));
 
-		foreach ($order as $item) {
-			//push only if they are not cancelled orders
-			if ($item['status'] !== 3) {
-				if (!key_exists($item['seller_id'], $arr)) {
-					//No key
-					$arr[$item['seller_id']] = array(); //Create New Key
-					$arr[$item['seller_id']]['items'] = array(); //Create New Key
+			foreach ($order as $item) {
+				//push only if they are not cancelled orders
+				if ($item['status'] !== 3) {
+					if (!key_exists($item['seller_id'], $arr)) {
+						//No key
+						$arr[$item['seller_id']] = array(); //Create New Key
+						$arr[$item['seller_id']]['items'] = array(); //Create New Key
+					}
+
+					//Arrange Array correctly - Remove global data items form order items array
+					$arr[$item['seller_id']]['shop_name'] = $item['shop_name'];
+					$arr[$item['seller_id']]['seller_name'] = $item['seller_name'];
+					$arr[$item['seller_id']]['phone'] = $item['phone'];
+					$arr[$item['seller_id']]['pin'] = $item['pin'];
+
+					unset($item['shop_name']);
+					unset($item['shop_seller_namename']);
+					unset($item['phone']);
+					unset($item['pin']);
+
+
+
+					//Push by grouping according to category
+					if (!key_exists($item['category_id'],  $arr[$item['seller_id']]['items'])) {
+						$arr[$item['seller_id']]['items'][$item['category_id']] = array();
+					}
+
+					array_push($arr[$item['seller_id']]['items'][$item['category_id']], $item); //Push item in key
+
 				}
-
-				//Arrange Array correctly - Remove global data items form order items array
-				$arr[$item['seller_id']]['shop_name'] = $item['shop_name'];
-				$arr[$item['seller_id']]['seller_name'] = $item['seller_name'];
-				$arr[$item['seller_id']]['phone'] = $item['phone'];
-				$arr[$item['seller_id']]['pin'] = $item['pin'];
-
-				unset($item['shop_name']);
-				unset($item['shop_seller_namename']);
-				unset($item['phone']);
-				unset($item['pin']);
-
-
-
-				//Push by grouping according to category
-				if (!key_exists($item['category_id'],  $arr[$item['seller_id']]['items'])) {
-					$arr[$item['seller_id']]['items'][$item['category_id']] = array();
-				}
-
-				array_push($arr[$item['seller_id']]['items'][$item['category_id']], $item); //Push item in key
-
 			}
+
+
+
+
+			$data['order'] = $arr;
+			$data['order_id'] = $order_id;
+			$data['buyer_details'] = $buyer_details[0];
+			$data['order_totals'] = $order_totals[0];
+
+			$this->load->view('templates/header');
+			$this->load->view('templates/menu');
+			$this->load->view('invoice', $data);
+			$this->load->view('templates/footer');
+		} else {
+			$this->index();
 		}
-
-
-
-
-		$data['order'] = $arr;
-		$data['order_id'] = $order_id;
-		$data['buyer_details'] = $buyer_details[0];
-		$data['order_totals'] = $order_totals[0];
-
-		$this->load->view('templates/header');
-		$this->load->view('templates/menu');
-		$this->load->view('invoice', $data);
-		$this->load->view('templates/footer');
 	}
 }

@@ -1,3 +1,6 @@
+<?php if (isset($_SESSION['buyer'])) : ?>
+    <input type="hidden" id="buyer_session" name="buyer_session" value='<?= json_encode($_SESSION['buyer'], true) ?>'>
+<?php endif; ?>
 <!-- BEGIN: Content-->
 <div class="app-content content">
     <div class="content-overlay"></div>
@@ -21,7 +24,7 @@
                     </li>
                 </ul>
                 <div class="tab-content pt-1">
-
+                    <!-- Cart -->
                     <div role="tabpanel" class="tab-pane active" id="shop-cart-tab" aria-expanded="true" aria-labelledby="shopping-cart">
 
                         <div class="card" id="cart-desktop">
@@ -49,7 +52,7 @@
                                                         <tr>
                                                             <td>
                                                                 <div class="product-img d-flex align-items-center">
-                                                                    <img class="img-fluid" src="<?= $cart_item['image_url'] ?>" alt="No Image">
+                                                                    <img class="img-fluid" src="<?= base_url() . $cart_item['image_url'] ?>" alt="No Image">
                                                                 </div>
                                                             </td>
                                                             <td>
@@ -60,7 +63,7 @@
                                                             </td>
                                                             <td>
                                                                 <div class="input-group">
-                                                                    <input type="text" class="text-center count touchspin" value="<?= $cart_item['item_quantity'] ?>" onchange="quantityUpdate(<?= $cart_item['item_id'] ?>, this,'desktop')" />
+                                                                    <input type="text" class="text-center count touchspin" value="<?= $cart_item['item_quantity'] ?>" onchange="quantityUpdate(<?= $cart_item['item_id'] ?>, this,' desktop')" />
                                                                 </div>
                                                             </td>
                                                             <td>
@@ -137,7 +140,7 @@
                                                             <td style="padding-right:0;padding-left:0;">
                                                                 <div class="cart-prod-details clearfix">
                                                                     <div class="product-img-cart">
-                                                                        <img class="img-fluid" src="<?= $cart_item['image_url'] ?>" alt="No Image">
+                                                                        <img class="img-fluid" src="<?= base_url() .  $cart_item['image_url'] ?>" alt="No Image">
                                                                     </div>
 
                                                                     <div class="cart-prod-content">
@@ -255,6 +258,7 @@
                         </div>
                     </div>
 
+                    <!-- Checkout -->
                     <div class="tab-pane" id="checkout-tab" aria-labelledby="checkout">
                         <div class="row">
                             <div class="col-md-4 order-md-2 mb-4">
@@ -288,6 +292,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Checkout -->
                             <div class="col-md-8 order-md-1">
                                 <div class="card">
                                     <div class="card-header">
@@ -295,68 +300,47 @@
                                     </div>
                                     <div class="card-content">
                                         <div class="card-body">
-                                            <div class="mobile-check">
-                                                <div class="row">
-                                                    <form id="form-mobile-no"></form>
-                                                    <div class="col-md-4 mb-1">
-                                                        <input type="text" class="form-control" id="contact" name="contact" placeholder="Mobile Number*" value="" maxlength="10">
+                                            <?php if (isset($_SESSION['buyer'])) : ?>
+                                                <?php $buyer_details = $_SESSION['buyer']; ?>
+                                                <!-- User Already Logged in -->
+                                                <div class="card border-grey border-lighten-3 px-2 py-2 m-0">
+                                                    <h3>You are already logged in by using </h3>
+
+                                                    <div class="card-header border-0 text-center">
+                                                        <img src="<?= $buyer_details['profile_picture'] ?>" alt="No Profile Photo" class="rounded-circle img-fluid center-block">
+                                                        <h5 class="card-title mt-1"><?= $buyer_details['name'] ?> <?= $buyer_details['last_name'] ?></h5>
                                                     </div>
-                                                    <div class="col-md-4 mb-1">
-                                                        <a class="btn btn-secondary" id="btn-check-phone">Check Details</a>
-                                                    </div>
-                                                    </form>
+
+                                                    <p class="card-subtitle line-on-side text-muted text-center font-small-3 mx-2"><span>Confirm your details</span>
+                                                    </p>
+
+                                                    <p><b>E-mail:</b> <?= $buyer_details['email'] ?></p>
+                                                    <p><b>Phone:</b> <?= $buyer_details['phone'] ?></p>
+                                                    <p><b>Address:</b> <?= $buyer_details['address'] ?></p>
+                                                    <p><b>Pin/Zip Code:</b> <?= $buyer_details['pin'] ?></p>
+                                                    <p><b>Logged-in using:</b>
+                                                        <?php if ($buyer_details['source'] === 'google') : ?>
+                                                            <i class="la la-google"></i> Google Login
+                                                        <?php elseif ($buyer_details['source'] === 'mobile') : ?>
+                                                            <i class="la la-mobile"></i> Mobile Number
+                                                        <?php else : ?>
+                                                            <i class="la la-facebook"></i> Facebook Login
+                                                        <?php endif; ?>
+                                                    </p>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-md-8">
-                                                        <h4 class="card-title text-center" style="margin-bottom: 0">or</h4>
-                                                    </div>
+                                                <div class="text-left">
+                                                    <a href="#" class="btn btn-info mb-2 "><i class="ft-unlock"></i> Switch Account</a>
+                                                    <a class="btn btn-secondary mb-2" href="#"><i class="la la-user"></i> Edit Details</a>
                                                 </div>
-
-                                            </div>
-                                            <div class="new-user" style="display:none;">
-                                                <form id="new-user-form" action="<?= base_url() ?>Shop/register_buyer">
-                                                    <div class="row">
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="firstName">Your name</label>
-                                                            <input type="text" class="form-control" id="user_name" name="user_name" placeholder="eg: John">
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="lastName">Your Contact</label>
-                                                            <input type="text" class="form-control" id="user_contact" name="user_contact" placeholder="10 Digits Number" value="" maxlength="10">
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label for="email">Email <span class="text-muted">(Optional)</span></label>
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text">@</span>
-                                                            </div>
-                                                            <input type="text" class="form-control" id="user_email" name="user_email" placeholder="e.g. john@gmail.com">
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label for="address">Address Line 1*</label>
-                                                        <input type="text" class="form-control" id="user_address_1" name="user_address_1" placeholder="1234 Main St">
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label for="address2">Address Line 2 <span class="text-muted">(Optional)</span></label>
-                                                        <input type="text" class="form-control" id="user_address_2" name="user_address_2" placeholder="Near Magnum Heights">
-                                                    </div>
-
-                                                    <div class="row">
-                                                        <div class="col-md-4 mb-3">
-                                                            <label for="zip">Pincode*</label>
-                                                            <input type="text" class="form-control" id="user_pincode" name="user_pincode" placeholder="e.g. 421202" maxlength="6">
-                                                        </div>
-
-                                                    </div>
-                                                    <hr class="mb-2">
-                                                    <button class="btn btn-info btn-lg" type="submit">Continue to checkout</button>
-                                                </form>
-                                            </div>
+                                                <div class="col-12 col-sm-6 col-md-6">
+                                                    <a onclick="createOrder()" class="btn btn-danger btn-lg btn-block" style="color: #fff;"><i class="la la-cart-arrow-down"></i>
+                                                        Place Order</a>
+                                                </div></a>
+                                            <?php else : ?>
+                                                <div class="col-12 col-sm-6 col-md-6">
+                                                    <a href="<?= base_url() ?>Shop/user_login?redirect=cart" class="btn btn-info mb-2 "><i class="la la-user"></i> Login/Register</a>
+                                                </div></a>
+                                            <?php endif; ?>
 
                                         </div>
                                     </div>
@@ -365,38 +349,40 @@
                         </div>
                     </div>
 
+                    <!-- My Orders -->
                     <div class="tab-pane" id="comp-order-tab" aria-labelledby="complete-order">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title text-center">Thank you for ordering with us. Pay the seller only when he delivers tour order. Cash and UPI Payments will be accepted by the sellers.</h4>
+                                <h4 class="card-title text-center">Thank you for ordering with us. Pay the seller only when he delivers your order. Cash or UPI Payments will be accepted by the sellers.</h4>
                             </div>
                         </div>
-                        <div class="card" id="my_orders_mobile_check">
-                            <div class="card-content">
-                                <div class="card-body">
-                                    <p>No need to signup, Enter your Mobile No. to view your orders</p>
-                                    <div class="mobile-check">
-                                        <div class="row">
-                                            <form id="form-mobile-no-orders"></form>
-                                            <div class="col-md-4">
-                                                <input type="text" class="form-control" id="contact_my_orders" name="contact_my_orders" placeholder="Mobile Number*" value="" maxlength="10" style="margin-bottom:10px">
+                        <?php if (isset($_SESSION['buyer'])) : ?>
+                            <!-- Session created -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="mb-0"><strong>My Orders</strong></h4>
+                                </div>
+                            </div>
+                            <div id="all-orders">
+                                <?php $this->load->view('orders_view', $user_orders); ?>
+                            </div>
+                        <?php else : ?>
+                            <!-- Tell user to Login -->
+                            <div class="card" id="my_orders_mobile_check">
+                                <div class="card-content">
+                                    <div class="card-body">
+                                        <p>You need to login to view your orders</p>
+                                        <div class="mobile-check">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <a class="btn btn-secondary" href="<?= base_url() ?>Shop/user_login?redirect=cart">Login</a>
+                                                </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <a class="btn btn-secondary" id="btn-check-phone-orders">Check Details</a>
-                                            </div>
-                                            </form>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="mb-0"><strong>My Orders</strong></h4>
-                            </div>
-                        </div>
-                        <div id="all-orders">
-                        </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -501,152 +487,6 @@
         }
     };
 
-    //check phone no. checkout page
-    $('#btn-check-phone').on('click', function() {
-        let mobileNo = $('#contact').val();
-
-        $.ajax({
-            type: "POST",
-            dataType: 'json',
-            url: '<?= base_url() ?>Shop/check_mobile_no',
-            data: {
-                'contact': mobileNo
-            },
-            success: function(data) {
-                if (data.type === "success") {
-                    if (data.status === "true") {
-                        toastr.success("Congratulations, We have your details!", 'Mobile Check', {
-                            "timeOut": 1000
-                        });
-                        //User Already exists
-
-                        //Create Order
-                        createOrder(mobileNo);
-                    } else {
-                        //New User
-                        toastr.warning("Unfortunately, We don't have your details, Please Enter your details!", 'Mobile Check', {
-                            "timeOut": 1000
-                        });
-                        $('#user_contact').attr('value', mobileNo);
-
-                        $('.mobile-check').fadeOut(1000);
-                        $('.new-user').fadeIn(1000);
-                    }
-                } else {
-                    toastr.error(data.message, 'Mobile Check', {
-                        "timeOut": 1000
-                    });
-                }
-            },
-            error: function(xhr, status, error) {
-                toastr.error(error, 'Mobile Check', {
-                    "timeOut": 1000
-                });
-                console.log('An error occurred.' + error);
-            },
-            beforeSend: function() {
-                $("#ajax-loader").fadeIn(500);
-            },
-            complete: function() {
-                setTimeout(function() {
-                    $("#ajax-loader").fadeOut(500);
-                }, 500);
-            }
-        });
-    });
-
-    //Create new user
-    $("#new-user-form").submit(function(e) {
-        e.preventDefault();
-        $.ajax({
-            type: "POST",
-            dataType: 'json',
-            url: $(this).attr("action"),
-            data: $(this).serialize(),
-            success: function(data) {
-                if (data.type === "success") {
-                    toastr.success(data.message, 'New User Creation', {
-                        "timeOut": 1000
-                    });
-                    document.getElementById("new-user-form").reset();
-
-                    //Create Order
-                    createOrder($('#contact').val());
-                } else {
-                    toastr.error(data.message, 'New User Creation', {
-                        "timeOut": 1000
-                    });
-
-                }
-            },
-            error: function(xhr, status, error) {
-                toastr.error(error, 'New User Creation', {
-                    "timeOut": 1000
-                });
-                console.log('An error occurred.' + error);
-            },
-            beforeSend: function() {
-                $("#ajax-loader").fadeIn(500);
-            },
-            complete: function() {
-                setTimeout(function() {
-                    $("#ajax-loader").fadeOut(500);
-                }, 500);
-            }
-        });
-    });
-
-    //check phone no. my orders page
-    $('#btn-check-phone-orders').on('click', function() {
-        let mobileNo = $('#contact_my_orders').val();
-
-        //check user exists
-        $.ajax({
-            type: "POST",
-            dataType: 'JSON',
-            url: '<?= base_url() ?>Shop/check_mobile_no/orders_page',
-            data: {
-                'contact_my_orders': mobileNo
-            },
-            success: function(data) {
-                if (data.status === 'true') {
-                    toastr.success('You are a registered user, following are your orders', 'Get Orders', {
-                        "timeOut": 1000
-                    });
-
-                    getUserOrders(mobileNo);
-                    $('#btn-check-phone-orders').addClass('disabled');
-
-                } else {
-                    toastr.warning('You are not a registered user, Please explore our shop', 'Get Orders', {
-                        "timeOut": 1000
-                    });
-
-                    setTimeout(function() {
-                        window.location = "<?= base_url() ?>";
-                    }, 3000);
-
-
-                }
-            },
-            error: function(xhr, status, error) {
-                toastr.error(error, 'Loading Orders', {
-                    "timeOut": 1000
-                });
-                console.log('An error occurred.' + error);
-            },
-            beforeSend: function() {
-                $("#ajax-loader").fadeIn(500);
-            },
-            complete: function() {
-                setTimeout(function() {
-                    $("#ajax-loader").fadeOut(500);
-                }, 500);
-            }
-        });
-
-    });
-
     //Remove diabled class of get orders button - My orders page
     $('#contact_my_orders').on('change', function() {
         if ($('#btn-check-phone-orders').hasClass('disabled')) {
@@ -655,8 +495,9 @@
     });
 
     //create new order
-    function createOrder(mobile_no, ip_address = $('#cart-link').data('ip_address')) {
-        $("#ajax-loader").fadeIn(500);
+    function createOrder(ip_address = $('#cart-link').data('ip_address')) {
+        let userDetails = JSON.parse($('#buyer_session').val());
+
         if (ip_address) {
             $.ajax({
                 type: "POST",
@@ -664,18 +505,19 @@
                 url: '<?= base_url() ?>Shop/create_new_order',
                 data: {
                     'ip_address': ip_address,
-                    'phone': mobile_no
+                    'user_details': userDetails
                 },
                 success: function(data) {
                     if (data.type === "success") {
                         toastr.success(data.message, 'Order Creation', {
                             "timeOut": 1000
                         });
-                        document.getElementById('form-mobile-no').reset();
 
                         $('#cart-count').text('0');
-
-                        my_orders_success(mobile_no); //load my orders without entering mobile no
+                        //Show My Orders
+                        window.location.href += '#orders';
+                        location.reload();
+                        // my_orders_success(); //load my orders without entering mobile no
                     } else {
                         toastr.error(data.message, 'Order Creation', {
                             "timeOut": 1000
@@ -686,7 +528,6 @@
                     toastr.error(error, 'Order Creation', {
                         "timeOut": 1000
                     });
-                    console.log('An error occurred.' + error);
                 },
                 beforeSend: function() {
                     $("#ajax-loader").fadeIn(500);
@@ -698,7 +539,6 @@
                 }
             });
         }
-
     }
 
     //function order success redirection

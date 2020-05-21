@@ -17,15 +17,19 @@
                               </div>
                               <div class="card-content">
                                   <div class="card-body">
-                                      <form id="new-user-form" action="<?= base_url() ?>Shop/update_buyer_detaisls">
+                                      <form id="complete-user_details-form" action="<?= base_url() ?>Shop/complete_buyer_details">
+                                          <input type="hidden" name="oauth" id="oauth" value="<?= $user_data['oauth'] ?>">
+                                          <input type="hidden" name="oauth_source" id="oauth_source" value="<?= $user_data['source'] ?>">
+                                          <input type="hidden" name="profile_picture" id="profile_picture" value="<?= $user_data['profile_picture'] ?>">
+
                                           <fieldset class="form-group position-relative has-icon-left">
-                                              <input type="text" class="form-control" id="user_name" name="user_name" placeholder="Name*">
+                                              <input type="text" class="form-control" id="user_name" name="user_name" placeholder="Name*" value="<?= $user_data['name'] ?>">
                                               <div class="form-control-position">
                                                   <i class="la la-user"></i>
                                               </div>
                                           </fieldset>
                                           <fieldset class="form-group position-relative has-icon-left">
-                                              <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Surname*">
+                                              <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Surname*" value="<?= $user_data['last_name'] ?>">
                                               <div class="form-control-position">
                                                   <i class="la la-user"></i>
                                               </div>
@@ -37,7 +41,7 @@
                                               </div>
                                           </fieldset>
                                           <fieldset class="form-group position-relative has-icon-left">
-                                              <input type="text" class="form-control" id="user_email" name="user_email" placeholder="Email Address*">
+                                              <input type="text" class="form-control" id="user_email" name="user_email" placeholder="Email Address*" value="<?= $user_data['email'] ?>">
                                               <div class="form-control-position">
                                                   <i class="la la-envelope"></i>
                                               </div>
@@ -64,14 +68,16 @@
                                               <div class="col-sm-6 col-12 text-center text-sm-left pr-0">
 
                                               </div>
-                                              <div class="col-sm-6 col-12 float-sm-left text-center text-sm-right"><a href="recover-password.html" class="card-link">Forgot Password?</a></div>
                                           </div>
                                           <button type="submit" class="btn btn-outline-info btn-block"><i class="la la-user"></i> Update Details</button>
                                       </form>
                                   </div>
+                                  <hr>
                                   <div class="card-body">
                                       <a href="<?= base_url() ?>Shop/user_login" class="btn btn-outline-danger btn-block"><i class="ft-unlock"></i>
                                           Login</a>
+                                      <a href="#" class="btn btn-outline-danger btn-block"><i class="ft-unlock"></i>
+                                          Logout</a>
                                   </div>
                               </div>
                           </div>
@@ -85,8 +91,8 @@
   <!-- END: Content-->
 
   <script>
-      //Create new user
-      $("#new-user-form").submit(function(e) {
+      //Create or update google/fb user extra details
+      $("#complete-user_details-form").submit(function(e) {
           e.preventDefault();
           $.ajax({
               type: "POST",
@@ -98,8 +104,16 @@
                       toastr.success(data.message, 'New User Creation', {
                           "timeOut": 1000
                       });
-                      document.getElementById("new-user-form").reset();
+                      document.getElementById("complete-user_details-form").reset();
 
+                      let successRedirect = getUrlKey('redirect', window.location.href);
+                      if (successRedirect === 'cart') {
+                          let ip_address = $('#cart-link').data('ip_address');
+                          redirect = '<?= base_url() ?>Shop/cart/' + ip_address;
+                      } else {
+                          redirect = '<?= base_url() ?>'
+                      }
+                      window.location.href = redirect;
                   } else {
                       toastr.error(data.message, 'New User Creation', {
                           "timeOut": 1000

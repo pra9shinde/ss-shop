@@ -29,15 +29,15 @@
                                  <p class="card-subtitle line-on-side text-muted text-center font-small-3 mx-2 my-1"><span>OR Using Account
                                          Details</span></p>
                                  <div class="card-body">
-                                     <form class="form-horizontal" action="" novalidate>
+                                     <form class="form-horizontal" action="<?= base_url() ?>Shop/k2clogin" id="k2c-login-form">
                                          <fieldset class="form-group position-relative has-icon-left">
-                                             <input type="text" class="form-control" id="mobile" placeholder="Mobile No.*" required>
+                                             <input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile No.*">
                                              <div class="form-control-position">
                                                  <i class="la la-user"></i>
                                              </div>
                                          </fieldset>
                                          <fieldset class="form-group position-relative has-icon-left">
-                                             <input type="password" class="form-control" id="user-password" placeholder="Enter Password" required>
+                                             <input type="password" class="form-control" id="k2c-password" name="k2c-password" placeholder="Enter Password*">
                                              <div class="form-control-position">
                                                  <i class="la la-key"></i>
                                              </div>
@@ -88,15 +88,16 @@
          $(".year").text($year);
 
          //Set the success redirect of the app
+
          let successRedirect = getUrlKey('redirect', window.location.href);
          if (successRedirect === 'cart') {
              let ip_address = $('#cart-link').data('ip_address');
              $('#success_redirect').attr('value', '<?= base_url() ?>Shop/cart/' + ip_address);
          }
 
+
+
      });
-
-
 
      //on google sigin
      function onSignIn(googleUser) {
@@ -113,101 +114,8 @@
              source: 'google'
          }
 
-         //create user session
-         $.ajax({
-             type: "POST",
-             dataType: 'json',
-             url: '<?= base_url() ?>Shop/create_user_session',
-             data: {
-                 'user_data': userData
-             },
-             success: function(data) {
-                 if (data.type === "success") {
-                     if (data.status === "complete") {
-                         //User Already exists
-                         toastr.success("You are already logged in", 'User Login', {
-                             "timeOut": 1000
-                         });
-                         checkUserDetails(userData);
-                     }
-                 } else {
-                     toastr.error(data.message, 'User Login', {
-                         "timeOut": 1000
-                     });
-                 }
-             },
-             error: function(xhr, status, error) {
-                 toastr.error(error, 'Mobile Check', {
-                     "timeOut": 1000
-                 });
-                 console.log('An error occurred.' + error);
-             },
-             beforeSend: function() {
-                 $("#ajax-loader").fadeIn(500);
-             },
-             complete: function() {
-                 setTimeout(function() {
-                     $("#ajax-loader").fadeOut(500);
-                 }, 500);
-             }
-         });
-
-         /*
-             $.ajax({
-                 type: "POST",
-                 dataType: 'json',
-                 url: '<?= base_url() ?>Shop/check_google_account',
-                 data: {
-                     'google_data': userData
-                 },
-                 success: function(data) {
-                     if (data.type === "success") {
-                         if (data.status === "complete") {
-                             //User Already exists
-                             toastr.success("Congratulations, We have your details!", 'User Login', {
-                                 "timeOut": 1000
-                             });
-
-                             //Create Order
-                             createOrder(data.mobileNo);
-                         } else if (data.status === "incomplete") {
-                             //User Already exists but incomplete data
-                             // console.log(data.user_data);
-                         } else {
-                             //New User
-                             toastr.warning("Unfortunately, We don't have your details, Please Enter your details!", 'Mobile Check', {
-                                 "timeOut": 1000
-                             });
-
-                             $('.mobile-check').fadeOut(1000);
-                             $('.new-user').fadeIn(1000);
-                         }
-                     } else {
-                         toastr.error(data.message, 'Mobile Check', {
-                             "timeOut": 1000
-                         });
-                     }
-                 },
-                 error: function(xhr, status, error) {
-                     toastr.error(error, 'Mobile Check', {
-                         "timeOut": 1000
-                     });
-                     console.log('An error occurred.' + error);
-                 },
-                 beforeSend: function() {
-                     $("#ajax-loader").fadeIn(500);
-                 },
-                 complete: function() {
-                     setTimeout(function() {
-                         $("#ajax-loader").fadeOut(500);
-                     }, 500);
-                 }
-             });
-         */
-     }
-
-     //Check if user has filled all details
-     function checkUserDetails(userData) {
+         //Check if user has entered all details
+         var successRedirect = $('#success_redirect').val();
          $.ajax({
              type: "POST",
              dataType: 'json',
@@ -219,12 +127,29 @@
                  if (data.type === "success") {
                      if (data.status === "complete") {
                          //User Already exists
-                         toastr.success("You are already logged in", 'User Login', {
+                         toastr.success("Congratulations, We have all of your details!", 'User Login', {
                              "timeOut": 1000
                          });
+
+                         //Redirect to success redirect link
+                         window.location.href = successRedirect;
+
+                     } else if (data.status === "incomplete") {
+                         //User Already exists but incomplete data
+
+                         //Javascript redirect with post method
+                         postAndRedirect('<?= base_url() ?>Shop/user_details?redirect=cart', userData);
+                     } else {
+                         //New User
+                         toastr.warning("Unfortunately, We don't have your details, Please Enter your details!", 'Mobile Check', {
+                             "timeOut": 1000
+                         });
+
+                         $('.mobile-check').fadeOut(1000);
+                         $('.new-user').fadeIn(1000);
                      }
                  } else {
-                     toastr.error(data.message, 'User Login', {
+                     toastr.error(data.message, 'Check User Details', {
                          "timeOut": 1000
                      });
                  }
@@ -246,4 +171,51 @@
          });
 
      }
+
+     //Mobile Nu. Login
+     $("#k2c-login-form").submit(function(e) {
+         e.preventDefault();
+         $.ajax({
+             type: "POST",
+             dataType: 'json',
+             url: $(this).attr("action"),
+             data: $(this).serialize(),
+             success: function(data) {
+                 if (data.type === "success") {
+                     toastr.success(data.message, 'K2C Login', {
+                         "timeOut": 1000
+                     });
+                     document.getElementById("k2c-login-form").reset();
+
+                     let successRedirect = getUrlKey('redirect', window.location.href);
+                     if (successRedirect === 'cart') {
+                         let ip_address = $('#cart-link').data('ip_address');
+                         redirect = '<?= base_url() ?>Shop/cart/' + ip_address;
+                     } else {
+                         redirect = '<?= base_url() ?>'
+                     }
+                     window.location.href = redirect;
+                 } else {
+                     toastr.error(data.message, 'K2C Login', {
+                         "timeOut": 1000
+                     });
+
+                 }
+             },
+             error: function(xhr, status, error) {
+                 toastr.error(error, 'K2C Login', {
+                     "timeOut": 1000
+                 });
+                 console.log('An error occurred.' + error);
+             },
+             beforeSend: function() {
+                 $("#ajax-loader").fadeIn(500);
+             },
+             complete: function() {
+                 setTimeout(function() {
+                     $("#ajax-loader").fadeOut(500);
+                 }, 500);
+             }
+         });
+     });
  </script>

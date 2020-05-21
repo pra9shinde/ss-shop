@@ -192,7 +192,7 @@ class All_products_DT extends CI_Model
     public function load_product_image($image)
     {
         $img = '<img src="';
-        $img .= $image['image_path'];
+        $img .= base_url() . $image['image_path'];
         $img .= '" alt="Product Image" style="width: 60px;height: auto;" data-action="zoom">';
 
         return $img;
@@ -217,7 +217,7 @@ class All_products_DT extends CI_Model
               <div class="tb-prod-details">
                    <div class="prod-image">
                         <img src="';
-        $data .= $obj->image_url;
+        $data .= base_url() . $obj->image_url;
         $data .= '" alt="Product Image" style="width: 60px;height: auto;" data-action="zoom">
                    </div>';
 
