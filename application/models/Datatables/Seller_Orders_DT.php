@@ -25,7 +25,7 @@
         $this->db->from($this->table);
         $this->db->join('sss_order_items as order_items', 'order_items.product_id = product.id ','inner');
         $this->db->join('sss_buyer as buyer', 'buyer.id = order_items.buyer_id ','inner');
-        $this->db->join('sss_category as category', 'category.id = product.category_id ','inner');
+        $this->db->join('sss_category as category', 'category.id = product.category_id ','left');
         $this->db->join('sss_orders as order', 'order.id = order_items.order_id ','inner');
         $this->db->join('sss_order_status as order_status', 'order.status = order_status.id ','inner');
         $this->db->join('sss_uom as uom', 'uom.id = product.uom ','left');
@@ -277,4 +277,3 @@
 
 
 }
-?>

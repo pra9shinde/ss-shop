@@ -49,7 +49,7 @@
 <?php endif; ?>
 <!------>
 
-<script src="https://apis.google.com/js/platform.js" async defer></script>
+<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
 
 
 <script>
@@ -298,6 +298,80 @@
       }
     });
   }
+</script>
+
+<!-- Google Login Functions -->
+<script>
+  //Google Login - Initialize auth when script is loaded
+  function onLoad() {
+    gapi.load('auth2', function() {
+      gapi.auth2.init();
+    });
+  }
+
+  function logout(userType) {
+    $.ajax({
+      method: 'POST',
+      url: $('#base_url').val() + 'Shop/logout',
+      data: {
+        'user_type': userType
+      },
+      dataType: 'json',
+      success: function(data) {
+        if (data.type === 'success') {
+
+          toastr.success(data.message, 'User Logout', {
+            "timeOut": 1000
+          });
+
+          if (data.loginType === 'google') {
+            //Google JS signout
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function() {});
+          }
+          window.location = data.redirect;
+        } else {
+          toastr.error('Error while Logging Out', 'User Logout', {
+            "timeOut": 1000
+          });
+        }
+      },
+      error: function(res, error) {
+        toastr.error('Ajax request failed', 'User Logout', {
+          "timeOut": 1000
+        });
+        console.log(error)
+      },
+      beforeSend: function() {
+        $("#ajax-loader").fadeIn(500);
+      },
+      complete: function() {
+        setTimeout(function() {
+          $("#ajax-loader").fadeOut(500);
+        }, 500);
+      }
+    });
+  }
+</script>
+<!-- Google Login Functions -->
+
+<!-- FB Login Functions -->
+<script>
+
+</script>
+<!-- FB Login Functions -->
+
+
+<script>
+  $(window).on('load', function() {
+    setTimeout(function() {
+      $("#ajax-loader").fadeOut(500);
+    }, 500);
+  });
+
+  $(function() {
+    $('[data-toggle="tooltip"]').tooltip()
+  }); //Bootstrap tooltip ini
 
   Array.prototype.remove = function() {
     var what, a = arguments,
@@ -316,18 +390,6 @@
   function isNormalInteger(str) {
     return /^\+?(0|[1-9]\d*)$/.test(str);
   }
-</script>
-
-<script>
-  $(window).on('load', function() {
-    setTimeout(function() {
-      $("#ajax-loader").fadeOut(500);
-    }, 500);
-  });
-
-  $(function() {
-    $('[data-toggle="tooltip"]').tooltip()
-  }); //Bootstrap tooltip ini
 
   //get url key values
   function getUrlKey(name, url) {
@@ -355,6 +417,11 @@
 
     $('body').append(formElement);
     $(formElement).submit();
+  }
+
+  function getUriSegment(url, segment) {
+    let arr = url.split('/');
+    return arr[segment];
   }
 </script>
 </body>

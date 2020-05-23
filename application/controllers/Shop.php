@@ -747,6 +747,28 @@ class Shop extends CI_Controller
 		if (
 			count($user_exists) > 0 && $user_exists[0]['phone'] !== '' && $user_exists[0]['address'] !== '' && $user_exists[0]['pin'] !== ''
 		) {
+			$user_data = array(
+				'email' => $user_exists[0]['email'],
+				'last_name' => $user_exists[0]['lastname'],
+				'login_oauth_uid' => $user_exists[0]['login_oauth_uid'],
+				'name' => $user_exists[0]['name'],
+				'phone' => $user_exists[0]['phone'],
+				'address' => $user_exists[0]['address'],
+				'pin' => $user_exists[0]['pin'],
+				'profile_picture' => $user_exists[0]['profile_picture'],
+				'source' => $_POST['user_data']['source']
+			);
+			$session = $this->create_buyer_session($user_data);
+			if (!$session) {
+				return $this->output
+					->set_content_type('application/json')
+					->set_status_header(200)
+					->set_output(json_encode(array(
+						'type' => 'error',
+						'message' => 'Failed Creating User Session'
+					)));
+			}
+
 			//Google User exists
 			return $this->output
 				->set_content_type('application/json')
@@ -889,6 +911,7 @@ class Shop extends CI_Controller
 			if ($user_details['source'] === 'mobile') {
 				//Use userid passed in session
 				$buyer_id = $user_details['id'];
+				$buyer_email = $user_details['email'];
 			} else {
 				//get id from oauthID
 				$buyer_data = $this->My_model->get('sss_buyer', array(
@@ -906,6 +929,7 @@ class Shop extends CI_Controller
 						)));
 				}
 				$buyer_id = $buyer_data[0]['id'];
+				$buyer_email = $buyer_data[0]['email'];
 			}
 
 
@@ -993,11 +1017,13 @@ class Shop extends CI_Controller
 					'charset'   => 'utf-8'
 				);
 				$this->load->library('email', $config);
+				$this->email->initialize($config);
+
 				$this->email->set_newline("\r\n");
 
-				$this->email->from(SMPT_USER, "Smart Society Services");
-				$this->email->to($this->input->post('email'));
-				$this->email->subject("Smart Society Services Order Request");
+				$this->email->from(SMPT_USER, "K2C - Kisan to Consumer");
+				$this->email->to($buyer_email);
+				$this->email->subject("K2C - Kisan to Consumer Order Request");
 				//$mesg = $this->load->view('email_template',true);
 
 				$this->email->message('Hello ' . $buyer_details[0]['name'] . ', Thank you for shopping with us. Please find the attached order details and invoices for your reference. For any assistance please feel free to contact us.');
@@ -1012,11 +1038,13 @@ class Shop extends CI_Controller
 						->set_status_header(200)
 						->set_output(json_encode(array(
 							'type' => 'success',
-							'message' => 'Order Placed but Failed Sending Email to Buyer'
+							'message' => 'Failed to send email to buyer'
 						)));
 				}
 
-
+				unset($dompdf);
+				unset($data);
+				unset($output);
 				//Send Email and Bills to Sellers
 				foreach ($order_data as $item) {
 					$htmlContent = '';
@@ -1026,14 +1054,15 @@ class Shop extends CI_Controller
 					$data['order_totals'] = $order_totals[0];
 
 					$htmlContent = $this->load->view('email/orders_seller', $data, TRUE);
-
 					$this->load->library('Pdfdom');
 					$dompdf = new Pdfdom();
 					$dompdf->load_html($htmlContent);
 					$dompdf->setPaper('A4', 'landscape'); //landscape
 					$dompdf->render();
-					$pdf = $dompdf->output();
-					// file_put_contents($item['shop_name'].time().'.pdf', $output);//Save File
+					$output = $dompdf->output();
+
+					file_put_contents('Invoice.pdf', $output); //Save File
+
 
 					//Send Email to Seller
 					$config = array(
@@ -1046,16 +1075,18 @@ class Shop extends CI_Controller
 						'charset'   => 'utf-8'
 					);
 					$this->load->library('email', $config);
+					$this->email->initialize($config);
+
 					$this->email->set_newline("\r\n");
 
-					$this->email->from(SMPT_USER, "Smart Society Services");
-					$this->email->to($this->input->post('email'));
-					$this->email->subject("Smart Society Services Order Request");
-					//$mesg = $this->load->view('email_template',true);
 
-					$this->email->message('Hello ' . $item['shop_name'] . 'Owner, You got a new Order from Smart Societ Services Portal. Please Login into the portal and Confirm/Cancel the order. Please find the attached order details.');
 
-					$this->email->attach($pdf, 'application/pdf', "Order-" . $last_id . ".pdf", false);
+					$this->email->from(SMPT_USER, "K2C - Kisan to Consumer");
+					$this->email->to($item['seller_email']);
+					$this->email->subject("K2C - Kisan to Consumer Request");
+					$this->email->message('Hello ' . $item['shop_name'] . 'Owner, You got a new Order from K2C - Kisan to Consumer Portal. Please Login into the portal and Confirm/Cancel the order. Please find the attached order details.');
+					// $this->email->attach($output, 'application/pdf', "Order-" . $last_id . ".pdf", false);
+					$this->email->attach('Invoice.pdf');
 
 
 					if (!$this->email->send()) {
@@ -1065,7 +1096,7 @@ class Shop extends CI_Controller
 							->set_status_header(200)
 							->set_output(json_encode(array(
 								'type' => 'success',
-								'message' => 'Order Placed but Failed Sending Email to Seller'
+								'message' => $this->email->print_debugger()
 							)));
 					}
 				}
@@ -1218,9 +1249,9 @@ class Shop extends CI_Controller
 		$this->load->library('email', $config);
 		$this->email->set_newline("\r\n");
 
-		$this->email->from('pranavshnd006@gmail.com', "Smart Society Services");
+		$this->email->from(SMPT_USER, "K2C - Kisan to Consumer");
 		$this->email->to($this->input->post('email'));
-		$this->email->subject("Smart Society Services Registration");
+		$this->email->subject("K2C - Kisan to Consumer Registration");
 		//$mesg = $this->load->view('email_template',true);
 		$mesg = $this->load->view('email/thank_you', '', true);
 		$this->email->message($mesg);
@@ -1302,6 +1333,57 @@ class Shop extends CI_Controller
 				'type' => 'success',
 				'message' => 'Login Successfull',
 				'redirect' => base_url() . 'Shop/products_config'
+			)));
+	}
+
+	public function logout()
+	{
+		if (isset($_POST['user_type'])) {
+
+			$user_type = $_POST['user_type'];
+
+			if ($user_type === 'seller') {
+
+				//Delete Session
+				if (isset($_SESSION['user'])) unset($_SESSION['user']);
+
+				return $this->output
+					->set_content_type('application/json')
+					->set_status_header(200)
+					->set_output(json_encode(array(
+						'type' => 'success',
+						'message' => 'User Logout successfull',
+						'loginType' => null,
+						'redirect' => base_url() . 'Shop/seller'
+					)));
+			} else {
+
+				//Buyer Logout
+				$login_type = '';
+				if (isset($_SESSION['buyer'])) {
+					$login_type = $_SESSION['buyer']['source'];
+					unset($_SESSION['buyer']);
+				}
+
+				return $this->output
+					->set_content_type('application/json')
+					->set_status_header(200)
+					->set_output(json_encode(array(
+						'type' => 'success',
+						'message' => 'User Logout successfull',
+						'loginType' => $login_type,
+						'redirect' => base_url()
+					)));
+			}
+		}
+		return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
+				'type' => 'success',
+				'message' => 'You were not logged in',
+				'loginType' => null,
+				'redirect' => base_url()
 			)));
 	}
 

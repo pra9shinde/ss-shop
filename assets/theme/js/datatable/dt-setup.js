@@ -244,15 +244,18 @@ $(document).ready(function () {
         }
     });
 
-    //Draw Mobile view product table
-    $(window).resize(function () {
-        //Redraw datable
-        if ($(window).width() <= 767) {
-            all_products_mini.draw();
-            $('#tb-all-products-mini').dataTable().fnAdjustColumnSizing();//Automatically sets header size
-        }
+    let currentUri = getUriSegment(window.location.href, 5);
+    if (currentUri !== undefined && currentUri.indexOf('products') !== -1) {
+        // Draw Mobile view product table
+        $(window).resize(function () {
+            //Redraw datable
+            if ($(window).width() <= 767) {
+                all_products_mini.draw();
+                $('#tb-all-products-mini').dataTable().fnAdjustColumnSizing();//Automatically sets header size
+            }
+        });
+    }
 
-    });
 
     //Filter by Category - All products (Reload Datatable)
     $(document.body).on("change", "#select_sub_category_dw", function () {

@@ -59,7 +59,7 @@
 
     <!-- Google Login JS -->
     <meta name="google-signin-scope" content="profile email">
-    <meta name="google-signin-client_id" content="213023407207-gk9vl3sbq1lli7gjm800ej99isrken3o.apps.googleusercontent.com">
+    <meta name="google-signin-client_id" content="<?= GOOGLE_CLIENT_ID_LOCAL ?>">
     <!-- Google Login JS -->
 
     <!-- BEGIN: Custom CSS-->
@@ -127,6 +127,7 @@
 <body class="vertical-layout vertical-compact-menu 2-columns   fixed-navbar" data-open="click" data-menu="vertical-compact-menu" data-col="2-columns">
     <input type="hidden" name="base_url" id="base_url" value="<?= base_url() ?>">
 
+
     <!-- BEGIN: Header-->
     <nav class="header-navbar navbar-expand-md navbar navbar-with-menu navbar-without-dd-arrow fixed-top navbar-light navbar-shadow navbar-brand-center">
         <div class="navbar-wrapper">
@@ -139,10 +140,9 @@
                         </a>
                     </li>
 
-                    <?php if ($this->uri->segment(2) === 'products_config' || $this->uri->segment(2) === 'my_orders') : ?>
 
-                        <li class="nav-item d-md-none"><a class="nav-link open-navbar-container" data-toggle="collapse" data-target="#navbar-mobile"><i class="la la-ellipsis-v"></i></a></li>
-                    <?php endif; ?>
+                    <li class="nav-item d-md-none"><a class="nav-link open-navbar-container" data-toggle="collapse" data-target="#navbar-mobile"><i class="la la-ellipsis-v"></i></a></li>
+
                 </ul>
             </div>
 
@@ -171,7 +171,8 @@
                         </li>
                     </ul>
                     <ul class="nav navbar-nav float-right">
-                        <?php if ($this->uri->segment(2) === 'products_config' ||         $this->uri->segment(2) === 'my_orders') : ?>
+
+                        <?php if ($this->uri->segment(2) === 'products_config' || $this->uri->segment(2) === 'my_orders') : ?>
                             <li class="dropdown dropdown-notification nav-item"><a class="nav-link nav-link-label" href="#" data-toggle="dropdown"><i class="ficon ft-bell"></i><span class="badge badge-pill badge-danger badge-up badge-glow">0</span></a>
                                 <ul class="dropdown-menu dropdown-menu-media dropdown-menu-right">
                                     <li class="dropdown-menu-header">
@@ -195,13 +196,24 @@
 
                             <li class="dropdown dropdown-user nav-item"><a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown"><span class="mr-1 user-name text-bold-700"><?= $seller_name ?></span><span class="avatar avatar-online"><img src="<?= base_url(); ?>assets/theme/images/avatar-s-17.png" alt="avatar"><i></i></span></a>
                                 <div class="dropdown-menu dropdown-menu-right">
-                                    <div class="dropdown-divider"></div><a class="dropdown-item" href="<?= base_url() ?>Shop/seller"><i class="ft-power"></i> Logout</a>
+                                    <div class="dropdown-divider"></div><a class="dropdown-item" onclick="logout('seller')"><i class="ft-power"></i> Logout</a>
+                                </div>
+                            </li>
+                        <?php else : ?>
+                            <li class="dropdown dropdown-user nav-item"><a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown"><span class="avatar avatar-online"><img src="<?= base_url(); ?>assets/theme/images/avatar-s-17.png" alt="avatar"><i></i></span></a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item user-name text-bold-700 user-name" href="#" style="background-color: #9f3434; color: #fff !important;"><i class="ft-star"></i> Pranav Shinde</a>
+
+                                    <a class="dropdown-item" href="#"><i class="ft-user"></i> Edit Profile</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" onclick="logout('buyer')"><i class="ft-power"></i> Logout</a>
                                 </div>
                             </li>
                         <?php endif; ?>
                     </ul>
                 </div>
             </div>
+
         </div>
     </nav>
     <!-- END: Header-->

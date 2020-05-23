@@ -671,9 +671,10 @@ html body a:hover {
 
 .cart-btn {
   position: absolute;
-  right: 1%;
+  right: 4%;
   z-index: 99999999999;
-  top: 15px;
+  top: 16px;
+  margin-right: 10px;
 }
 
 #cart-icon {

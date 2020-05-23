@@ -131,8 +131,14 @@
                              "timeOut": 1000
                          });
 
+                         let successRedirect = getUrlKey('redirect', window.location.href);
+                         if (successRedirect === 'cart') {
+                             let ip_address = $.cookie('client_ip');
+                             $('#success_redirect').attr('value', '<?= base_url() ?>Shop/cart/' + ip_address);
+                         }
+
                          //Redirect to success redirect link
-                         window.location.href = successRedirect;
+                         window.location.href = $('#success_redirect').val();
 
                      } else if (data.status === "incomplete") {
                          //User Already exists but incomplete data
