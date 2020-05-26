@@ -673,8 +673,8 @@ html body a:hover {
   position: absolute;
   right: 4%;
   z-index: 99999999999;
-  top: 16px;
-  margin-right: 10px;
+  top: 14px;
+  margin-right: 20px;
 }
 
 #cart-icon {
@@ -768,6 +768,10 @@ html body a:hover {
   margin: 0 auto;
 }
 
+.coming-soon-text{
+  padding-top: 7rem;
+}
+
 
 @media screen and (max-width: 490px) {
   .brand-text {
@@ -853,5 +857,14 @@ html body a:hover {
     text-align: center;
     margin-bottom: 0.5em;
     width: auto;
+  }
+
+  .coming-soon-text{
+    padding-top: 17rem;
+  }
+
+  #fish{
+    padding-top: 15rem;
+
   }
 }

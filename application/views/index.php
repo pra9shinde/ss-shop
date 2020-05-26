@@ -77,7 +77,7 @@
                             <div class="card-content" id="banner-shop">
                                 <img src="<?= base_url() ?>assets/theme/images/supermarket.svg" alt="Relax" class="float-right img-fluid">
                                 <div class="card-body pt-3">
-                                    <h4 class="card-title text-white" style="font-size:3.12rem;">Kisaan 2 Consumer</h4>
+                                    <h4 class="card-title text-white" style="font-size:3.12rem;">Kisan 2 Consumer</h4>
                                     <p class="card-text ">Buy Groceries from your nearest shop in this lockdown.</p>
                                     <button class="btn bg-white bg-darken-3 pink">Enter your Product & Go</button>
                                 </div>
@@ -113,118 +113,140 @@
                     </div>
                 </div>
 
-                <section id="" class="row">
-                    <div class="col-md-12 mt-1">
-                        <div class="group-area">
-                            <h4>Fruits and Vegetables</h4>
-                            <hr>
-                        </div>
-                    </div>
-                </section>
 
-                <div class="row">
-                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
-                        <div class="card pull-up" style="">
-                            <div class="card-content">
-                                <div class="card-body">
+                <!-- products category  -->
+                <div class="card pull-up">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="group-area">
+                                <h4><b>Fruits and Vegetables</b></h4>
+                                <hr>
+                            </div>
+                            <div class="row">
+                                <div class="col">
                                     <a href="#">
                                         <div class="product-img d-flex align-items-center prod-cont">
-                                            <div class="badge badge-success abs-badge">min. <span class="offer-discount">20%</span> off</div>
-                                            <img class="img-fluid mb-1" src="<?= base_url() ?>assets/theme/images/products/herbs.png" alt="Card image cap" style="margin: 0 auto; height: 290px;">
+                                            <div class="badge badge-success abs-badge">20% off</div>
+                                            <img class="img-fluid" src="<?= base_url() ?>assets/theme/images/products/fresh-fruits.png" alt="Card image cap">
                                         </div>
-                                        <h3 class="product-title text-center">Herbs & Seasoning</h4>
+                                        <h5 class="product-title text-center">Fresh Fruits</h5>
                                     </a>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
-                        <div class="card pull-up" style="">
-                            <div class="card-content">
-                                <div class="card-body">
+                                <div class="col">
                                     <a href="#">
                                         <div class="product-img d-flex align-items-center prod-cont">
-                                            <div class="badge badge-success abs-badge">up to<span class="offer-discount">20%</span> off</div>
-                                            <img class="img-fluid mb-1" src="<?= base_url() ?>assets/theme/images/products/alphonso.jpg" alt="Card image cap" style="margin: 0 auto;height: 290px;">
+                                            <div class="badge badge-success abs-badge">20% off</div>
+                                            <img class="img-fluid" src="<?= base_url() ?>assets/theme/images/products/vegetables.png" alt="Card image cap">
                                         </div>
-                                        <h3 class="product-title text-center">Seasonal Fruits</h4>
+                                        <h5 class="product-title text-center">Fresh Vegetables</h5>
                                     </a>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
-                        <div class="card pull-up" style="">
-                            <div class="card-content">
-                                <div class="card-body">
+                                <div class="w-100 d-sm-none"></div>
+                                <div class="col">
                                     <a href="#">
                                         <div class="product-img d-flex align-items-center prod-cont">
-                                            <!-- <div class="badge badge-success abs-badge">up to<span class="offer-discount">20%</span> off</div> -->
-                                            <img class="img-fluid mb-1" src="<?= base_url() ?>assets/theme/images/products/vegetables.png" alt="Card image cap" style="margin: 0 auto;height: 290px;">
+                                            <div class="badge badge-success abs-badge">20% off</div>
+                                            <img class="img-fluid" src="<?= base_url() ?>assets/theme/images/products/herbs.png" alt="Card image cap">
                                         </div>
-                                        <h3 class="product-title text-center">Fresh Vegetables</h4>
+                                        <h5 class="product-title text-center">Herbs & Seasoning</h5>
+                                    </a>
+
+                                </div>
+                                <div class="col">
+                                    <a href="#">
+                                        <div class="product-img d-flex align-items-center prod-cont">
+                                            <div class="badge badge-success abs-badge">20% off</div>
+                                            <img class="img-fluid" src="<?= base_url() ?>assets/theme/images/products/exotic-corner.png" alt="Card image cap">
+                                        </div>
+                                        <h5 class="product-title text-center">Exotic Corner</h5>
                                     </a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <!-- products category  -->
 
-                <section id="" class="row">
-                    <div class="col-md-12 mt-1">
-                        <div class="group-area">
-                            <h4>Daily Essentials</h4>
-                            <hr>
+                <!-- products category  -->
+                <div class="card pull-up">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="group-area">
+                                <h4><b>Summer Drinks</b></h4>
+                                <hr>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <a href="#">
+                                        <div class="product-img d-flex align-items-center prod-cont">
+                                            <div class="badge badge-success abs-badge">20% off</div>
+                                            <img class="img-fluid" src="<?= base_url() ?>assets/theme/images/products/juices.png" alt="Card image cap">
+                                        </div>
+                                        <h5 class="product-title text-center">Juices</h5>
+                                    </a>
+                                </div>
+                                <div class="col">
+                                    <a href="#">
+                                        <div class="product-img d-flex align-items-center prod-cont">
+                                            <img class="img-fluid" src="<?= base_url() ?>assets/theme/images/products/cold-drinks.png" alt="Card image cap">
+                                        </div>
+                                        <h5 class="product-title text-center">Cold Drinks</h5>
+                                    </a>
+                                </div>
+                                <div class="w-100 d-sm-none"></div>
+                                <div class="col">
+                                    <a href="#">
+                                        <div class="product-img d-flex align-items-center prod-cont">
+                                            <img class="img-fluid" src="<?= base_url() ?>assets/theme/images/products/buttermilk.png" alt="Card image cap">
+                                        </div>
+                                        <h5 class="product-title text-center">Buttermilk,Lassi</h5>
+                                    </a>
+
+                                </div>
+                                <div class="col">
+                                    <a href="#">
+                                        <div class="product-img d-flex align-items-center prod-cont">
+                                            <div class="badge badge-success abs-badge">20% off</div>
+
+                                            <img class="img-fluid" src="<?= base_url() ?>assets/theme/images/products/syrups.png" alt="Card image cap">
+                                        </div>
+                                        <h5 class="product-title text-center">Syrups</h5>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </section>
+                </div>
+                <!-- products category  -->
 
+
+            </section>
+
+            <!-- Coming Soon -->
+            <section>
                 <div class="row">
-                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
-                        <div class="card pull-up" style="">
+                    <div class="col-xl-6 col-lg-12">
+                        <div class="card text-white text-center" style="background: linear-gradient(to right, rgb(235, 87, 87), rgb(93, 35, 35));">
                             <div class="card-content">
-                                <div class="card-body">
-                                    <a href="#">
-                                        <div class="product-img d-flex align-items-center prod-cont">
-                                            <div class="badge badge-success abs-badge">min. <span class="offer-discount">20%</span> off</div>
-                                            <img class="img-fluid mb-1" src="<?= base_url() ?>assets/theme/images/products/dairy.png" alt="Card image cap" style="margin: 0 auto; height: 290px;">
-                                        </div>
-                                        <h3 class="product-title text-center">Dairy Products</h4>
-                                    </a>
+                                <img src="<?= base_url() ?>assets/theme/images/nrd-D6Tu_L3chLE-unsplash.jpg" alt="Coming Soon" class="float-right img-fluid" style="border-radius: 5px; max-height: 400px;">
+                                <div class="card-body coming-soon-text" id="">
+                                    <br>
+                                    <h4 class="card-title mt-3 text-white">Shop by Society</h4>
+                                    <p class="card-text ">Buy bulk orders with maximum discounts</p>
+                                    <button class="btn bg-white bg-darken-3 pink">Coming Soon!!!</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
-                        <div class="card pull-up" style="">
+                    <div class="col-xl-6 col-lg-12">
+                        <div class="card text-white text-center" style="background: linear-gradient(to left, rgb(235, 87, 87), rgb(93, 35, 35));">
                             <div class="card-content">
-                                <div class="card-body">
-                                    <a href="#">
-                                        <div class="product-img d-flex align-items-center prod-cont">
-                                            <!-- <div class="badge badge-success abs-badge">up to<span class="offer-discount">20%</span> off</div> -->
-                                            <img class="img-fluid mb-1" src="<?= base_url() ?>assets/theme/images/products/spices.png" alt="Card image cap" style="margin: 0 auto;height: 290px;">
-                                        </div>
-                                        <h3 class="product-title text-center">Spices & Masala</h4>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
-                        <div class="card pull-up" style="">
-                            <div class="card-content">
-                                <div class="card-body">
-                                    <a href="#">
-                                        <div class="product-img d-flex align-items-center prod-cont">
-                                            <div class="badge badge-success abs-badge">up to<span class="offer-discount">20%</span> off</div>
-                                            <img class="img-fluid mb-1" src="<?= base_url() ?>assets/theme/images/products/atta.jpg" alt="Card image cap" style="margin: 0 auto;height: 290px;">
-                                        </div>
-                                        <h3 class="product-title text-center">Atta (Flour)</h4>
-                                    </a>
+                                <img src="<?= base_url() ?>assets/theme/images/hoan-vo-iwP2UhGvnJI-unsplash.jpg" alt="Coming Soon" width="600" class="float-left img-fluid" style="border-radius: 5px">
+                                <div class="card-body coming-soon-text" id="fish">
+                                    <br>
+                                    <h4 class="card-title mt-3 text-white">Fresh Fish</h4>
+                                    <p class="card-text ">From sea to your doorstep, buy fresh seafood</p>
+                                    <button class="btn bg-white bg-darken-3 pink">Coming Soon!!!</button>
                                 </div>
                             </div>
                         </div>

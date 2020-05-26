@@ -56,9 +56,12 @@ $sub_categories = $res->result_array();
                     <div class="col-xl-12 col-lg-12">
                         <div class="card bg-white text-center">
                             <div class="card-content">
-                                <img src="<?= base_url() ?>assets/theme/images/products/fruits.png" alt="Relax" width="600" class="float-right pr-3 img-fluid">
-                                <div class="card-body pt-3">
-                                    <h4 class="card-title mt-3" style="font-size: 2.12rem">Fresh Fruits, Fresh Offers</h4>
+                                <div class="offer-image" style="padding: 10px; ">
+                                    <img src="<?= base_url() ?>assets/theme/images/anton-darius-FCrgmqqvl-w-unsplash.jpg" alt="Offer Image" class="float-right img-fluid" style="max-width: 300px;width: 100%; border-radius:5px;">
+
+                                </div>
+                                <div class="card-body pt-2">
+                                    <h4 class="card-title" style="font-size: 2.12rem; margin-top: 3.55rem;">Fresh Fruits, Fresh Offers</h4>
                                     <!-- <p class="card-text">Fresh offers only for you</p> -->
                                     <button class="btn bg-white bg-darken-3 pink" style="font-size: 1.75rem">Limited Offer, Hurry Up!!!</button>
                                 </div>

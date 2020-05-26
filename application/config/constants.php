@@ -91,6 +91,7 @@ define('SMPT_PORT', 465);
 define('SMPT_USER', 'kisan2consumer@gmail.com');
 define('SMPT_PASSWORD', 'We1c0me@123');
 
-define('GOOGLE_CLIENT_ID_LOCAL', '213023407207-gk9vl3sbq1lli7gjm800ej99isrken3o.apps.googleusercontent.com');
-define('GOOGLE_CLIENT_ID', '871875444555-pet117vh10iegbsoa7v2ht9t8coknclk.apps.googleusercontent.com');
-define('FB_APP_ID_LOCAL', '1558659244313560');
+define('GOOGLE_CLIENT_ID_LOCAL', '213023407207-gk9vl3sbq1lli7gjm800ej99isrken3o.apps.googleusercontent.com'); //local
+define('GOOGLE_CLIENT_ID', '871875444555-pet117vh10iegbsoa7v2ht9t8coknclk.apps.googleusercontent.com'); //server
+define('FB_APP', '1558659244313560'); //Local
+define('FB_APP_ID_LOCAL', '3236551766396452');//Server

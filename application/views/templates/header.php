@@ -10,8 +10,16 @@
     <meta name="keywords" content="admin template, modern admin template, dashboard template, flat admin template, responsive admin template, web app, crypto dashboard, bitcoin dashboard">
     <meta name="author" content="PIXINVENT">
     <title>K2C - Kisan to Consumer</title>
-    <link rel="apple-touch-icon" href="../../../app-assets/images/ico/apple-icon-120.png">
-    <link rel="shortcut icon" type="image/x-icon" href="../../../app-assets/images/ico/favicon.ico">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= base_url() ?>assets/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= base_url() ?>assets/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?= base_url() ?>assets/favicon/favicon-16x16.png">
+    <link rel="manifest" href="<?= base_url() ?>assets/favicon/site.webmanifest">
+    <link rel="mask-icon" href="<?= base_url() ?>assets/favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
+
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i%7CQuicksand:300,400,500,700" rel="stylesheet">
 
     <!-- BEGIN: Vendor CSS-->
@@ -136,7 +144,7 @@
                     <li class="nav-item mobile-menu d-md-none mr-auto"><a class="nav-link nav-menu-main menu-toggle hidden-xs" href="#"><i class="ft-menu font-large-1"></i></a>
                     </li>
                     <li class="nav-item"><a class="navbar-brand" href="<?= base_url() ?>"><img class="brand-logo" alt="modern admin logo" src="<?= base_url() ?>assets/login/people.svg" style="width:70px;">
-                            <h3 class="brand-text" style="vertical-align: middle;"><b>Kisaan 2</b> Consumer</h3>
+                            <h3 class="brand-text" style="vertical-align: middle;">K2C</h3>
                         </a>
                     </li>
 
@@ -200,15 +208,24 @@
                                 </div>
                             </li>
                         <?php else : ?>
-                            <li class="dropdown dropdown-user nav-item"><a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown"><span class="avatar avatar-online"><img src="<?= base_url(); ?>assets/theme/images/avatar-s-17.png" alt="avatar"><i></i></span></a>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item user-name text-bold-700 user-name" href="#" style="background-color: #9f3434; color: #fff !important;"><i class="ft-star"></i> Pranav Shinde</a>
+                            <?php if (isset($buyer_profile_det)) : ?>
 
-                                    <a class="dropdown-item" href="#"><i class="ft-user"></i> Edit Profile</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" onclick="logout('buyer')"><i class="ft-power"></i> Logout</a>
-                                </div>
-                            </li>
+                                <!-- Buyer logged in -->
+                                <li class="dropdown dropdown-user nav-item"><a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown"><span class="avatar avatar-online"><img src="<?= base_url() . $buyer_profile_det['profile_picture'] ?>" alt="Avatar"><i></i></span></a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a class="dropdown-item user-name text-bold-700 user-name" href="#" style="background-color: #9f3434; color: #fff !important;"><i class="ft-star"></i> <?= $buyer_profile_det['name'] ?> <?= $buyer_profile_det['last_name'] ?></a>
+
+                                        <a class="dropdown-item" href="<?= base_url() ?>Shop/profile_edit/<?= $buyer_profile_det['id'] ?>/<?= $buyer_profile_det['source'] ?>"><i class="ft-user"></i> Edit Profile</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" onclick="logout('buyer')"><i class="ft-power"></i> Logout</a>
+                                    </div>
+                                </li>
+                            <?php else : ?>
+                                <!-- Buyer Not Logged In -->
+                                <li class="dropdown dropdown-user nav-item"><a class="dropdown-toggle nav-link dropdown-user-link" href="<?= base_url() ?>Shop/user_login"><span class="avatar avatar-online"><img src="<?= base_url(); ?>assets/theme/images/user.png" alt="avatar"><i></i></span></a>
+                                </li>
+                            <?php endif; ?>
+
                         <?php endif; ?>
                     </ul>
                 </div>

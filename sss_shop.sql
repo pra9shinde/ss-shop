@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 22, 2020 at 08:42 AM
+-- Generation Time: May 26, 2020 at 10:20 AM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.4
 
@@ -38,6 +38,8 @@ CREATE TABLE `sss_buyer` (
   `address` text NOT NULL,
   `pin` int(10) NOT NULL,
   `profile_picture` varchar(250) DEFAULT NULL,
+  `verification_code` varchar(20) DEFAULT NULL,
+  `code_expiry` timestamp NULL DEFAULT NULL,
   `create_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `update_date` timestamp NULL DEFAULT NULL,
   `is_delete` int(2) NOT NULL DEFAULT 0
@@ -47,15 +49,19 @@ CREATE TABLE `sss_buyer` (
 -- Dumping data for table `sss_buyer`
 --
 
-INSERT INTO `sss_buyer` (`id`, `login_oauth_uid`, `name`, `lastname`, `password`, `email`, `phone`, `address`, `pin`, `profile_picture`, `create_date`, `update_date`, `is_delete`) VALUES
-(5, NULL, 'Pranav', '', '', 'a@a.com', '9967087127', 'asddasdasd ', 111111, NULL, '2020-04-02 11:58:56', '0000-00-00 00:00:00', 0),
-(6, NULL, 'Pranav', '', '', 'a@a.com', '8898181910', 'asddasdasd ', 123456, NULL, '2020-04-02 16:13:52', '0000-00-00 00:00:00', 0),
-(7, NULL, 'Nitesh', '', '', 'nitesh1901@gmail.com', '9004077151', 'B1-2401, Romell Aether, Vishweshwar Road, Goregaon East', 400063, NULL, '2020-04-27 16:52:51', '0000-00-00 00:00:00', 0),
-(9, NULL, 'Abhi', 'Talekar', '8cba6a923908ec3636ee3b0e07e6749fe630ea8a7893edad534b64d79dbf2aedf4a27ec7138b0223587d9c1a5d12b441126f6a7bd91000fa8dde0110b6f1e189f3wQxouUAshgH6wgubA4GXFMzINdfqLbKJMBzKS28qo=', 'p@p.com', '8898181911', 'C/403, Balrajeshwar Chs Reti Bundet Road', 421202, NULL, '2020-05-20 13:52:25', NULL, 0),
-(10, NULL, 'Test', 'test', '58c229556a8850763a0f34f3a7f50f226567658265148399ffa2f02b4011cbce5b0ff9d9ed9c570366bafd5a4f08785aa0fa1407d6cfa41c856bdbbb3c7df98dCkw62fO6QN9rhb7FfrFvo/Gw3kt0IajyGLHFeQP/OZU=', 'p@p.com', '7878787878', 'asdads asdasda', 123123, NULL, '2020-05-20 14:19:39', NULL, 0),
-(11, NULL, 'asdasd', 'asdasd', '18764ea7658d9892fce262aaabf62f8599ee8914a5dd6da58c9b225b8f0c80a85b82cf06b966287d1431789618aec0858d5c41560a77a8a0985337e31781f9203aOD2hVOa1CaWbE0GNgX/YwM3ji5ORx5TwJyFxs43jc=', 'a@a.com', '2121212121', 'asdasdasd asdasdasd', 121212, NULL, '2020-05-20 14:21:28', NULL, 0),
-(16, '113861210126670926480', 'pranav', 'shinde', '', 'pranavshnd006@gmail.com', '8898181910', 'C/403, Balrajeshwar chs, Reti bubder road, dombivli west', 421202, 'https://lh3.googleusercontent.com/a-/AOh14GhGauToJTP53V9qzWzZaEme8nQ_-gOWc8FL_y1lxA=s96-c', '2020-05-21 07:20:57', NULL, 0),
-(17, NULL, 'Pranav', 'Shinde', '7e314cbe9273919c40e5dcbff7ca64c0da22ef5d50cd8a44f3bdf2faf73aea5e3bc45ff44b6d996409291c597e13c17da3a5385c9eb84845a14387b0d276f74eTOToDcPtiFQnOeIaSugJ29SEvrXVFJWRWWt/tAAbOlU=', 'pranavshnd006@gmail.com', '1234567890', 'C/403, Balrajeshwar chs, Reti bubder road, dombivli west', 421202, NULL, '2020-05-21 07:53:42', NULL, 0);
+INSERT INTO `sss_buyer` (`id`, `login_oauth_uid`, `name`, `lastname`, `password`, `email`, `phone`, `address`, `pin`, `profile_picture`, `verification_code`, `code_expiry`, `create_date`, `update_date`, `is_delete`) VALUES
+(5, NULL, 'Pranav', '', '', 'a@a.com', '9967087127', 'asddasdasd ', 111111, NULL, NULL, NULL, '2020-04-02 11:58:56', '0000-00-00 00:00:00', 0),
+(6, NULL, 'Pranav', 'Shinde', '22e9b0830f5e1be4202abfaf0974566e2f1a19199b383e77445e0155e8ef5bae07601abc2327c3d68085476bed08ac7026ca792acd3c6c30495253e6e67129bbRb5fVoRqi25woF0G6stBKUKZHVMNAeLQDcE61z3i22Q=', 'a@a.com', '8898181910', 'asddasdasd ', 123456, NULL, NULL, NULL, '2020-04-02 16:13:52', '0000-00-00 00:00:00', 0),
+(7, NULL, 'Nitesh', '', '', 'nitesh1901@gmail.com', '9004077151', 'B1-2401, Romell Aether, Vishweshwar Road, Goregaon East', 400063, NULL, NULL, NULL, '2020-04-27 16:52:51', '0000-00-00 00:00:00', 0),
+(9, NULL, 'Abhi', 'Talekar', '8cba6a923908ec3636ee3b0e07e6749fe630ea8a7893edad534b64d79dbf2aedf4a27ec7138b0223587d9c1a5d12b441126f6a7bd91000fa8dde0110b6f1e189f3wQxouUAshgH6wgubA4GXFMzINdfqLbKJMBzKS28qo=', 'p@p.com', '8898181911', 'C/403, Balrajeshwar Chs Reti Bundet Road', 421202, NULL, NULL, NULL, '2020-05-20 13:52:25', NULL, 0),
+(10, NULL, 'Test', 'test', '58c229556a8850763a0f34f3a7f50f226567658265148399ffa2f02b4011cbce5b0ff9d9ed9c570366bafd5a4f08785aa0fa1407d6cfa41c856bdbbb3c7df98dCkw62fO6QN9rhb7FfrFvo/Gw3kt0IajyGLHFeQP/OZU=', 'p@p.com', '7878787878', 'asdads asdasda', 123123, NULL, NULL, NULL, '2020-05-20 14:19:39', NULL, 0),
+(11, NULL, 'asdasd', 'asdasd', '18764ea7658d9892fce262aaabf62f8599ee8914a5dd6da58c9b225b8f0c80a85b82cf06b966287d1431789618aec0858d5c41560a77a8a0985337e31781f9203aOD2hVOa1CaWbE0GNgX/YwM3ji5ORx5TwJyFxs43jc=', 'a@a.com', '2121212121', 'asdasdasd asdasdasd', 121212, NULL, NULL, NULL, '2020-05-20 14:21:28', NULL, 0),
+(16, '113861210126670926480', 'pranav', 'shinde', '', 'pranavshnd006@gmail.com', '8898181910', 'C/403, Balrajeshwar chs, Reti bubder road, dombivli west', 421202, 'https://lh3.googleusercontent.com/a-/AOh14GhGauToJTP53V9qzWzZaEme8nQ_-gOWc8FL_y1lxA=s96-c', NULL, NULL, '2020-05-21 07:20:57', NULL, 0),
+(17, NULL, 'Pranav', 'Shinde', '7e314cbe9273919c40e5dcbff7ca64c0da22ef5d50cd8a44f3bdf2faf73aea5e3bc45ff44b6d996409291c597e13c17da3a5385c9eb84845a14387b0d276f74eTOToDcPtiFQnOeIaSugJ29SEvrXVFJWRWWt/tAAbOlU=', 'pranavshnd006@gmail.com', '1234567890', 'C/403, Balrajeshwar chs, Reti bubder road, dombivli west', 421202, NULL, NULL, NULL, '2020-05-21 07:53:42', NULL, 0),
+(18, NULL, 'Test', 'test', 'bb014e1905f7eff207102b3ca5b696e07b1a4b0a93a379edc119102d1193fd9eb12b9903ed2425136c7e4a81e59f47a33cdda319f61aa59b0f7e8974c7838b8bBQJepSCBafNdkT2+HVYOdGmVnnlWZ4YG+OwOsVz9cGI=', 'pranavshnd006@gmail.com', '5454545454', 'C/403, Balrajeshwar chs, Reti bubder road, dombivli west', 456123, 'assets/theme/images/boy.png', NULL, NULL, '2020-05-25 05:49:57', NULL, 0),
+(19, NULL, 'Abhi', 'Talekar', 'c5be72ff0c136a644e034c56bbee6f5182d39c174a650ea531beab8e1c2d2854d714c8150d6673ce8a3a43374d3096c7f1b51a5228513962e28602448d360734SIbZgRuZrrKG0uq2O4TWLNCgm874WmWZHbxapymouT4=', 'pranavshnd006@gmail.com', '6565656565', 'C/403, Balrajeshwar chs, Reti bubder road, dombivli west', 456546, 'uploads/users/79.jpg', NULL, NULL, '2020-05-25 06:09:32', NULL, 0),
+(20, NULL, 'Pranav', 'Talekar', '492992899410770221f03824cfc845381129b324eba2b9df1c1dd609b9622c94e6adc4406d3e795cf10794ac939fa84d8f82da1d6764c0c70630d04ab134327dmgdt4fUeRO+8eU8Jv6gFirX1ANZrIpUoVuVSlcexAwo=', 'pranavshnd006@gmail.com', '3654984615', 'C/403, Balrajeshwar chs, Reti bubder road, dombivli west', 984951, 'uploads/users/791.jpg', NULL, NULL, '2020-05-25 06:13:42', NULL, 0),
+(21, NULL, 'Pranav', 'Shinde', '68ef8b1c791908b1086524fb5187ab871a1a41b3f029350ed15700ba146ecfaf544eee90e787dd775903d686a6531b5ee208b8a3f73e18588e96aa3828be7eb48/HYRvytuHboYAYyF+S0WUOK1fLu/5ar9iHG5i2Ru2A=', 'pranavshnd006@gmail.com', '9999999999', 'C/403, Balrajeshwar chs,\r\nReti bubder road, dombivli west', 654984, 'uploads/users/Untitled-min.png', NULL, NULL, '2020-05-25 06:53:10', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -439,7 +445,7 @@ ALTER TABLE `sss_uom`
 -- AUTO_INCREMENT for table `sss_buyer`
 --
 ALTER TABLE `sss_buyer`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `sss_cart`

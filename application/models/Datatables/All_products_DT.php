@@ -121,7 +121,7 @@ class All_products_DT extends CI_Model
 
     public function load_pieces($uom_unit, $uom_name, $price)
     {
-        $btn = '<p class="badge badge-warning" style="font-weight: 600;font-size: 1rem;">';
+        $btn = '<p class="badge badge-warning" style="font-weight: 600;">';
         $btn .= $uom_unit . ' ' . $uom_name . ' - ₹' . $price;
         $btn .= '</p>';
         return $btn;
@@ -143,7 +143,7 @@ class All_products_DT extends CI_Model
             $discount = ($price_diff / $mrp) * 100;
 
             $data = '<label style="font-weight: 800; color: #f44336;">' . number_format((float) $discount, 2, '.', '') . '</label>';
-            $data .= '<img src="' . base_url() . 'assets/theme/images/discount.svg" style="width:30px; margin-left:5px;">';
+            $data .= '<img src="' . base_url() . 'assets/theme/images/discount.svg" style="width:20px; margin-left:5px;">';
         } else {
             $data = '<label style="font-weight: 800; color: #f44336;"> No Offer</label>';
         }
@@ -228,7 +228,7 @@ class All_products_DT extends CI_Model
 
         //Unit
         $data .= '<h6 class="prod-name" style="margin-bottom:0;"><b>Unit : </b>';
-        $data .= '<p class="badge badge-warning" style="font-weight: 600;font-size: 1rem;">';
+        $data .= '<p class="badge badge-warning" style="font-weight: 600;">';
         $data .= $obj->uom_unit . ' ' . $obj->uom_name . ' - ₹' . $obj->price;
         $data .= '</p></h6>';
 
@@ -240,7 +240,7 @@ class All_products_DT extends CI_Model
 
             $data .= '<h6 class="prod-name"><b>Discount : </b>';
             $data .= '<label style="font-weight: 800; color: #f44336;">' . number_format((float) $discount, 2, '.', '') . '</label>';
-            $data .= '<img src="' . base_url() . 'assets/theme/images/discount.svg" style="width:30px; margin-left:5px;">';
+            $data .= '<img src="' . base_url() . 'assets/theme/images/discount.svg" style="width:20px; margin-left:5px;">';
         } else {
             $data .= '<label style="font-weight: 800; color: #f44336;"> No Offer</label>';
         }

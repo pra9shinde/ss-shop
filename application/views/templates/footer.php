@@ -300,7 +300,7 @@
   }
 </script>
 
-<!-- Google Login Functions -->
+<!-- Social Logout -->
 <script>
   //Google Login - Initialize auth when script is loaded
   function onLoad() {
@@ -353,13 +353,7 @@
     });
   }
 </script>
-<!-- Google Login Functions -->
-
-<!-- FB Login Functions -->
-<script>
-
-</script>
-<!-- FB Login Functions -->
+<!-- Social Logout -->
 
 
 <script>
