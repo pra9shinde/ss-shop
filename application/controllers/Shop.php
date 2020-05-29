@@ -263,8 +263,7 @@ class Shop extends CI_Controller
 
 	public function products_config()
 	{
-
-		if ($this->session->has_userdata('seller')) {
+		if (isset($_SESSION['seller'])) {
 			if ($_SESSION['seller']['source'] === 'mobile') {
 				$seller_details = $this->My_model->get('sss_seller', array(
 					'id' => $_SESSION['seller']['id']
@@ -279,6 +278,18 @@ class Shop extends CI_Controller
 			$data['seller_name'] = $seller_details[0]['shop_name'];
 			$data['categories'] = $this->My_model->get('sss_category');
 			$data['uoms'] = $this->My_model->get('sss_uom');
+			$id = $_SESSION['seller']['source'] === 'mobile' ? $_SESSION['seller']['id'] : $_SESSION['seller']['login_oauth_uid'];
+			$buyer = array(
+				'id' => $id,
+				'name' => $seller_details[0]['name'],
+				'shop_name' => $seller_details[0]['shop_name'],
+				'profile_picture' => $seller_details[0]['profile_picture'],
+				'source' =>  $_SESSION['seller']['source'],
+			);
+
+			$data['seller_profile_det'] = $buyer;
+
+
 
 			$this->load->view('templates/header', $data);
 			$this->load->view('templates/menu');
@@ -341,6 +352,45 @@ class Shop extends CI_Controller
 		$this->load->view('templates/header');
 		$this->load->view('templates/menu');
 		$this->load->view('buyer/verify_reset_password', $data);
+		$this->load->view('templates/footer');
+	}
+
+
+
+	public function seller_profile_edit($seller_id, $source)
+	{
+		if ($source === 'mobile') {
+			$where = array('id' => $seller_id, 'login_oauth_uid' => NULL, 'is_delete' => 0);
+		} else {
+			$where = array('login_oauth_uid' => $seller_id, 'is_delete' => 0);
+		}
+
+		$seller_data = $this->My_model->get('sss_seller', $where);
+
+		if (!count($seller_data) > 0) {
+			$this->login();
+		}
+
+		// Buyer Details for Header
+		$id = $_SESSION['seller']['source'] === 'mobile' ? $_SESSION['seller']['id'] : $_SESSION['seller']['login_oauth_uid'];
+		$buyer = array(
+			'id' => $id,
+			'name' => $seller_data[0]['name'],
+			'shop_name' => $seller_data[0]['shop_name'],
+			'profile_picture' => $seller_data[0]['profile_picture'],
+			'source' =>  $_SESSION['seller']['source'],
+		);
+
+		$data['seller_profile_det'] = $buyer;
+
+
+
+
+		$data['seller_details'] = $seller_data[0];
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/menu');
+		$this->load->view('seller/user-edit', $data);
 		$this->load->view('templates/footer');
 	}
 
@@ -2389,17 +2439,294 @@ class Shop extends CI_Controller
 		$this->load->view('templates/footer');
 	}
 
+	//Update User Details from User Edit Profile
+	public function update_seller_details()
+	{
+		if ($this->input->server('REQUEST_METHOD') != 'POST') {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Failed - Invalid Request!'
+				)));
+		}
+
+		$this->form_validation->set_rules('id', 'Seller Id', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('name', 'Name', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('shop_name', 'Shop Name', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('phone', 'Mobile No.', 'trim|required|numeric|min_length[10]|xss_clean');
+		$this->form_validation->set_rules('pin', 'Pin/ Zip Code', 'trim|required|numeric|max_length[6]|xss_clean');
+		$this->form_validation->set_rules('email', 'Email Address', 'trim|valid_email|xss_clean');
+		$this->form_validation->set_rules('address', 'Shop Address', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('source', 'source', 'trim|required|xss_clean');
+
+		if (!$this->form_validation->run()) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => validation_errors()
+				)));
+		}
+
+		//Collect the existing profile picture
+		if ($this->input->post('source') === 'mobile') {
+			$id = $this->input->post('id');
+			$buyer_det = $this->My_model->get('sss_seller', array('id' => $id));
+			$existing_profile = FCPATH  . $buyer_det[0]['profile_picture'];
+			$existing_profile_pic = str_replace("/", "\\", $existing_profile);
+		} else {
+			$buyer_det = $this->My_model->get('sss_seller', array('login_oauth_uid' => $this->input->post('id')));
+			$id = $buyer_det[0]['id'];
+			$existing_profile = FCPATH  . $buyer_det[0]['profile_picture'];
+			$existing_profile_pic = str_replace("/", "\\", $existing_profile);
+		}
+
+
+		$pathToUploadedFile = '';
+		if (isset($_FILES['profile_image']) && $_FILES['profile_image']['size'] != 0) {
+
+			$allowedExts = array("jpeg", "jpg", "png", "svg", "JPG", "JPEG", "PNG", "SVG");
+			$allowedTypes = array(IMAGETYPE_PNG, IMAGETYPE_JPEG, IMAGETYPE_GIF);
+			$extension = pathinfo($_FILES["profile_image"]["name"], PATHINFO_EXTENSION);
+			$detectedType = exif_imagetype($_FILES['profile_image']['tmp_name']);
+			$type = $_FILES['profile_image']['type'];
+			if (!in_array($detectedType, $allowedTypes)) {
+				return $this->output
+					->set_content_type('application/json')
+					->set_status_header(200)
+					->set_output(json_encode(array(
+						'type' => 'error',
+						'message' => 'Only jpg,png files supported'
+					)));
+			}
+			if (filesize($_FILES['profile_image']['tmp_name']) > 3000000) {
+				return $this->output
+					->set_content_type('application/json')
+					->set_status_header(200)
+					->set_output(json_encode(array(
+						'type' => 'error',
+						'message' => 'The Image file size shoud not exceed 3MB!'
+					)));
+			}
+			if (!in_array($extension, $allowedExts)) {
+				return $this->output
+					->set_content_type('application/json')
+					->set_status_header(200)
+					->set_output(json_encode(array(
+						'type' => 'error',
+						'message' => 'Invalid file extension'
+					)));
+			}
+
+			//Upload file
+			$aConfig['upload_path']      =  'uploads/users/';
+			$aConfig['allowed_types']    = 'jpg|png|jpeg|svg';
+			$aConfig['max_size']     = '3000000';
+			$this->upload->initialize($aConfig);
+			if ($this->upload->do_upload('profile_image')) {
+				$ret = $this->upload->data();
+			} else {
+				return $this->output
+					->set_content_type('application/json')
+					->set_status_header(200)
+					->set_output(json_encode(array(
+						'type' => 'error',
+						'message' => $this->upload->display_errors()
+					)));
+			}
+
+			$pathToUploadedFile = 'uploads/users/' . $ret['file_name'];
+
+
+			$this->load->library('image_lib');
+			//Resize the image to 256 * 256
+			$configer =  array(
+				'image_library'   => 'gd2',
+				'source_image'    =>  $ret['full_path'],
+				'maintain_ratio'  =>  TRUE,
+				'width'           =>  256,
+				'height'          =>  256,
+			);
+			$this->image_lib->clear();
+			$this->image_lib->initialize($configer);
+			$this->image_lib->resize();
+
+			//Delete the old profile picture
+			if (file_exists($existing_profile_pic)) {
+				unlink($existing_profile_pic);
+			}
+		}
+
+		$update_array = array(
+			'name' => $this->input->post('name'),
+			'shop_name' => $this->input->post('shop_name'),
+			'email' => $this->input->post('email'),
+			'phone' => $this->input->post('phone'),
+			'shop_address' => $this->input->post('address'),
+			'pin' => $this->input->post('pin')
+		);
+
+		if (!empty($pathToUploadedFile)) {
+			$update_array['profile_picture'] = $pathToUploadedFile;
+		} else {
+			$pathToUploadedFile = $existing_profile_pic;
+		}
+
+		$update = $this->My_model->update(
+			'sss_seller',
+			array(
+				'id' => $id
+			),
+			$update_array
+		);
+
+		if (!$update) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Failed to update details'
+				)));
+		}
+
+		// update cookie details 
+		$user_data = array(
+			'email' => $this->input->post('email'),
+			'shop_name' => $this->input->post('shop_name'),
+			'name' => $this->input->post('name'),
+			'phone' => $this->input->post('phone'),
+			'shop_address' => $this->input->post('shop_address'),
+			'pin' => $this->input->post('pin'),
+			'profile_picture' => $pathToUploadedFile,
+			'source' => $this->input->post('source')
+		);
+
+		if ($this->input->post('source') === 'mobile') {
+			$user_data['id'] = $this->input->post('id');
+		} else {
+			$user_data['login_oauth_uid'] = $this->input->post('id');
+		}
+
+		$session = $this->create_buyer_session($user_data);
+		if (!$session) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Failed Updating User Session'
+				)));
+		}
+
+		return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
+				'type' => 'success',
+				'message' => 'Profile Updated Successfully'
+			)));
+	}
+
+	//Seller Change Password only K2C user
+	public function change_password_seller()
+	{
+
+		if ($this->input->server('REQUEST_METHOD') != 'POST') {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Failed - Invalid Request!'
+				)));
+		}
+
+		$this->form_validation->set_rules('id', 'Seller Id', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('old_pass', 'Name', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[6]|xss_clean');
+		$this->form_validation->set_rules('password2', 'Confirm Password', 'trim|required|min_length[6]|xss_clean');
+		$this->form_validation->set_rules('password', 'Password Mismatch', 'required|matches[password2]');
+
+
+		if (!$this->form_validation->run()) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => validation_errors()
+				)));
+		}
+
+
+		$this->load->library('encryption');
+
+		$user_data = $this->My_model->get('sss_seller', array('id' => $this->input->post('id')));
+		if (count($user_data) <= 0) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'No user found, please Register'
+				)));
+		}
+
+		$decrypted_pass =  $this->encryption->decrypt($user_data[0]['password']);
+		if ($decrypted_pass !== $this->input->post('old_pass')) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Wrong Existing Password'
+				)));
+		}
+
+		//Update new Password
+		$update_user = $this->My_model->update(
+			'sss_seller',
+			array('id' => $this->input->post('id')),
+			array(
+				'password' =>  $this->encryption->encrypt($this->input->post('password')),
+			)
+		);
+
+		if (!$update_user) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'User Updation Database Operation Failed'
+				)));
+		}
+
+		return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
+				'type' => 'success',
+				'message' => 'Password Updated Successfully'
+			)));
+	}
+
+
 	//Common Signiout Function for both Seller as well as Buyer
 	public function logout()
 	{
+
 		if (isset($_POST['user_type'])) {
 
 			$user_type = $_POST['user_type'];
 
 			if ($user_type === 'seller') {
-
 				//Delete Session
-				if (isset($_SESSION['user'])) unset($_SESSION['user']);
+				if (isset($_SESSION['seller'])) unset($_SESSION['seller']);
 
 				return $this->output
 					->set_content_type('application/json')

@@ -154,7 +154,7 @@
                 </ul>
             </div>
 
-            <?php if ($this->uri->segment(2) != 'products_config' && $this->uri->segment(2) != 'my_orders') : ?>
+            <?php if ($this->uri->segment(2) != 'products_config' && $this->uri->segment(2) != 'my_orders'  && $this->uri->segment(2) != 'seller_profile_edit') : ?>
 
                 <div class="cart-btn">
                     <a class="nav-link nav-link-label" id="cart-link" href="<?= base_url() ?>Shop/cart"><i class="ficon ft-shopping-cart" id="cart-icon"></i><span class="badge badge-pill badge-danger badge-up badge-glow" id="cart-count">0</span></a>
@@ -180,7 +180,7 @@
                     </ul>
                     <ul class="nav navbar-nav float-right">
 
-                        <?php if ($this->uri->segment(2) === 'products_config' || $this->uri->segment(2) === 'my_orders') : ?>
+                        <?php if ($this->uri->segment(2) === 'products_config' || $this->uri->segment(2) === 'my_orders' || $this->uri->segment(2) === 'seller_profile_edit') : ?>
                             <li class="dropdown dropdown-notification nav-item"><a class="nav-link nav-link-label" href="#" data-toggle="dropdown"><i class="ficon ft-bell"></i><span class="badge badge-pill badge-danger badge-up badge-glow">0</span></a>
                                 <ul class="dropdown-menu dropdown-menu-media dropdown-menu-right">
                                     <li class="dropdown-menu-header">
@@ -202,11 +202,24 @@
                                 </ul>
                             </li>
 
-                            <li class="dropdown dropdown-user nav-item"><a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown"><span class="mr-1 user-name text-bold-700"><?= $seller_name ?></span><span class="avatar avatar-online"><img src="<?= base_url(); ?>assets/theme/images/avatar-s-17.png" alt="avatar"><i></i></span></a>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <div class="dropdown-divider"></div><a class="dropdown-item" onclick="logout('seller')"><i class="ft-power"></i> Logout</a>
-                                </div>
-                            </li>
+                            <?php if (isset($seller_profile_det)) : ?>
+                                <!-- Seller logged in -->
+                                <li class="dropdown dropdown-user nav-item"><a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown"><span class="avatar avatar-online"><img src="<?= base_url() . $seller_profile_det['profile_picture'] ?>" alt="Avatar"><i></i></span></a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a class="dropdown-item user-name text-bold-700 user-name" href="#" style="background-color: #9f3434; color: #fff !important;"><i class="ft-star"></i> <?= $seller_profile_det['shop_name'] ?></a>
+
+                                        <a class="dropdown-item" href="<?= base_url() ?>Shop/seller_profile_edit/<?= $seller_profile_det['id'] ?>/<?= $seller_profile_det['source'] ?>"><i class="ft-user"></i> Edit Profile</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" onclick="logout('seller')"><i class="ft-power"></i> Logout</a>
+                                    </div>
+                                </li>
+
+                            <?php else : echo 1;
+                                exit; ?>
+                                <!-- Seller Not Logged In -->
+                                <li class="dropdown dropdown-user nav-item"><a class="dropdown-toggle nav-link dropdown-user-link" href="<?= base_url() ?>Shop/login"><span class="avatar avatar-online"><img src="<?= base_url(); ?>assets/theme/images/user.png" alt="avatar"><i></i></span></a>
+                                </li>
+                            <?php endif; ?>
                         <?php else : ?>
                             <?php if (isset($buyer_profile_det)) : ?>
 
