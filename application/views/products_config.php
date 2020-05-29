@@ -171,6 +171,10 @@
                         toastr.error(data.message, 'Product Addition', {
                             "timeOut": 1000
                         });
+
+                        if (data.redirect !== '') {
+                            // window.location = data.redirect;
+                        }
                     }
                 },
                 error: function(xhr, status, error) {

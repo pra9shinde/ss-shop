@@ -22,6 +22,13 @@
 										<i class="ft-user mr-25"></i><span class="d-none d-sm-block">Account</span>
 									</a>
 								</li>
+								<?php if ($buyer_profile_det['source'] === 'mobile') : ?>
+									<li class="nav-item">
+										<a class="nav-link d-flex align-items-center" id="password-tab" data-toggle="tab" href="#password-change" aria-controls="password" role="tab" aria-selected="true">
+											<i class="la la-key mr-25"></i><span class="d-none d-sm-block">Change Password</span>
+										</a>
+									</li>
+								<?php endif; ?>
 							</ul>
 							<div class="tab-content">
 								<div class="tab-pane active" id="account" aria-labelledby="account-tab" role="tabpanel">
@@ -99,6 +106,55 @@
 									</form>
 									<!-- users edit account form ends -->
 								</div>
+
+								<?php if ($buyer_profile_det['source'] === 'mobile') : ?>
+									<div class="tab-pane" id="password-change" aria-labelledby="password-tab" role="tabpanel">
+										<!-- users edit media object start -->
+										<form id="update-buyer-password" action="<?= base_url() ?>Shop/change_password_buyer">
+											<div class="media mb-2">
+												<a class="mr-2" href="#">
+													<img src="<?= base_url() . $buyer_details['profile_picture'] ?>" alt="users avatar" class="users-avatar-shadow rounded-circle" height="80" width="80">
+												</a>
+												<div class="media-body">
+													<h4 class="media-heading"><?= $buyer_details['name'] ?> <?= $buyer_details['lastname'] ?></h4>
+												</div>
+											</div>
+											<!-- users edit media object ends -->
+											<!-- users edit account form start -->
+											<div class="row">
+												<div class="col-12 col-sm-6">
+													<div class="form-group">
+														<div class="controls">
+															<label>Old Password</label>
+															<input type="password" class="form-control" placeholder="Existing Password*" name="old_pass" id="old_pass">
+															<input type="hidden" name="source" id="source" value="<?= $buyer_profile_det['source'] ?>">
+															<input type="hidden" name="id" id="id" value="<?= $buyer_profile_det['id'] ?>">
+														</div>
+													</div>
+													<div class="form-group">
+														<div class="controls">
+															<label>New Password</label>
+															<input type="password" class="form-control" placeholder="Password*" name="password" id="password">
+														</div>
+													</div>
+													<div class="form-group">
+														<div class="controls">
+															<label>Confirm Password</label>
+															<input type="password" class="form-control" placeholder="Retype New Password*" name="password2" id="password2">
+														</div>
+													</div>
+												</div>
+
+												<div class="col-12 d-flex flex-sm-row flex-column justify-content-end mt-1">
+													<button type="submit" class="btn btn-primary glow mb-1 mb-sm-0 mr-0 mr-sm-1">Save
+														changes</button>
+													<button type="reset" class="btn btn-light">Cancel</button>
+												</div>
+											</div>
+										</form>
+										<!-- users edit account form ends -->
+									</div>
+								<?php endif; ?>
 							</div>
 						</div>
 					</div>
@@ -115,7 +171,7 @@
 		$('#profile_image').trigger('click');
 	});
 
-	//Create new user
+	//Update Buyer Details
 	$("#update-buyer-details").submit(function(e) {
 		e.preventDefault();
 		var form = $('#update-buyer-details')[0]; // You need to use standard javascript object here
@@ -131,7 +187,7 @@
 			success: function(data) {
 				if (data.type === "success") {
 					toastr.success(data.message, 'User Details Update', {
-						"timeOut": 1000
+						"timeOut": 3000
 					});
 					window.location.reload();
 				} else {
@@ -143,6 +199,43 @@
 			error: function(xhr, status, error) {
 				toastr.error(error, 'User Details Update', {
 					"timeOut": 1000
+				});
+				console.log('An error occurred.' + error);
+			},
+			beforeSend: function() {
+				$("#ajax-loader").fadeIn(500);
+			},
+			complete: function() {
+				setTimeout(function() {
+					$("#ajax-loader").fadeOut(500);
+				}, 500);
+			}
+		});
+	});
+
+	//Change Password
+	$("#update-buyer-password").submit(function(e) {
+		e.preventDefault();
+		$.ajax({
+			type: "POST",
+			dataType: 'json',
+			url: $(this).attr("action"),
+			data: $(this).serialize(),
+			success: function(data) {
+				if (data.type === "success") {
+					toastr.success(data.message, 'Password Update', {
+						"timeOut": 3000
+					});
+					document.getElementById('update-buyer-password').reset();
+				} else {
+					toastr.error(data.message, 'Password Update', {
+						"timeOut": 3000
+					});
+				}
+			},
+			error: function(xhr, status, error) {
+				toastr.error(error, 'Password Update', {
+					"timeOut": 3000
 				});
 				console.log('An error occurred.' + error);
 			},

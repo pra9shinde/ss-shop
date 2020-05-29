@@ -17,12 +17,16 @@ class Product_DT extends CI_Model
 
     private function _get_datatables_query()
     {
-
-        if ($this->session->has_userdata('user')) {
-            $this->db->where('product.seller_id ', $this->session->userdata('user'));
-            $this->db->where('product.is_delete', 0);
+        //If the user is logged in via social network
+        if ($_SESSION['seller']['source'] !== 'mobile') {
+            $user_data = $this->My_model->get('sss_buyer', array('login_oauth_uid' => $_SESSION['seller']['login_oauth_uid']));
+            $id = $user_data[0]['id'];
+        } else {
+            $id = $_SESSION['seller']['id'];
         }
 
+        $this->db->where('product.seller_id ', $id);
+        $this->db->where('product.is_delete', 0);
         $this->db->select('product.id, product.name as product_name, category.name as category_name, product.category_id, product.description, product.image_url, product.total_quantity, product.rem_quantity, product.price, product.pieces, product.uom_unit, product.mrp, product.tax as tax_id, taxes.percentage as tax, uom.id as uom, uom.name as uom_name', false);
         $this->db->from($this->table);
         $this->db->join('sss_category as category', 'product.category_id = category.id ', 'inner');

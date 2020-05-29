@@ -160,6 +160,7 @@
   }
 
   function quantityUpdate(id, obj, device, ip_address = $('#cart-link').data('ip_address')) {
+    device = device.replace(/ /g, ''); //Trim
     let line_total;
     let line_tax;
     let line_saved;
@@ -171,12 +172,10 @@
       line_tax = obj.parentElement.parentElement.parentElement.children[5].firstElementChild;
 
       line_saved = obj.parentElement.parentElement.parentElement.children[7].firstElementChild.children[0];
-
     } else {
       line_total = obj.parentElement.parentElement.children[8].children[1];
       line_tax = obj.parentElement.parentElement.children[7].children[1];
       line_saved = obj.parentElement.parentElement.children[9].children[1];
-
     }
 
 
@@ -222,9 +221,12 @@
     var line_saved = document.querySelectorAll('.line_saved');
     let total_saved = 0;
 
-    for (let i = 0; i < line_saved.length; i++) {
+    let linesavedLength = line_saved.length / 2; //line saved will be doub;e because of 2 seperate tables(mobile & desktop)
+
+    for (let i = 0; i < linesavedLength; i++) {
       total_saved += Number(line_saved[i].textContent);
     }
+
 
     if (ip_address) {
       $.ajax({
@@ -239,10 +241,10 @@
         success: function(data) {
           if (data.status == 'success') {
             // line_total.innerText = '₹' + data.line_total;
-            $('#tax_total').text(data.tax_total);
+            $('#tax_total').text('₹' + data.tax_total);
             $('#total_items').text(data.cart_items);
-            $('#total_amount').text('₹' + data.cart_total);
-            let pay_amt = Number(data.tax_total) + Number(data.cart_total);
+            $('#total_amount').text('₹' + data.total_excl_tax);
+            let pay_amt = Number(data.tax_total) + Number(data.total_excl_tax);
             $('#payable_amount').text('₹' + pay_amt.toFixed(2));
             $('#total_saved').text(total_saved.toFixed(2));
 

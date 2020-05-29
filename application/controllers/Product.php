@@ -33,6 +33,7 @@ class Product extends CI_Controller
 		$this->load->model('Datatables/Product_DT', 'product_dt_model');
 	}
 
+
 	public function product_details($id)
 	{
 		$prod_details = $this->shop_model->get_product_details($id);
@@ -301,7 +302,6 @@ class Product extends CI_Controller
 
 	public function product_ajax_list()
 	{
-		$user_id = $this->session->userdata('user');
 		$list = $this->product_dt_model->get_datatables();
 
 		$data = array();
@@ -325,15 +325,30 @@ class Product extends CI_Controller
 
 	public function add_product()
 	{
+
 		if ($this->input->server('REQUEST_METHOD') != 'POST') {
 			return $this->output
 				->set_content_type('application/json')
 				->set_status_header(200)
 				->set_output(json_encode(array(
 					'type' => 'error',
-					'message' => 'Failed - Invalid Request!'
+					'message' => 'Failed - Invalid Request!',
+					'redirect' => ''
 				)));
 		}
+
+		if (!isset($_SESSION['seller'])) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Session Expired, Login Again',
+					'redirect' => base_url() . 'Shop/seller'
+				)));
+		}
+
+
 
 		$this->form_validation->set_rules('prod_name', 'Product Name', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('prod_category', 'Product Category', 'trim|required|xss_clean');
@@ -352,7 +367,8 @@ class Product extends CI_Controller
 				->set_status_header(200)
 				->set_output(json_encode(array(
 					'type' => 'error',
-					'message' => validation_errors()
+					'message' => validation_errors(),
+					'redirect' => ''
 				)));
 		}
 
@@ -371,7 +387,8 @@ class Product extends CI_Controller
 					->set_status_header(200)
 					->set_output(json_encode(array(
 						'type' => 'error',
-						'message' => 'Only jpg,png files supported'
+						'message' => 'Only jpg,png files supported',
+						'redirect' => ''
 					)));
 			}
 			if (filesize($_FILES['prod_image']['tmp_name']) > 1000000) {
@@ -380,7 +397,8 @@ class Product extends CI_Controller
 					->set_status_header(200)
 					->set_output(json_encode(array(
 						'type' => 'error',
-						'message' => 'The Image file size shoud not exceed 20MB!'
+						'message' => 'The Image file size shoud not exceed 10MB!',
+						'redirect' => ''
 					)));
 			}
 			if (!in_array($extension, $allowedExts)) {
@@ -389,7 +407,8 @@ class Product extends CI_Controller
 					->set_status_header(200)
 					->set_output(json_encode(array(
 						'type' => 'error',
-						'message' => 'Invalid file extension'
+						'message' => 'Invalid file extension',
+						'redirect' => ''
 					)));
 			}
 
@@ -409,14 +428,34 @@ class Product extends CI_Controller
 					->set_status_header(200)
 					->set_output(json_encode(array(
 						'type' => 'error',
-						'message' => $this->upload->display_errors()
+						'message' => $this->upload->display_errors(),
+						'redirect' => ''
 					)));
 			}
 			$pathToUploadedFile = 'uploads/' . $ret['file_name'];
 		}
 
+		//If the user is logged in via social network
+		if ($_SESSION['seller']['source'] !== 'mobile') {
+			$user_data = $this->My_model->get('sss_buyer', array('login_oauth_uid' => $_SESSION['seller']['login_oauth_uid']));
+			if (count($user_data) <= 0) {
+				return $this->output
+					->set_content_type('application/json')
+					->set_status_header(200)
+					->set_output(json_encode(array(
+						'type' => 'error',
+						'message' => 'User Data Not Found, Login/Register',
+						'redirect' => base_url() . 'Shop/seller'
+					)));
+			}
+			$id = $user_data[0]['id'];
+		} else {
+			$id = $_SESSION['seller']['id'];
+		}
+
+
 		$insert_data = array(
-			'seller_id' => $this->session->userdata('user'),
+			'seller_id' => $id,
 			'category_id' => $this->input->post('prod_category'),
 			'name' => $this->input->post('prod_name'),
 			'description' => $this->input->post('prod_desc'),
@@ -438,7 +477,8 @@ class Product extends CI_Controller
 				->set_status_header(200)
 				->set_output(json_encode(array(
 					'type' => 'error',
-					'message' => 'Operation failed. please try again later'
+					'message' => 'Operation failed. please try again later',
+					'redirect' => ''
 				)));
 		}
 
@@ -474,6 +514,23 @@ class Product extends CI_Controller
 					'message' => 'Operation failed. Product Id not found'
 				)));
 		}
+
+		//Check if User placed order for this product
+		$product_dependency = $this->My_model->get('sss_order_items', array(
+			'product_id' => $this->input->post('id'),
+			'status !=' => 3
+		));
+
+		if (count($product_dependency) > 0) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Orders are Placed on this product'
+				)));
+		}
+
 
 		if (!is_array($this->input->post('id'))) {
 			$arr = array();
@@ -944,8 +1001,6 @@ class Product extends CI_Controller
 		$data_array = array();
 
 		if (count($list) > 0) {
-			$sheet_total = 0;
-			$sheet_total_tax = 0;
 
 			foreach ($list as $item) {
 
@@ -1029,12 +1084,13 @@ class Product extends CI_Controller
 		}
 
 		//Sheet Totals
-		$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(19, $row, 'All Orders Total');
-		$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(20, $row, $sheet_total);
-
-		$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(19, $row + 1, 'All Orders Total');
-		$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(20, $row + 1, $sheet_total_tax);
-
+		$highestRow = $spreadsheet->getActiveSheet()->getHighestRow();
+		$SUMRANGE = 'T2:T' . $highestRow;
+		$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(19, $row, 'Total - All Orders ');
+		$spreadsheet->getActiveSheet()->setCellValue('T' . $row, '=SUM(' . $SUMRANGE . ')');
+		$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(19, $row + 1, ' Total Tax - All Orders');
+		$TAXRANGE = 'S2:S' . $highestRow;
+		$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(20, $row + 1, '=SUM(' . $TAXRANGE . ')');
 
 		$writer = new Xlsx($spreadsheet);
 

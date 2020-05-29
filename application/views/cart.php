@@ -97,7 +97,7 @@
                                                                 $order_save += $line_save;
                                                                 ?>
                                                                 <div class="total-savings" style="font-size:1rem; margin-top:0;">₹
-                                                                    <span class="line_saved"><?= $order_save ?></span>
+                                                                    <span class="line_saved"><?= $line_save ?></span>
                                                                 </div>
                                                             </td>
                                                             <td>
@@ -236,11 +236,11 @@
                                     </div>
                                     <div class="card-content">
                                         <div class="card-body">
-                                            <div class="price-detail">Price (<span id="total_items"><?= count($cart_items); ?></span> items) <span class="float-right" id="total_amount">₹<?= $cart_total ?></span></div>
+                                            <div class="price-detail">Price (<span id="total_items"><?= count($cart_items); ?></span> items) <span class="float-right" id="total_amount">₹<?= $total_excl_tax ?></span></div>
                                             <div class="price-detail">Delivery Charges <span class="float-right">₹0</span></div>
                                             <div class="price-detail">TAX / VAT <span class="float-right" id="tax_total">₹<?= $tax_total ?></span></div>
                                             <hr>
-                                            <div class="price-detail">Payable Amount <span class="float-right" id="payable_amount">₹<?= $cart_total + $tax_total ?></span></div>
+                                            <div class="price-detail">Payable Amount <span class="float-right" id="payable_amount">₹<?= $cart_total ?></span></div>
                                             <div class="total-savings">Your Total Savings on this order is ₹<span id="total_saved">
 
                                                     <?php if (isset($order_save)) : echo $order_save; ?>
@@ -274,7 +274,7 @@
 
                                             <li class="list-group-item d-flex justify-content-between">
                                                 <span class="product-name"><strong>Cart Subtotal</strong></span>
-                                                <span class="product-price" id="checkout_cart_total"><strong>₹<?= $cart_total ?></strong></span>
+                                                <span class="product-price" id="checkout_cart_total"><strong>₹<?= $total_excl_tax ?></strong></span>
                                             </li>
                                             <li class="list-group-item d-flex justify-content-between">
                                                 <span class="product-name">Shipping &amp; Handling</span>
@@ -451,12 +451,12 @@
 
                     });
 
-                    $('#checkout_cart_total').text('₹' + cart_total);
+                    $('#checkout_cart_total').text('₹' + (Number(cart_total) - Number(tax_total).toFixed(2)));
                     let pay_amt = Number(tax_total) + Number(cart_total);
-                    $('#checkout_payable_amount').text('₹' + parseFloat(pay_amt).toFixed(2));
+                    $('#checkout_payable_amount').text('₹' + parseFloat(cart_total).toFixed(2));
                     $('#checkout_tax_total').text('₹' + tax_total);
                     $('#checkout_items').text(data['cart_items'].length);
-                    $('#checkout-items-list').append(list_html);
+                    $('#checkout-items-list').html(list_html);
 
 
                     //Show Checkout tab

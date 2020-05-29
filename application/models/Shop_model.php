@@ -22,6 +22,7 @@ class Shop_model extends CI_Model
 	public function seller_exists($phone)
 	{
 		$this->db->where('phone', $phone);
+		$this->db->where('login_oauth_uid', NULL);
 		$this->db->where('is_delete', '0');
 		$this->db->select('*');
 		$this->db->from('sss_seller');
@@ -33,11 +34,14 @@ class Shop_model extends CI_Model
 	public function addSeller($data)
 	{
 		$data = array(
+			'name' => $data['name'],
 			'shop_name'	=>  $data['shop'],
+			'shop_address'	=>  $data['shop_address'],
 			'phone' =>  $data['mobile'],
 			'pin'	=>  $data['pin'],
 			'email'	=>  $data['email'],
-			'password'	=>  $this->encryption->encrypt($data['password'])
+			'password'	=>  $this->encryption->encrypt($data['password']),
+			'profile_picture' => 'assets/theme/images/boy.png'
 		);
 		$this->db->insert('sss_seller', $data);
 		// $this->encryption->decrypt($ciphertext);
