@@ -457,6 +457,7 @@ class Product extends CI_Controller
 		$insert_data = array(
 			'seller_id' => $id,
 			'category_id' => $this->input->post('prod_category'),
+			'sub_category_id' => $this->input->post('prod_sub_category') === '' ? NULL : $this->input->post('prod_sub_category'),
 			'name' => $this->input->post('prod_name'),
 			'description' => $this->input->post('prod_desc'),
 			'image_url' => $pathToUploadedFile,
@@ -654,6 +655,7 @@ class Product extends CI_Controller
 
 		$update_array = 	array(
 			'category_id' => $this->input->post('prod_category_edit'),
+			'sub_category_id' =>  $this->input->post('prod_sub_category_edit') === '' ? NULL : $this->input->post('prod_sub_category_edit'),
 			'name' => $this->input->post('prod_name_edit'),
 			'description' => $this->input->post('prod_desc_edit'),
 			'total_quantity' => $this->input->post('prod_quantity_edit'),
@@ -685,6 +687,28 @@ class Product extends CI_Controller
 			->set_output(json_encode(array(
 				'type' => 'success',
 				'message' => 'Product Updated Successfully'
+			)));
+	}
+
+	public function get_sub_category_list($category_id)
+	{
+		$sub_categories = $this->My_model->get('sss_sub_category', array('category_id' => $category_id));
+		if (!$sub_categories) {
+			return $this->output
+				->set_content_type('application/json')
+				->set_status_header(200)
+				->set_output(json_encode(array(
+					'type' => 'error',
+					'message' => 'Operation failed. please try again later'
+				)));
+		}
+		return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(array(
+				'type' => 'success',
+				'message' => 'Sub Categories Fetched',
+				'sub_categories' => $sub_categories
 			)));
 	}
 

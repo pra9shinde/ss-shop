@@ -27,11 +27,13 @@ class Product_DT extends CI_Model
 
         $this->db->where('product.seller_id ', $id);
         $this->db->where('product.is_delete', 0);
-        $this->db->select('product.id, product.name as product_name, category.name as category_name, product.category_id, product.description, product.image_url, product.total_quantity, product.rem_quantity, product.price, product.pieces, product.uom_unit, product.mrp, product.tax as tax_id, taxes.percentage as tax, uom.id as uom, uom.name as uom_name', false);
+        $this->db->select('product.id, product.name as product_name, category.name as category_name, product.category_id, product.sub_category_id, product.description, product.image_url, product.total_quantity, product.rem_quantity, product.price, product.pieces, product.uom_unit, product.mrp, product.tax as tax_id, sub_category.name as sub_category_name, taxes.percentage as tax, uom.id as uom, uom.name as uom_name', false);
         $this->db->from($this->table);
         $this->db->join('sss_category as category', 'product.category_id = category.id ', 'inner');
+        $this->db->join('sss_sub_category as sub_category', 'sub_category.id = product.sub_category_id ', 'left');
         $this->db->join('sss_tax as taxes', 'product.tax = taxes.id ', 'left');
         $this->db->join('sss_uom as uom', 'uom.id = product.uom ', 'left');
+
 
 
         $i = 0;
@@ -105,6 +107,9 @@ class Product_DT extends CI_Model
 
         //Category
         $data .= '<h6 class="prod-desc mb-prod"><b>Category :</b>' . $obj->category_name . '</h6>';
+
+        //Sub Category
+        $data .= '<h6 class="prod-desc mb-prod"><b>Sub-Category :</b>' . $obj->sub_category_name . '</h6>';
 
         //Rem Stock
         $data .= '<h6 class="prod-desc mb-prod"><b>In Stock :</b>' . $obj->rem_quantity . '</h6>';

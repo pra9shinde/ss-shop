@@ -124,7 +124,7 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <a href="#">
+                                    <a href="<?= base_url() ?>Shop/products?cat=16&sub_cat=5">
                                         <div class="product-img d-flex align-items-center prod-cont">
                                             <div class="badge badge-success abs-badge">20% off</div>
                                             <img class="img-fluid" src="<?= base_url() ?>assets/theme/images/products/fresh-fruits.png" alt="Card image cap">
@@ -133,7 +133,7 @@
                                     </a>
                                 </div>
                                 <div class="col">
-                                    <a href="#">
+                                    <a href="<?= base_url() ?>Shop/products?cat=16&sub_cat=6">
                                         <div class="product-img d-flex align-items-center prod-cont">
                                             <div class="badge badge-success abs-badge">20% off</div>
                                             <img class="img-fluid" src="<?= base_url() ?>assets/theme/images/products/vegetables.png" alt="Card image cap">
@@ -143,7 +143,7 @@
                                 </div>
                                 <div class="w-100 d-sm-none"></div>
                                 <div class="col">
-                                    <a href="#">
+                                    <a href="<?= base_url() ?>Shop/products?cat=16&sub_cat=7">
                                         <div class="product-img d-flex align-items-center prod-cont">
                                             <div class="badge badge-success abs-badge">20% off</div>
                                             <img class="img-fluid" src="<?= base_url() ?>assets/theme/images/products/herbs.png" alt="Card image cap">
@@ -153,7 +153,7 @@
 
                                 </div>
                                 <div class="col">
-                                    <a href="#">
+                                    <a href="<?= base_url() ?>Shop/products?cat=16&sub_cat=8">
                                         <div class="product-img d-flex align-items-center prod-cont">
                                             <div class="badge badge-success abs-badge">20% off</div>
                                             <img class="img-fluid" src="<?= base_url() ?>assets/theme/images/products/exotic-corner.png" alt="Card image cap">
@@ -177,7 +177,7 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <a href="#">
+                                    <a href="<?= base_url() ?>Shop/products?cat=17&sub_cat=9">
                                         <div class="product-img d-flex align-items-center prod-cont">
                                             <div class="badge badge-success abs-badge">20% off</div>
                                             <img class="img-fluid" src="<?= base_url() ?>assets/theme/images/products/juices.png" alt="Card image cap">
@@ -186,7 +186,7 @@
                                     </a>
                                 </div>
                                 <div class="col">
-                                    <a href="#">
+                                    <a href="<?= base_url() ?>Shop/products?cat=17&sub_cat=10">
                                         <div class="product-img d-flex align-items-center prod-cont">
                                             <img class="img-fluid" src="<?= base_url() ?>assets/theme/images/products/cold-drinks.png" alt="Card image cap">
                                         </div>
@@ -195,7 +195,7 @@
                                 </div>
                                 <div class="w-100 d-sm-none"></div>
                                 <div class="col">
-                                    <a href="#">
+                                    <a href="<?= base_url() ?>Shop/products?cat=17&sub_cat=11">
                                         <div class="product-img d-flex align-items-center prod-cont">
                                             <img class="img-fluid" src="<?= base_url() ?>assets/theme/images/products/buttermilk.png" alt="Card image cap">
                                         </div>
@@ -204,13 +204,66 @@
 
                                 </div>
                                 <div class="col">
-                                    <a href="#">
+                                    <a href="<?= base_url() ?>Shop/products?cat=17&sub_cat=12">
                                         <div class="product-img d-flex align-items-center prod-cont">
                                             <div class="badge badge-success abs-badge">20% off</div>
 
                                             <img class="img-fluid" src="<?= base_url() ?>assets/theme/images/products/syrups.png" alt="Card image cap">
                                         </div>
                                         <h5 class="product-title text-center">Syrups</h5>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- products category  -->
+
+
+                <!-- products category  -->
+                <div class="card pull-up">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="group-area">
+                                <h4><b>Cleaning and Household</b></h4>
+                                <hr>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <a href="<?= base_url() ?>Shop/products?cat=18&sub_cat=13">
+                                        <div class="product-img d-flex align-items-center prod-cont">
+                                            <div class="badge badge-success abs-badge">20% off</div>
+                                            <img class="img-fluid" src="<?= base_url() ?>uploads/detergent.png" alt="Card image cap">
+                                        </div>
+                                        <h5 class="product-title text-center">Detergent Powder</h5>
+                                    </a>
+                                </div>
+                                <div class="col">
+                                    <a href="<?= base_url() ?>Shop/products?cat=18&sub_cat=14">
+                                        <div class="product-img d-flex align-items-center prod-cont">
+                                            <img class="img-fluid" src="<?= base_url() ?>uploads/cleaning.png" alt="Card image cap">
+                                        </div>
+                                        <h5 class="product-title text-center">Toilet/Floor Cleaners</h5>
+                                    </a>
+                                </div>
+                                <div class="w-100 d-sm-none"></div>
+                                <div class="col">
+                                    <a href="<?= base_url() ?>Shop/products?cat=18&sub_cat=15">
+                                        <div class="product-img d-flex align-items-center prod-cont">
+                                            <img class="img-fluid" src="<?= base_url() ?>uploads/kitchen.png" alt="Card image cap">
+                                        </div>
+                                        <h5 class="product-title text-center">Kitchen Essentials</h5>
+                                    </a>
+
+                                </div>
+                                <div class="col">
+                                    <a href="<?= base_url() ?>Shop/products?cat=18&sub_cat=16">
+                                        <div class="product-img d-flex align-items-center prod-cont">
+                                            <div class="badge badge-success abs-badge">20% off</div>
+
+                                            <img class="img-fluid" src="<?= base_url() ?>uploads/air-freshners.png" alt="Card image cap">
+                                        </div>
+                                        <h5 class="product-title text-center">Air Freshners</h5>
                                     </a>
                                 </div>
                             </div>

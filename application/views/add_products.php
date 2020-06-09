@@ -24,16 +24,17 @@
                                 </div>
 
                                 <div class="col-md-4 form-group">
-                                    <input type="text" class="form-control" placeholder="Product Name*" name="prod_name" id="prod_name">
+                                    <select class="select2 form-control" data-placeholder="Product Sub-Category*" id="prod_sub_category" name="prod_sub_category">
+                                        <option></option>
+
+                                    </select>
                                 </div>
 
 
                                 <div class="col-md-4">
                                     <fieldset class="form-group">
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input" id="prod_image" name="prod_image">
-                                            <label class="custom-file-label" for="prod_image" aria-describedby="prod_image">Product Image</label>
-                                        </div>
+                                        <input type="text" class="form-control" placeholder="Product Name*" name="prod_name" id="prod_name">
+
                                     </fieldset>
                                 </div>
                             </div>
@@ -41,6 +42,13 @@
 
                             <div class="row">
 
+
+                                <div class="col-md-4 form-group">
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="prod_image" name="prod_image">
+                                        <label class="custom-file-label" for="prod_image" aria-describedby="prod_image">Product Image</label>
+                                    </div>
+                                </div>
 
                                 <div class="col-md-4 form-group">
                                     <select class="select2 form-control" data-placeholder="UOM*" id="uom" name="uom">
@@ -55,21 +63,34 @@
 
                                 <div class="col-md-4 form-group">
                                     <input type="text" class="form-control" placeholder="UOM unit*" name="uom_qty" id="uom_qty">
-                                </div>
 
-                                <div class="col-md-4 form-group">
-                                    <input type="text" class="form-control" placeholder="Pieces per unit*" name="prod_pieces" id="prod_pieces">
                                 </div>
 
                             </div>
 
                             <div class="row">
                                 <div class="col-md-4 form-group">
+                                    <input type="text" class="form-control" placeholder="Pieces per unit*" name="prod_pieces" id="prod_pieces">
+
+                                </div>
+
+                                <div class="col-md-4 form-group">
                                     <input type="text" class="form-control" placeholder="Total Stock*" name="prod_quantity" id="prod_quantity">
+
                                 </div>
 
                                 <div class="col-md-4 form-group">
                                     <input type="text" class="form-control" placeholder="Product Price(Excl. TAX)*" name="prod_price" id="prod_price">
+
+                                </div>
+
+
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-4 form-group">
+                                    <input type="text" class="form-control" placeholder="MRP*" name="mrp" id="mrp">
+
                                 </div>
 
                                 <div class="col-md-4 form-group">
@@ -83,21 +104,18 @@
                                     </select>
                                 </div>
 
+                                <div class="col-md-4 form-group">
+                                    <textarea rows="2" class="form-control " name="prod_desc" id="prod_desc" placeholder="Product Description"></textarea>
 
+                                </div>
                             </div>
 
                             <div class="form-group row">
                                 <div class="col-md-4 form-group">
-                                    <input type="text" class="form-control" placeholder="MRP*" name="mrp" id="mrp">
-                                </div>
-
-                                <div class="col-md-4 form-group">
-                                    <textarea rows="2" class="form-control " name="prod_desc" id="prod_desc" placeholder="Product Description"></textarea>
-                                </div>
-
-                                <div class="col-md-4 form-group">
                                     <button type="button" class="btn btn-secondary btn-min-width box-shadow-3 mr-1 mb-1" style="width:100%;margin-top:1%;" id="btn-add-product">Add</button>
                                 </div>
+
+
                             </div>
                         </div>
                     </form>
@@ -172,6 +190,15 @@
                                             <option value="<?= $category['id'] ?>"><?= $category['name'] ?></option>
                                         <?php    } ?>
                                     <?php endif; ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 label-control" for="flat-area-name">Product Sub-Category</label>
+                            <div class="col-md-9 mx-auto">
+                                <select class="select2 form-control" id="prod_sub_category_edit" name="prod_sub_category_edit">
+                                    <option></option>
                                 </select>
                             </div>
                         </div>
@@ -273,3 +300,108 @@
         </div>
     </div>
 </div>
+
+<script>
+    //get subcategory form selected category
+    $(document.body).on("change", "#prod_category", function() {
+        // alert(this.value);
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
+            url: '<?= base_url() ?>Product/get_sub_category_list/' + this.value,
+            data: {
+                'category_id': this.value
+            },
+            success: function(data) {
+                if (data.type === "success") {
+                    toastr.success(data.message, 'Sub Category Details', {
+                        "timeOut": 1000
+                    });
+                    // console.log(data.sub_categories);
+                    appendSubcategory(data.sub_categories);
+                } else {
+                    toastr.error(data.message, 'Sub Category Details', {
+                        "timeOut": 1000
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                toastr.error(error, 'Sub Category Details', {
+                    "timeOut": 1000
+                });
+                console.log('An error occurred.' + error);
+            },
+            beforeSend: function() {
+                $("#ajax-loader").fadeIn(500);
+            },
+            complete: function() {
+                setTimeout(function() {
+                    $("#ajax-loader").fadeOut(500);
+                }, 500);
+            }
+        });
+    });
+
+    //get subcategory form selected category
+    $(document.body).on("change", "#prod_category_edit", function() {
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
+            url: '<?= base_url() ?>Product/get_sub_category_list/' + this.value,
+            data: {
+                'category_id': this.value
+            },
+            success: function(data) {
+                if (data.type === "success") {
+                    toastr.success(data.message, 'Sub Category Details', {
+                        "timeOut": 1000
+                    });
+                    // console.log(data.sub_categories);
+                    appendSubcategoryModal(data.sub_categories);
+                } else {
+                    toastr.error(data.message, 'Sub Category Details', {
+                        "timeOut": 1000
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                toastr.error(error, 'Sub Category Details', {
+                    "timeOut": 1000
+                });
+                console.log('An error occurred.' + error);
+            },
+            beforeSend: function() {
+                $("#ajax-loader").fadeIn(500);
+            },
+            complete: function() {
+                setTimeout(function() {
+                    $("#ajax-loader").fadeOut(500);
+                }, 500);
+            }
+        });
+    });
+
+    function appendSubcategory(sub_categories) {
+        let options = '';
+
+        sub_categories.forEach(sub_cat => {
+            // $("#prod_sub_category").html("<option value='" + sub_cat.id + "'>" + sub_cat.name + "</option>");
+            options += `<option value="${sub_cat.id}"> ${sub_cat.name} </option>`;
+        });
+        // $('#prod_sub_category').trigger('change');
+
+        $('#prod_sub_category').html(options).trigger('change');
+    }
+
+    function appendSubcategoryModal(sub_categories) {
+        let options = '';
+
+        sub_categories.forEach(sub_cat => {
+            // $("#prod_sub_category").html("<option value='" + sub_cat.id + "'>" + sub_cat.name + "</option>");
+            options += `<option value="${sub_cat.id}"> ${sub_cat.name} </option>`;
+        });
+        // $('#prod_sub_category').trigger('change');
+
+        $('#prod_sub_category_edit').html(options).trigger('change');
+    }
+</script>

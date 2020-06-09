@@ -165,8 +165,13 @@
                         $('#tb-products').DataTable().draw();
                         $('.custom-file input').next('.custom-file-label').html('Product Image');
                         $("#prod_category").val('').trigger('change');
+                        $("#prod_sub_category").val('').trigger('change');
                         $("#tax").val('').trigger('change');
                         $("#uom").val('').trigger('change');
+
+                        //Clear the SUb Category Dropdown Items
+                        $('#prod_sub_category').html('').trigger('change');
+
                     } else {
                         toastr.error(data.message, 'Product Addition', {
                             "timeOut": 1000
@@ -281,7 +286,10 @@
         $('#prod_category_edit').val(obj.category_id);
         $('#prod_category_edit').trigger('change');
 
-        $('#existing_image').attr("src", obj.image_url);
+        $('#prod_sub_category_edit').val(obj.sub_category_id);
+        $('#prod_sub_category_edit').trigger('change');
+
+        $('#existing_image').attr("src", "<?= base_url() ?>" + obj.image_url);
         $('#old_img_path').attr("value", obj.image_url);
 
         $('#prod_pieces_edit').attr("value", obj.pieces);

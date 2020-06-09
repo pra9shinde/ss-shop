@@ -2726,7 +2726,12 @@ class Shop extends CI_Controller
 
 			if ($user_type === 'seller') {
 				//Delete Session
-				if (isset($_SESSION['seller'])) unset($_SESSION['seller']);
+				$login_type = '';
+
+				if (isset($_SESSION['seller'])) {
+					$login_type = $_SESSION['seller']['source'];
+					unset($_SESSION['seller']);
+				}
 
 				return $this->output
 					->set_content_type('application/json')
@@ -2734,7 +2739,7 @@ class Shop extends CI_Controller
 					->set_output(json_encode(array(
 						'type' => 'success',
 						'message' => 'User Logout successfull',
-						'loginType' => null,
+						'loginType' => $login_type,
 						'redirect' => base_url() . 'Shop/seller'
 					)));
 			} else {
