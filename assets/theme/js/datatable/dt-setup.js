@@ -1,13 +1,13 @@
 //$.noConflict();
-$(document).ready(function() {
+$(document).ready(function () {
     //datatables
-   
-    //Products
-    var soc_floors_dt = $('#tb-products').DataTable({ 
-        
+
+    //Seller Products
+    var seller_products = $('#tb-products').DataTable({
+
         dom: 'Blfrtip',
         buttons: [
-            { 
+            {
                 extend: 'collection',
                 text: 'Export',
                 buttons: [
@@ -18,123 +18,406 @@ $(document).ready(function() {
                     'print'
                 ]
             },
-            {//Column Visibiity
-                extend: 'colvis',
-                columns: ':not(.noVis)'
+            {
+                text: '<i class="la la-trash"></i>',
+                className: '',
+                action: function (e, dt, node, config) {
+                    alert('Button activated');
+                }
+            }
+        ],
+        "autoWidth": false,
+        "columns": [
+            { "width": "100%" }
+        ],
+
+        "processing": true, //Feature control the processing indicator.
+        "serverSide": true, //Feature control DataTables' server-side processing mode.
+        "order": [], //Initial no order.
+
+        // Load data for the table's content from an Ajax source
+        "ajax": {
+            "url": $('#base_url').val() + 'Product/product_ajax_list',
+            "type": "POST",
+            "data": {}
+        },
+
+        //Set column definition initialisation properties.
+        "columnDefs": [
+
+        ],
+        "initComplete": function (settings, json) {
+
+
+        },
+        "drawCallback": function (settings) {
+
+        }
+    });
+
+    //Seller sub Category
+    var sub_category_dt = $('#tb-sub-category').DataTable({
+
+        dom: 'Bl<"#category_filter_in_subcat">frtip',
+        buttons: [
+
+        ],
+        colReorder: true,
+
+        "processing": true, //Feature control the processing indicator.
+        "serverSide": true, //Feature control DataTables' server-side processing mode.
+        "order": [], //Initial no order.
+
+        // Load data for the table's content from an Ajax source
+        "ajax": {
+            "url": $('#base_url').val() + 'Product/sub_category_ajax_list',
+            "type": "POST",
+            "data": function (d) {
+                d.category = $('#current_category').attr("value");
+            }
+        },
+
+        //Set column definition initialisation properties.
+        "columnDefs": [
+            {
+
             },
-            // {
-            //     text: '<i class="la la-trash"></i>',
-            //     className: '',
-            //     action: function ( e, dt, node, config ) {
-                    
-            //         var selected_checkboxes = $('#tb-products td .skin.skin-flat .icheckbox_flat-red.checked');
-                    
-            //         if(selected_checkboxes.length >= 1){
-            //             var array_id = [];
-            //             for(var i = 0; i < selected_checkboxes.length; i++){
-            //                 //get data id for deletion
-            //                 array_id.push(selected_checkboxes[i].children[0].getAttribute('data-internalid'));
-            //             }
-            //             //console.log(selected_checkboxes.children(0).data("internalid"));
-            //             deleteSocFloor(array_id);
-                        
-            //         }
-            //     }
-            // }
+            {
+
+            }
+        ],
+        "initComplete": function (settings, json) {
+            addSubCategoryFilters();//Add Filter Button to Datatable
+        },
+        "drawCallback": function (settings) {
+
+        }
+    });
+
+    //Seller Category
+    var category_dt = $('#tb-category').DataTable({
+
+        dom: 'Blfrtip',
+        buttons: [
+
+        ],
+        colReorder: true,
+
+        "processing": true, //Feature control the processing indicator.
+        "serverSide": true, //Feature control DataTables' server-side processing mode.
+        "order": [], //Initial no order.
+
+        // Load data for the table's content from an Ajax source
+        "ajax": {
+            "url": $('#base_url').val() + 'Product/category_ajax_list',
+            "type": "POST",
+            "data": {}
+        },
+
+        //Set column definition initialisation properties.
+        "columnDefs": [
+            {
+
+            },
+            {
+
+            }
+        ],
+        "initComplete": function (settings, json) {
+
+
+        },
+        "drawCallback": function (settings) {
+
+        }
+    });
+
+    //Products
+    var all_products = $('#tb-all-products').DataTable({
+        dom: 'Bl<"#category_filter">frtip',
+        buttons: [
+
         ],
         fixedHeader: {
             header: true,
             headerOffset: $('.header-navbar').outerHeight()
         },
         colReorder: true,
-        
+
         "processing": true, //Feature control the processing indicator.
         "serverSide": true, //Feature control DataTables' server-side processing mode.
         "order": [], //Initial no order.
- 
+
         // Load data for the table's content from an Ajax source
         "ajax": {
-            "url": $('#base_url').val() + 'Product/product_ajax_list',
+            "cache": false,
+            "url": $('#base_url').val() + 'Shop/ajax_list',
             "type": "POST",
-            "data": { }
+            "data": function (d) {
+                d.category = $('#current_category').attr("value");
+                d.sub_category = $('#current_sub_category').attr("value");
+
+            }
         },
-        
+
         //Set column definition initialisation properties.
         "columnDefs": [
-            { 
-                "targets": [ 0,1 ], //first column / numbering column
+            {
+                "targets": [0, 1], //first column / numbering column
                 "orderable": false, //set not orderable
             },
             {
                 //exclude col visibilty columns
-                "targets": [0,1],
+                "targets": [0, 1],
                 "className": 'noVis'
             }
         ],
-        "initComplete": function( settings, json ) {
-            
-            
+        "initComplete": function (settings, json) {
+
+            addFilters();//Add Filter Button to Datatable
+
+            //Change the selected dropdown as per the url sub category
+            let subCategory = getUrlKey('sub_cat', window.location.href);
+            if (subCategory !== null) {
+                $('#select_sub_category_dw').val(subCategory).trigger('change.select2');
+            }
+
         },
-        "drawCallback": function( settings ) {
-            
+        "drawCallback": function (settings) {
+
             //Checkbox initialization and Select all, pass select all checkbox id
-            select2Init('#select-all-products');
+            select2Init('#select-all-products-main');
+            // Default Spin
+            $(".touchspin").TouchSpin({
+                buttondown_class: "btn btn-primary",
+                buttonup_class: "btn btn-primary",
+                buttondown_txt: '<i class="ft-minus"></i>',
+                buttonup_txt: '<i class="ft-plus"></i>'
+            });
+
+
+
         }
     });
 
+    //Products mobile view
+    var all_products_mini = $('#tb-all-products-mini').DataTable({
+        dom: 'B<"#category_filter_mini">lfrtip',
+        buttons: [
 
+        ],
+        "destroy": true,
+        "processing": true, //Feature control the processing indicator.
+        "serverSide": true, //Feature control DataTables' server-side processing mode.
+        "order": [], //Initial no order.
+
+        // Load data for the table's content from an Ajax source
+        "ajax": {
+            "cache": false,
+            "url": $('#base_url').val() + 'Shop/ajax_list_mini',
+            "type": "POST",
+            "data": function (d) {
+                d.category = $('#current_category').attr("value");
+                d.sub_category = $('#current_sub_category').attr("value");
+                // d.category =  'all';
+            }
+        },
+
+        //Set column definition initialisation properties.
+        "columnDefs": [
+
+        ],
+        "initComplete": function (settings, json) {
+
+            addFiltersMini();//Add Filer Button to Datatable
+
+        },
+        "drawCallback": function (settings) {
+
+            // Default Spin
+            $(".touchspin").TouchSpin({
+                buttondown_class: "btn btn-primary",
+                buttonup_class: "btn btn-primary",
+                buttondown_txt: '<i class="ft-minus"></i>',
+                buttonup_txt: '<i class="ft-plus"></i>'
+            });
+        }
+    });
+
+    let currentUri = getUriSegment(window.location.href, 5);
+    if (currentUri !== undefined && currentUri.indexOf('products') !== -1) {
+        // Draw Mobile view product table
+        $(window).resize(function () {
+            //Redraw datable
+            if ($(window).width() <= 767) {
+                all_products_mini.draw();
+                $('#tb-all-products-mini').dataTable().fnAdjustColumnSizing();//Automatically sets header size
+            }
+        });
+    }
+
+
+    //Filter by Category - All products (Reload Datatable)
+    $(document.body).on("change", "#select_sub_category_dw", function () {
+        //alert(this.value);
+        //alert($('#select_category_dw').select2().val());
+        $('#current_sub_category').attr("value", this.value);
+        $('#current_sub_category').attr("data-test", this.value);
+        $('#tb-all-products').DataTable().ajax.reload()
+    });
+
+    //Filter by Category - All products Mobile (Reload Datatable)
+    $(document.body).on("change", "#select_sub_category_dw_mini", function () {
+        // alert(this.value);
+        //alert($('#select_category_dw').select2().val());
+        $('#current_sub_category').attr("value", this.value);
+        $('#current_sub_category').attr("data-test", this.value);
+        $('#tb-all-products-mini').DataTable().ajax.reload();
+    });
+
+    //Filter by Category - Sub Category (Reload Datatable)
+    $(document.body).on("change", "#sub_cat_select_dw", function () {
+        // alert(this.value);
+        //alert($('#select_category_dw').select2().val());
+
+        $('#current_category').attr("value", this.value);
+        $('#current_category').attr("data-test", this.value);
+        $('#tb-sub-category').DataTable().ajax.reload();
+    });
+
+
+    //Seller Orders
+    var seller_orders = $('#tb-seller-orders').DataTable({
+        dom: 'Blfrtip',
+        buttons: [
+            {
+                text: 'Export<i class="la la-download" style="margin-left:3px;"></i>',
+                className: '',
+                action: function (e, dt, node, config) {
+                    exportSellerOrders();
+                }
+            }
+        ],
+        fixedHeader: {
+            header: true,
+            headerOffset: $('.header-navbar').outerHeight()
+        },
+        colReorder: true,
+        select: true,
+
+        "processing": true, //Feature control the processing indicator.
+        "serverSide": true, //Feature control DataTables' server-side processing mode.
+        "order": [], //Initial no order.
+
+        // Load data for the table's content from an Ajax source
+        "ajax": {
+            "cache": false,
+            "url": $('#base_url').val() + 'Product/seller_orders_ajax_list',
+            "type": "POST",
+            "data": function (d) {
+                // d.category =  $('#current_category').attr("value");
+            }
+        },
+
+        //Set column definition initialisation properties.
+        "columnDefs": [
+            {
+                //add class to first td
+                "targets": [0],
+                "className": 'details-control'
+            },
+
+        ],
+        "initComplete": function (settings, json) {
+
+
+        },
+        "drawCallback": function (settings) {
+
+            //Checkbox initialization and Select all, pass select all checkbox id
+            select2Init('#select-all-products-main');
+        }
+    });
+    seller_orders.column(1).visible(false);//Order items data hidden in array
+
+    // Add event listener for opening and closing details - show order items
+    $('#tb-seller-orders tbody').on('click', 'td.details-control', function () {
+        var tr = $(this).closest('tr');
+        var tdi = tr.find("i.la-plus-circle");
+
+        var row = seller_orders.row(tr);
+
+        if (row.child.isShown()) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+            var icon = tr.first().children().first().children().first().children(0);
+            icon.removeClass('la-minus-circle');
+            icon.addClass('la-plus-circle');
+        }
+        else {
+            // Open this row
+            row.child(format(row.data())).show();//Function present in my_orders_seller view
+            tr.addClass('shown');
+            tdi.first().removeClass('la-plus-circle');
+            tdi.first().addClass('la-minus-circle');
+        }
+    });
 
     $(".menu-toggle").on('click', resize);
     // Resize function
     function resize() {
-        setTimeout(function() {
-
+        setTimeout(function () {
             // ReDraw DataTable
-            charges_list_dt.draw();
-            flat_type_dt.draw();
-            flat_area_dt.draw();
-            flat_status_dt.draw();
-            soc_blocks_dt.draw();
-            soc_floors_dt.draw();
+            seller_products.draw();
+            all_products.draw();
         }, 400);
     }
 
     //Initialize Select2 inside datable, Select All Functionality, Selected Row Highlight
-    function select2Init(selectAll_checkbox_id){
-        (function(window, document, $) {
-            
+    function select2Init(selectAll_checkbox_id) {
+        (function (window, document, $) {
+
             $('.skin-flat input').iCheck({
                 checkboxClass: 'icheckbox_flat-red',
                 radioClass: 'iradio_flat-red'
             });
 
             'use strict';
-            
+
             var $html = $('html');
             //Select All
-            $(selectAll_checkbox_id).on('ifChecked', function(event){
+            $(selectAll_checkbox_id).on('ifChecked', function (event) {
                 $(".child-checkbox-flatclass").iCheck('check');
             });
-            $(selectAll_checkbox_id).on('ifUnchecked', function(event){
+            $(selectAll_checkbox_id).on('ifUnchecked', function (event) {
                 $(".child-checkbox-flatclass").iCheck('uncheck');
             });
 
             //add class to tr of selected checkbox
-            $('input[name ="input-15"]').on('ifChecked', function(event){
+            $('input[name ="input-15"]').on('ifChecked', function (event) {
                 let element_tr = $(this).parents().eq(4);
-                if(!element_tr.hasClass('selected')){
+                if (!element_tr.hasClass('selected')) {
                     element_tr.addClass('selected');
                 }
             });
-            $('input[name ="input-15"]').on('ifUnchecked', function(event){
+            $('input[name ="input-15"]').on('ifUnchecked', function (event) {
                 let element_tr = $(this).parents().eq(4);
-                if(element_tr.hasClass('selected')){
+                if (element_tr.hasClass('selected')) {
                     element_tr.removeClass('selected');
                 }
             });
-        
+
         })(window, document, jQuery);
     }
+});
+
+
+//Datatable scroll top on pagination
+$('.table').on('page.dt', function () {
+    $('html, body').animate({
+        scrollTop: $(".dataTables_wrapper").offset().top
+    }, 'slow');
 });
 
 

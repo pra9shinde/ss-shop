@@ -117,7 +117,7 @@ input {
   overflow: hidden;
   width: 768px;
   max-width: 100%;
-  min-height: 550px;
+  min-height: 650px;
 }
 
 .form-container {
@@ -347,6 +347,38 @@ footer a {
   width:77%;
 }
 
+
+
+/* ------------------ */
+/* -AJAX loader */
+/* ------------------ */
+.loader-blue-grey.folding-cube div::before {
+  background-color: #8a2d2d !important;
+}
+
+#ajax-loader {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  z-index: 99999;
+  height: 100%;
+}
+
+.loader-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+}
+
+
+
+
 @media only screen and (max-width: 593px){
 }
 @media only screen and (max-width: 500px){
@@ -359,7 +391,7 @@ footer a {
   }
 
   .container{
-    min-height: 620px;
+    min-height: 720px;
   }
 
   .comp-logo{
@@ -370,3 +402,5 @@ footer a {
     height: 100px;
   }
 }
+
+
